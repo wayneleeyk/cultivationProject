@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.networking;
 
-@FunctionalInterface
-public interface Protocol {
+import java.io.Serializable;
+
+public interface Protocol extends Serializable{
 	public void execute();
 }

@@ -5,14 +5,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public class Server {
+public class Server implements Runnable{
 	
 	
 	ServerSocket socket;
-	Queue<Protocol> queue = new LinkedList<Protocol>();
+	BlockingQueue<ServerTask> queue = new LinkedBlockingQueue<ServerTask>();
 	public Server(int port) {
 		try {
 			this.socket = new ServerSocket(port);
@@ -21,25 +21,49 @@ public class Server {
 		}
 	}
 	
+	@Override
 	public void run(){
-		while(true){
-			try {
-				Socket incoming = socket.accept();
-				ObjectInputStream in = new ObjectInputStream(incoming.getInputStream());
-				Protocol protocol = (Protocol) in.readObject();
-				this.queue.add(protocol);
-				ObjectOutputStream out = new ObjectOutputStream(incoming.getOutputStream());
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					try {
+						Socket incoming = socket.accept();
+						System.out.println("Accepted a connection");
+						ObjectInputStream in = new ObjectInputStream(incoming.getInputStream());
+						Protocol protocol = (Protocol) in.readObject();
+						queue.put(new ServerTask(incoming, protocol));
+					} catch (IOException e) {
+						e.printStackTrace();
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-		}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					try {
+						ServerTask task = queue.take();
+						System.out.println("New task was taken");
+						task.protocol.execute();
+						new ObjectOutputStream(task.out.getOutputStream()).writeObject(task.protocol);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
 	}
 	
-	static void login(String name, String password){
-		System.out.println(name + " " + password);
+	static boolean login(String name, String password){
+		return name.equals("hey") && password.equals("potatoes");
 	}
 	
 }
