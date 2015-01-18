@@ -5,11 +5,15 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.potatoes.cultivation.networking.Client;
 import com.potatoes.cultivation.screens.Splash;
 
 public class Cultivation extends Game {
 	public SpriteBatch batch;
 	public AssetManager manager;
+	
+	// Connection related 
+	public Client client = new Client("localhost", 7470);
 	
 	@Override
 	public void create () {

@@ -66,4 +66,8 @@ public class Server implements Runnable{
 		return name.equals("hey") && password.equals("potatoes");
 	}
 	
+	public static void main(String[] args) {
+		Server server = new Server(7470);
+		new Thread(server).start();
+	}
 }

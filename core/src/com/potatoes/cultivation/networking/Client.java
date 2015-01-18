@@ -47,7 +47,6 @@ public class Client{
 		new Thread(s).start();
 		Client c = new Client("localhost", 20000);
 		System.out.println(c.login("hello", "world"));
-		System.out.println("...");
 		System.out.println(c.login("hey", "potatoes"));
 	}
 }
