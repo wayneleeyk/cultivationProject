@@ -37,16 +37,21 @@ public class Client{
 		return false;
 	}
 	
-	public void createAccount(String username, String password){}
+	public boolean createAccount(String username, String password){
+		try{
+			Socket socket = new Socket(host, port);
+			new ObjectOutputStream(socket.getOutputStream()).writeObject(new RegisterProtocol(username, password));
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			RegisterProtocol returnedMessage = (RegisterProtocol) in.readObject();
+			socket.close();
+			return returnedMessage.isSuccessful();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 	public List<Player> updateLobby(){return new LinkedList<Player>();}
 	public void endTurn(List<Command> actions){}
-	
-	
-	public static void main(String[] args) {
-		Server s = new Server(20000);
-		new Thread(s).start();
-		Client c = new Client("localhost", 20000);
-		System.out.println(c.login("hello", "world"));
-		System.out.println(c.login("hey", "potatoes"));
-	}
 }

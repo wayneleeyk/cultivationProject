@@ -96,7 +96,9 @@ public class Login extends ScreenAdapter {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				super.clicked(event, x, y);
-				System.out.println("Register");
+				// Connect to server
+				boolean successful = pGame.client.createAccount(usernameField.getText(), passwordField.getText());
+				System.out.println("Register successful " + successful);
 			}
 			@Override
 			public void enter(InputEvent event, float x, float y, int pointer,

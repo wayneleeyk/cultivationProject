@@ -62,12 +62,17 @@ public class Server implements Runnable{
 		}).start();
 	}
 	
-	static boolean login(String name, String password){
-		return name.equals("hey") && password.equals("potatoes");
+	static boolean login(String username, String password){
+		return username.equals("hey") && password.equals("potatoes");
 	}
 	
 	public static void main(String[] args) {
 		Server server = new Server(7470);
 		new Thread(server).start();
+	}
+
+	static boolean register(String username, String password) {
+		System.out.println("Registering with username:"+username+" password:"+password);
+		return !username.equals("hey") && !password.equals("");
 	}
 }
