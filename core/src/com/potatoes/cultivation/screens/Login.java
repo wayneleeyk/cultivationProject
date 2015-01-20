@@ -86,7 +86,7 @@ public class Login extends ScreenAdapter {
 				System.out.println("Username: " + usernameField.getText());
 				System.out.println("Password: " + passwordField.getText());
 				boolean successful = pGame.client.login(usernameField.getText(), passwordField.getText());
-				System.out.println("Login successful "+ successful);
+				System.out.println("Login successful? "+ successful);
 			}
 		});
 		
@@ -118,7 +118,7 @@ public class Login extends ScreenAdapter {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				boolean successful = pGame.client.createAccount(usernameField.getText(), passwordField.getText());
-				System.out.println("Register successful "+ successful);
+				System.out.println("Register successful? "+ successful);
 			}
 		});
 		
