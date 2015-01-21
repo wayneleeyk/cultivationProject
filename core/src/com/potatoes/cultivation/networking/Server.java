@@ -81,7 +81,7 @@ public class Server implements Runnable{
 	Player login(String username, String password){
 		System.out.println("Login with username:"+username+" password:"+password);
 		this.readAccounts(accounts);
-		if( !password.equals("") && this.accountsForLogin.getOrDefault(username, "").equals(password)){
+		if( !password.equals("") && this.getOrDefault(username).equals(password)){
 			return new Player(username);
 		}
 		return Player.nullPlayer;
@@ -114,11 +114,22 @@ public class Server implements Runnable{
 			String line;
 			while((line = br.readLine()) != null){
 				String[] elements = line.split("\t");
-				this.accountsForLogin.putIfAbsent(elements[0], elements[1]);
+				this.putIfAbsent(elements[0], elements[1]);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	void putIfAbsent(String key, String value){
+		if( this.accountsForLogin.get(key) == null){
+			this.accountsForLogin.put(key, value);
+		}
+	}
+	
+	String getOrDefault(String key){
+		String value = this.accountsForLogin.get(key) ;
+		return (value != null) ? value : "";
 	}
 	
 	static private File getAccounts(String path){
