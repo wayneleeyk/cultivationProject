@@ -1,12 +1,11 @@
 package com.potatoes.cultivation.screens;
 
-import org.omg.PortableInterceptor.SUCCESSFUL;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,17 +34,22 @@ public class Login extends ScreenAdapter {
 	TextField usernameField;
 	TextField passwordField;
 	
+	Animation anim;
+	float frameCounter;
 	
 	public Login(final Cultivation pGame) {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		game = pGame;
 		batch = pGame.batch;
+		anim = GifDecoder.loadGIFAnimation(1, Gdx.files.internal("potato_bounce.gif").read());
+		frameCounter = 0;
 		
 		BitmapFont pixFont = game.manager.get("pixFont.fnt");
 				
 		table = new Table();
-		table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2.0f, 250);
+//		table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2.0f, 325);
 		TextField.TextFieldStyle textfieldStyle = new TextField.TextFieldStyle(pixFont, Color.BLUE, null, null, null);
 		
 		usernameField = new TextField("", textfieldStyle); 
@@ -144,7 +148,7 @@ public class Login extends ScreenAdapter {
 //				event.getTarget().setColor(Color.GREEN);
 //			}
 //		});
-		table.row();
+//		table.row();
 		table.add(registerButton).center().pad(10, 0, 10, 0);
 		
 		stage.addActor(table);
@@ -153,6 +157,8 @@ public class Login extends ScreenAdapter {
 	
 	@Override
 	public void render(float delta) {
+		frameCounter += delta;
+		
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -160,7 +166,8 @@ public class Login extends ScreenAdapter {
 		batch.begin();
 		batch.enableBlending();
 		batch.draw(background, 0, 0);
-		batch.draw(title, (Gdx.graphics.getWidth() - title.getWidth()) / 2, 400);
+		batch.draw(title, (Gdx.graphics.getWidth() - title.getWidth()) / 2, 450);
+		batch.draw(anim.getKeyFrame(frameCounter, true), 200, 10);
 		batch.end();
 		
 		// Draw stage
