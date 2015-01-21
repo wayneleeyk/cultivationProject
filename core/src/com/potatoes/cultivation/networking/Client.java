@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,36 +20,36 @@ public class Client{
 		this.port = port;
 	}
 	
-	public boolean login(String username, String password){
+	public Player login(String username, String password){
 		try{
 			Socket socket = new Socket(host, port);
 			new ObjectOutputStream(socket.getOutputStream()).writeObject(new LoginProtocol(username, password));
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			LoginProtocol returnedMessage = (LoginProtocol) in.readObject();
 			socket.close();
-			return returnedMessage.isSuccessful();
+			return returnedMessage.player();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 	
-	public boolean createAccount(String username, String password){
+	public Player createAccount(String username, String password){
 		try{
 			Socket socket = new Socket(host, port);
 			new ObjectOutputStream(socket.getOutputStream()).writeObject(new RegisterProtocol(username, password));
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			RegisterProtocol returnedMessage = (RegisterProtocol) in.readObject();
 			socket.close();
-			return returnedMessage.isSuccessful();
+			return returnedMessage.player();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 	public List<Player> updateLobby(){return new LinkedList<Player>();}
 	public void endTurn(List<Command> actions){}

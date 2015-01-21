@@ -1,9 +1,11 @@
 package com.potatoes.cultivation.networking;
 
+import com.potatoes.cultivation.logic.Player;
+
 public class RegisterProtocol implements Protocol {
 	private static final long serialVersionUID = -8658082689064145170L;
 	private String username, password;
-	private boolean successful = false;
+	private Player player = null;
 	
 	public RegisterProtocol(String username, String password) {
 		this.username = username;
@@ -11,16 +13,16 @@ public class RegisterProtocol implements Protocol {
 	}
 	
 	@Override
-	public void execute() {
-		setSuccessful(Server.register(username, password));
+	public void execute(Server server) {
+		this.player(server.register(username, password));
 	}
 
-	public boolean isSuccessful() {
-		return successful;
+	public void player(Player p){
+		this.player = p;
 	}
-
-	public void setSuccessful(boolean successful) {
-		this.successful = successful;
+	
+	public Player player(){
+		return this.player;
 	}
 
 }
