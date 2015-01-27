@@ -34,7 +34,7 @@ public class Login extends ScreenAdapter {
 	SpriteBatch batch;
 	Texture background;
 	Texture title;
-	
+
 	TextField usernameField;
 	TextField passwordField;
 	
@@ -151,5 +151,14 @@ public class Login extends ScreenAdapter {
 	public void show() {
 		title = game.manager.get("gameTitle.png");
 		background = game.manager.get("landscape.png");
+	}
+	
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		this.stage.dispose();
+		// need to dispose textures
+		// we can use assetmanager to do this
 	}
 }
