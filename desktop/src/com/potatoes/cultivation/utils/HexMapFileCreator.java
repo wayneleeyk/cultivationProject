@@ -1,5 +1,6 @@
-//Run this file to create a map representation of the tiles. A txt file will be created in the working directory.
 package com.potatoes.cultivation.utils;
+
+//Run this file to create a map representation of the tiles. A txt file will be created in the working directory.
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;

@@ -1,4 +1,5 @@
 package com.potatoes.cultivation.utils;
+
 import java.util.Random;
 
 public class HexMap {
