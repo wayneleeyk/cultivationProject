@@ -4,12 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -19,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.Player;
 
@@ -30,7 +34,7 @@ public class Login extends ScreenAdapter {
 	SpriteBatch batch;
 	Texture background;
 	Texture title;
-	
+
 	TextField usernameField;
 	TextField passwordField;
 	
@@ -44,19 +48,31 @@ public class Login extends ScreenAdapter {
 		batch = pGame.batch;
 		anim = GifDecoder.loadGIFAnimation(1, Gdx.files.internal("potato_bounce.gif").read());
 		frameCounter = 0;
+		Skin skin = new Skin();
 		
 		BitmapFont pixFont = game.manager.get("pixFont.fnt");
-				
+		
+		// Testing TiledDrawable
+		Pixmap onePix = new Pixmap(1, 1, Format.RGBA8888);
+		onePix.setColor(Color.WHITE);
+		onePix.fill();
+		TextureRegion white = new TextureRegion(new Texture(onePix));
+		Drawable whitePix = new TiledDrawable(white);
+		Drawable orangePix = skin.newDrawable(whitePix, Color.ORANGE);
+		Drawable bluePix = skin.newDrawable(whitePix, 125/255f, 149/255f, 245/255f, 0.7f);
+		
 		table = new Table();
-//		table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		table.debugAll();
 		table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2.0f, 325);
-		TextField.TextFieldStyle textfieldStyle = new TextField.TextFieldStyle(pixFont, Color.BLUE, null, null, null);
+		TextField.TextFieldStyle textfieldStyle = new TextField.TextFieldStyle(pixFont, Color.DARK_GRAY, null, bluePix, orangePix);
+		
+		// End testing
 		
 		usernameField = new TextField("", textfieldStyle); 
 		usernameField.setMessageText("username");
 		usernameField.setMaxLength(16);
 		
-		table.add(usernameField).left().pad(10, 0, 10, 0).width(300);
+		table.add(usernameField).left().pad(10, 0, 10, 0).width(300).colspan(2);
 		table.row();
 		
 		passwordField = new TextField("", textfieldStyle);
@@ -65,13 +81,12 @@ public class Login extends ScreenAdapter {
 		passwordField.setMessageText("password");
 		passwordField.setMaxLength(16);
 		
-		table.add(passwordField).left().pad(10, 0, 10, 0).width(300);
+		table.add(passwordField).left().pad(10, 0, 10, 0).width(300).colspan(2);
 		table.row();
 		
 		// Testing nine-patch
 		
 		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("test/game.atlas"));
-		Skin skin = new Skin();
 		NinePatch button = atlas.createPatch("box-up");
 		Drawable buttonUp = new NinePatchDrawable(button);
 		Drawable buttonDown = skin.newDrawable(buttonUp, Color.GREEN);
@@ -95,27 +110,6 @@ public class Login extends ScreenAdapter {
 			}
 		});
 		
-//		playButton.addListener(new ClickListener(){
-//			@Override
-//			public void enter(InputEvent event, float x, float y, int pointer,
-//					Actor fromActor) {
-//				super.enter(event, x, y, pointer, fromActor);
-//				event.getTarget().setColor(Color.RED);
-//			}
-//			@Override
-//			public void exit(InputEvent event, float x, float y, int pointer,
-//					Actor toActor) {
-//				super.exit(event, x, y, pointer, toActor);
-//				event.getTarget().setColor(Color.GREEN);
-//			}
-//			@Override
-//			public void clicked(InputEvent event, float x, float y) {
-//				super.clicked(event, x, y);
-//				// connect to the server
-//				boolean succesful = pGame.client.login(usernameField.getText(), passwordField.getText());
-//				System.out.println("Login succesful "+succesful);
-//			}
-//		});
 		table.add(playButton).center().pad(10, 0, 10, 0);
 		
 		TextButton registerButton = new TextButton("Register", textbuttonStyle);
@@ -125,30 +119,8 @@ public class Login extends ScreenAdapter {
 				Player player = pGame.client.createAccount(usernameField.getText(), passwordField.getText());
 				System.out.println("Login successful? "+ ((player!=null)? "yup" : "no"));
 			}
-		});
-		
-//		registerButton.addListener(new ClickListener(){
-//			@Override
-//			public void clicked(InputEvent event, float x, float y) {
-//				super.clicked(event, x, y);
-//				// Connect to server
-//				boolean successful = pGame.client.createAccount(usernameField.getText(), passwordField.getText());
-//				System.out.println("Register successful " + successful);
-//			}
-//			@Override
-//			public void enter(InputEvent event, float x, float y, int pointer,
-//					Actor fromActor) {
-//				super.enter(event, x, y, pointer, fromActor);
-//				event.getTarget().setColor(Color.BLUE);
-//			}
-//			@Override
-//			public void exit(InputEvent event, float x, float y, int pointer,
-//					Actor toActor) {
-//				super.exit(event, x, y, pointer, toActor);
-//				event.getTarget().setColor(Color.GREEN);
-//			}
-//		});
-//		table.row();
+		});		
+
 		table.add(registerButton).center().pad(10, 0, 10, 0);
 		
 		stage.addActor(table);
@@ -179,5 +151,14 @@ public class Login extends ScreenAdapter {
 	public void show() {
 		title = game.manager.get("gameTitle.png");
 		background = game.manager.get("landscape.png");
+	}
+	
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		this.stage.dispose();
+		// need to dispose textures
+		// we can use assetmanager to do this
 	}
 }
