@@ -1,18 +1,16 @@
 package com.potatoes.cultivation.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.potatoes.cultivation.Cultivation;
 
 public class Splash extends ScreenAdapter {
 	Cultivation game;
 	SpriteBatch batch;
-	Texture logo;
+	TextureRegion logo;
 	float splashTime = 0.75f;
 	float fadeTime = 0.5f;
 	float elapsedTime;
@@ -34,18 +32,13 @@ public class Splash extends ScreenAdapter {
 			batch.setColor(1, 1, 1, elapsedTime/fadeTime);
 		}
 		
-		// Weird Zapping fade-out
-//		else if(splashTime-fadeTime < elapsedTime && elapsedTime < splashTime) {
-//			batch.setColor(1, 1, 1, 1/(elapsedTime-1.5f));
-//		}
-		
 		// Fade-out
 		else if(splashTime-fadeTime < elapsedTime && elapsedTime < splashTime) {
 			batch.setColor(1, 1, 1, (-1/fadeTime * elapsedTime) + splashTime/fadeTime);
 		}
 
-		batch.draw(logo, (Gdx.graphics.getWidth() - logo.getWidth() )/2, 
-						 (Gdx.graphics.getHeight() - logo.getHeight() )/2);
+		batch.draw(logo, (Gdx.graphics.getWidth() - logo.getRegionWidth())/2, 
+						 (Gdx.graphics.getHeight() - logo.getRegionHeight() )/2);
 		
 		batch.end();
 		if(elapsedTime > splashTime) {
@@ -56,13 +49,13 @@ public class Splash extends ScreenAdapter {
 	
 	@Override
 	public void show() {
-		logo = game.manager.get("companyLogo.png", Texture.class);
+		logo = game.skin.getRegion("companyLogo");
 		elapsedTime = 0;
 	}
 	
 	@Override
 	public void dispose() {
-		logo.dispose();
+		// Can't dispose a textureRegion since it'll dispose the rest of the atlas
 	}
 	
 	@Override

@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -30,10 +31,11 @@ public class Login extends ScreenAdapter {
 	Stage stage;
 	Cultivation game;
 	Table table;
+	Skin skin;
 	
 	SpriteBatch batch;
-	Texture background;
-	Texture title;
+	TextureRegion background;
+	TextureRegion title;
 
 	TextField usernameField;
 	TextField passwordField;
@@ -46,60 +48,45 @@ public class Login extends ScreenAdapter {
 		Gdx.input.setInputProcessor(stage);
 		game = pGame;
 		batch = pGame.batch;
+		skin = pGame.skin;
 		anim = GifDecoder.loadGIFAnimation(1, Gdx.files.internal("potato_bounce.gif").read());
 		frameCounter = 0;
-		Skin skin = new Skin();
-		
-		BitmapFont pixFont = game.manager.get("pixFont.fnt");
-		
-		// Testing TiledDrawable
-		Pixmap onePix = new Pixmap(1, 1, Format.RGBA8888);
-		onePix.setColor(Color.WHITE);
-		onePix.fill();
-		TextureRegion white = new TextureRegion(new Texture(onePix));
-		Drawable whitePix = new TiledDrawable(white);
-		Drawable orangePix = skin.newDrawable(whitePix, Color.ORANGE);
-		Drawable bluePix = skin.newDrawable(whitePix, 125/255f, 149/255f, 245/255f, 0.7f);
 		
 		table = new Table();
-		table.debugAll();
-		table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2.0f, 325);
-		TextField.TextFieldStyle textfieldStyle = new TextField.TextFieldStyle(pixFont, Color.DARK_GRAY, null, bluePix, orangePix);
+		table.setWidth(360);
+		table.setHeight(240);
+		table.setBackground(skin.getDrawable("table-brown"));
+//		table.debugAll();
+//		table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2.0f, (Gdx.graphics.getHeight() - table.getHeight()) / 2.0f);
+		table.setPosition(30, 85);
 		
-		// End testing
-		
-		usernameField = new TextField("", textfieldStyle); 
+		usernameField = new TextField("", skin, "default");
 		usernameField.setMessageText("username");
 		usernameField.setMaxLength(16);
 		
-		table.add(usernameField).left().pad(10, 0, 10, 0).width(300).colspan(2);
+		Container<TextField> usernameContainer = new Container<TextField>(usernameField);
+		usernameContainer.setBackground(skin.getDrawable("onepix-light-brown"));
+		usernameContainer.left().prefWidth(300).pad(3, 7, 3, 0);
+		
+//		table.add(usernameField).left().pad(10, 0, 10, 0).width(300).colspan(2);
+		table.add(usernameContainer).pad(10, 0, 10, 0).width(300).colspan(2);
 		table.row();
 		
-		passwordField = new TextField("", textfieldStyle);
+		passwordField = new TextField("", skin, "default");
 		passwordField.setPasswordMode(true);
 		passwordField.setPasswordCharacter('?');
 		passwordField.setMessageText("password");
 		passwordField.setMaxLength(16);
 		
-		table.add(passwordField).left().pad(10, 0, 10, 0).width(300).colspan(2);
+		Container<TextField> passwordContainer = new Container<TextField>(passwordField);
+		passwordContainer.setBackground(skin.getDrawable("onepix-light-brown"));
+		passwordContainer.left().prefWidth(300).pad(3, 7, 3, 0);
+
+//		table.add(passwordField).left().pad(10, 0, 10, 0).width(300).colspan(2);
+		table.add(passwordContainer).pad(10, 0, 10, 0).width(300).colspan(2);
 		table.row();
 		
-		// Testing nine-patch
-		
-		TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("test/game.atlas"));
-		NinePatch button = atlas.createPatch("box-up");
-		Drawable buttonUp = new NinePatchDrawable(button);
-		Drawable buttonDown = skin.newDrawable(buttonUp, Color.GREEN);
-		Drawable buttonOver = skin.newDrawable(buttonUp, Color.OLIVE);
-		
-		final TextButton.TextButtonStyle textbuttonStyle = new TextButton.TextButtonStyle(buttonUp, buttonDown, null, pixFont);
-		textbuttonStyle.over = buttonOver;
-		textbuttonStyle.fontColor = Color.GREEN;
-		textbuttonStyle.overFontColor = Color.CYAN;
-		textbuttonStyle.downFontColor = Color.RED;
-		// Testing ends
-		
-		TextButton playButton = new TextButton("Play!", textbuttonStyle);
+		TextButton playButton = new TextButton("Play!", skin, "default");
 		playButton.addListener(new ChangeListener(){
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -112,7 +99,7 @@ public class Login extends ScreenAdapter {
 		
 		table.add(playButton).center().pad(10, 0, 10, 0);
 		
-		TextButton registerButton = new TextButton("Register", textbuttonStyle);
+		TextButton registerButton = new TextButton("Register", skin, "default");
 		registerButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -122,7 +109,6 @@ public class Login extends ScreenAdapter {
 		});		
 
 		table.add(registerButton).center().pad(10, 0, 10, 0);
-		
 		stage.addActor(table);
 				
 	}
@@ -138,8 +124,8 @@ public class Login extends ScreenAdapter {
 		batch.begin();
 		batch.enableBlending();
 		batch.draw(background, 0, 0);
-		batch.draw(title, (Gdx.graphics.getWidth() - title.getWidth()) / 2, 450);
-		batch.draw(anim.getKeyFrame(frameCounter, true), 200, 10);
+		batch.draw(title, (Gdx.graphics.getWidth() - title.getRegionWidth()) / 2, 450);
+		batch.draw(anim.getKeyFrame(frameCounter, true), 410, 50);
 		batch.end();
 		
 		// Draw stage
@@ -149,8 +135,8 @@ public class Login extends ScreenAdapter {
 	
 	@Override
 	public void show() {
-		title = game.manager.get("gameTitle.png");
-		background = game.manager.get("landscape.png");
+		title = skin.getRegion("gameTitle");
+		background = skin.getRegion("landscape");
 	}
 	
 	
@@ -160,5 +146,9 @@ public class Login extends ScreenAdapter {
 		this.stage.dispose();
 		// need to dispose textures
 		// we can use assetmanager to do this
+		
+		// I've changed the textures to textureRegion, so disposing
+		// one will the rest of the texture. But we can put the Login/Splash
+		// related images in one atlas and dispose that instead
 	}
 }

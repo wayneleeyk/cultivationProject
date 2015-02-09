@@ -1,140 +1,90 @@
 
-game.png
-size: 954,1016
+ingame.png
+size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-box-up
-  rotate: false
-  xy: 671, 377
-  size: 38, 37
-  split: 14, 11, 13, 11
-  pad: 19, 18, 19, 17
-  orig: 38, 37
-  offset: 0, 0
-  index: -1
-npTest
-  rotate: false
-  xy: 671, 377
-  size: 38, 37
-  orig: 38, 37
-  offset: 0, 0
-  index: -1
-companyLogo
-  rotate: false
-  xy: 2, 248
-  size: 225, 103
-  orig: 225, 103
-  offset: 0, 0
-  index: -1
-gameTitle
-  rotate: false
-  xy: 2, 353
-  size: 667, 61
-  orig: 667, 61
-  offset: 0, 0
-  index: -1
-landscape
-  rotate: false
-  xy: 2, 416
-  size: 800, 600
-  orig: 800, 600
-  offset: 0, 0
-  index: -1
 potato_purple
-  rotate: false
-  xy: 804, 936
-  size: 150, 80
-  orig: 150, 80
-  offset: 0, 0
-  index: -1
-potato_purple_infantry
   rotate: false
   xy: 2, 166
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
-potato_purple_knight
-  rotate: false
-  xy: 229, 271
-  size: 150, 80
-  orig: 150, 80
-  offset: 0, 0
-  index: -1
-potato_purple_soldier
-  rotate: false
-  xy: 804, 854
-  size: 150, 80
-  orig: 150, 80
-  offset: 0, 0
-  index: -1
-potato_red
+potato_purple_infantry
   rotate: false
   xy: 2, 84
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
+potato_purple_knight
+  rotate: false
+  xy: 154, 166
+  size: 150, 80
+  orig: 150, 80
+  offset: 0, 0
+  index: -1
+potato_purple_soldier
+  rotate: false
+  xy: 2, 2
+  size: 150, 80
+  orig: 150, 80
+  offset: 0, 0
+  index: -1
+potato_red
+  rotate: false
+  xy: 154, 84
+  size: 150, 80
+  orig: 150, 80
+  offset: 0, 0
+  index: -1
 potato_red_infantry
   rotate: false
-  xy: 381, 271
+  xy: 306, 166
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_knight
   rotate: false
-  xy: 804, 772
+  xy: 154, 2
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_soldier
   rotate: false
-  xy: 2, 2
+  xy: 306, 84
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow
   rotate: false
-  xy: 804, 690
+  xy: 458, 166
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_infantry
   rotate: false
-  xy: 804, 608
+  xy: 306, 2
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_knight
   rotate: false
-  xy: 804, 526
+  xy: 458, 84
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_soldier
   rotate: false
-  xy: 804, 444
+  xy: 610, 166
   size: 150, 80
   orig: 150, 80
-  offset: 0, 0
-  index: -1
-
-game2.png
-size: 514,514
-format: RGBA8888
-filter: Nearest,Nearest
-repeat: none
-pixFont
-  rotate: false
-  xy: 2, 2
-  size: 512, 512
-  orig: 512, 512
   offset: 0, 0
   index: -1
