@@ -16,7 +16,7 @@ public class Player implements Serializable{
 	}
 	
 	public boolean notNull(){
-		return !this.username.equals("");
+		return this.username!=null && !this.username.equals("");
 	}
 	
 }
