@@ -9,7 +9,7 @@ public class HexMap {
 	private int height;
 	
 	//private String mapShape;
-	public String [][] array;
+	private String [][] array;
 	
 	//constructor
 	public HexMap (int userW , int userH ){ 
@@ -24,6 +24,11 @@ public class HexMap {
 		array = new String [width][height];
 		
 	}
+	//getter
+	public String [][] getArray(){
+		return array;
+	}
+	
 	
 	private void addRandomTiles(){
 		// determine how many trees and meadows are needed
