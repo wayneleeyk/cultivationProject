@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package cultivationSkeleton;
 
 import java.util.Collection;
@@ -86,4 +87,10 @@ public Village biggestOf(Collection<Village> villages){
 	return null;
 }
 
+=======
+package com.potatoes.cultivation.logic;
+
+public class GameMap {
+	private Tile[][] tiles;
+>>>>>>> origin/master
 }
