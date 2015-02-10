@@ -1,25 +1,19 @@
-package cultivationSkeleton;
-
-import java.util.Set;
+package com.potatoes.cultivation.logic;
 
 public class GameManager {
 
-	Game[] activeGames;
+	private Game myGame;
 	
-	public void newGame(Set<Player> players){
-		
+	
+	public Game getGame(){
+		return myGame;
 	}
 	
-	public void beginTurn(int turn, Player p){
-		
+	//TODO
+	public GameMap getGameMap(){
+		return myGame.getGameMap();
 	}
 	
-	public void upgradeVillage(int number, Unit u, UnitType type){
-		
-	}
 	
-	public void upgradeUnit (int number, Unit u, UnitType type){
-		
-	}
 	
 }
