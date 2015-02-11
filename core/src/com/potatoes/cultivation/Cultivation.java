@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.potatoes.cultivation.networking.Client;
+import com.potatoes.cultivation.screens.InGame;
 import com.potatoes.cultivation.screens.Splash;
 
 public class Cultivation extends Game {
@@ -27,7 +28,7 @@ public class Cultivation extends Game {
 		loadFiles();
 		manager.finishLoading();
 		skin = manager.get("gui.json", Skin.class);
-		this.setScreen(new Splash(this));
+		this.setScreen(new InGame(this));
 	}
 
 	@Override
