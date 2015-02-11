@@ -1,0 +1,33 @@
+#![Tile.canInvade(Unit unit)]
+unit:Unit
+tile:Tile
+gm:GameManager[a]
+map:GameMap
+neighbour:Tile
+
+unit:invadable=tile[r].canInvade(unit)
+tile[r]:tile. occupied := (getUnit()==NULL and getStructure()==NULL)
+	tile[r]:invadable = true
+	tile[r]:tileRegion=getRegion()
+	[c:opt tileRegion != null]
+		tile[r]:tile.tileVillage:=getVillage()
+		[c:opt tileVillage!=null]
+			[c:alt tileVillage.getType()==VillageType.Fort and unit.getType()!=UnitType.Knight]
+				tile[r]:invadable = false
+			 --[unit.getType()!= UnitType.Soldier and unit.getType()!=UnitType.Knight]
+			tile[r]:invadable = false
+			[/c]
+		[/c]
+	[/c]
+		
+	[c:alt occupied==true and getStructure()==StructureType.Tower and unit.getType()!=UnitType.Knight and unit.getType()!=UnitType.Soldier ]
+	tile[r]:invadable=false
+	--[occupied == false and invadable==true]
+	tile:gm.map:=getGameMap()
+	tile:neighbours=map.getNeighbouringTiles(tile)
+	[c:loop for neighbour in neighbours]
+		[c:opt neighbour.occupant not NULL]
+			tile:neighbour. invadable \= invadable and (occupant.getType().canInvadeBy(unit.getType()))
+		[/c]
+	[/c]
+[/c]

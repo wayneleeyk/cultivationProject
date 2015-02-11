@@ -1,0 +1,16 @@
+#![GameMap.getMyVillagesOfAdjacentTiles(List<Tile> tiles, Player player)]
+map:GameMap
+region:Region
+
+map:villages=new List<Village>()
+map:regionsList=(this\.regions\.getRegions(player))
+[c:loop for region in regionsList]
+	map:region.tilesInRegion:=getTiles()
+	[c:loop for tile in tiles]
+		[c:opt tilesInRegion.contains(tile) ]
+			map:region.village:=getVillage()
+			map:villages\.add(village)
+			map:break from inner loop
+		[/c]
+	[/c]
+[/c]

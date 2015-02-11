@@ -1,0 +1,12 @@
+#![GameMap.clearTombstones(Player p)]
+cg:Game
+m:GameMap
+t:Tile
+
+cg:m[r].clearTombstones(p)
+
+m[r]:m.tombstoneTiles:=getTombstoneTiles(p)
+[c: loop for t in tombstoneTiles]
+	m[r]:t.destroyStructure()
+	m[r]:t.updateLandType(Grass)
+[/c]

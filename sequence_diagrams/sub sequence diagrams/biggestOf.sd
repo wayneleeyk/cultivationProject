@@ -1,0 +1,15 @@
+#![GameMap.biggestOf(Queue<Village> villages)]
+tile:Tile
+map:GameMap
+village:Village
+
+tile:currentVillage=map.biggestOf(villages)
+map:currentVillage = villages\.poll()
+[c: loop: for each village in villages]
+map:village.isBigger:=compareTo(Village v)
+[c:opt isBigger<0]
+map:currentVillage = village 
+[/c]
+[/c]
+ 
+

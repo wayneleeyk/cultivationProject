@@ -1,0 +1,12 @@
+GUI:Actor
+g:Game
+u:Unit
+
+GUI:g.buildRoad(u)
+g:u.unitType:=getType()
+g:u.currentAction:=getCurrentAction()
+g: success = false
+[c:opt unitType == Peasant and currentAction == ReadyForOrders]
+	g:u.success:=updateActionType(BuildingRoad)
+[/c]
+g:GUI.success

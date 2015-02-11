@@ -1,0 +1,19 @@
+#![GameMap.produceRoads(Player p)]
+cg:Game
+m:GameMap
+v:Village
+u:Unit
+t:Tile
+
+cg:m[e].produceRoads(p)
+m[e]:m.villages:=getVillages(p)
+[c:loop for v in villages]
+	m[e]:v.units:=getUnits()
+	[c:loop for u in units]
+		m[e]:u.action:=getCurrentAction()
+		[c:opt if action IS BuildingRoad]
+			m:u.updateAction(ReadyForOrders)
+			m:t.addStructure(Road)
+		[/c]
+	[/c]
+[/c]

@@ -1,0 +1,9 @@
+#![Region.addTile(Tile, Unit)]
+map:GameMap
+unit:Unit
+village:Village
+targetRegion:Region
+
+map:unit.village:=getVillage()
+map:village.targetRegion:=getRegion()
+map:targetRegion.addTile(tile)

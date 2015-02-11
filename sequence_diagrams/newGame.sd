@@ -1,0 +1,35 @@
+Client:Actor
+gm:GameManager
+/game:Game
+/map:GameMap
+/tile:Tile
+/landTypeGenerator:HexMap
+/regions:HashMap<Player,Set<Region>>
+/v:Village
+region:Region
+
+Client:gm.newGame(participants)
+gm:game.new(participants)
+game:map[r].new(participants)
+map[r]:landTypeGenerator.new(50,50)
+map[r]:landTypeGenerator.randomLandTypes:=getArray()
+[c:loop for x in range [1,50]
+[c:loop for y in range [1,50]
+	map:newTile=tile.new(randomLandTypes[x][y])
+	map:this\,2Dmap[x][y] = newTile
+[/c]
+[/c]
+map[r]:regions.new
+map[r]:map.assignRandomLand(participants)
+map[r]:map.regions:=generateRegionsFromLandOwnership()
+[c:loop for each (key, regionsSet) in regions]
+map[r]:currentPlayer = key
+[c:loop for each region in regionSet]
+	
+	map[r]:region.tiles=getTiles()
+	map[r]:it=tiles\.getIterator()
+	map[r]:randomTile=it\.next()
+	map[r]:newVillage=v.new(region,randomTile,currentPlayer)
+	map[r]:region.setVillage(newVillage)
+[/c]
+[/c]

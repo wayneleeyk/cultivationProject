@@ -1,0 +1,36 @@
+GUI:Actor
+g:Game[a]
+u:Unit
+v:Village
+currentType:UnitType
+newLevel:UnitType
+
+GUI:g.upgradeUnit(u, newLevel)
+g:unitUpgraded=false
+g:u.v := getVillage()
+g:v.villageType := getType()
+g:support = false
+[c:alt villageType is VillageType.Hovel and newLevel is not (UnitType.Soldier or UnitType.Knight)]
+	g:support = true
+--[village is VillageType.Town and newLevel is not UnitType.Knight]
+	g:support = true
+--[village is VillageType.Fort]
+	g:support = true
+[/c]
+
+[c:opt if support]
+
+g:u.currentType := getType()
+g:currentType.currentRank := ordinal()
+g:newLevel.newRank := ordinal()
+	[c:opt if currentRank < newRank]
+		g:v.goldCount := getGold()
+		g:newLevel.cost := getCostFrom(currentType)
+		[c:opt if goldCount >= cost]
+			g:u.setType(newLevel)
+			g:v.removeGold(cost)
+			g:unitUpgraded=true
+		[/c]
+	[/c]
+[/c]
+g:GUI.unitUpgraded

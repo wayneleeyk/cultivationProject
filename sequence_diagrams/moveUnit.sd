@@ -1,0 +1,67 @@
+#![Move Unit Sequence Diagram]
+GUI:Actor
+game:Game
+tile:Tile
+gm:GameManager[a]
+unit:Unit
+myTile:Tile
+map:GameMap
+village:Village
+/villages:List<Village>
+enemyUnit:Unit
+enemyVillage:Village
+enemyRegion:Region
+
+GUI:game.moveUnit(unit, tile)
+	game:tile[r].tryInvade(unit)
+	tile[r]:unit.myTile := getTile()
+	tile[r]:gm.map:=getGameMap()
+	tile[r]:map.neighbourTiles:=getNeighbouringTiles(myTile)
+	[c:opt neighbourTiles.contains(tile)]
+	tile[r]:invadable=true
+	tile[r]:landType = getLandType()
+	tile[r]:structure = getStructure()
+	tile[r]:unit.type:=getType()
+	tile[r]:tile.playerOfTile:= getPlayer()
+	
+	tile[r]:myTile. myPlayer := getPlayer()
+	[c:opt type == UnitType.Knight and (structure == StructureType.Tombstone or landType==LandType.Tree)]
+		tile:invadable=false
+	[/c]
+	[c:opt invadable and landType != LandType.Sea and (playerOfTile == myPlayer or tile.canInvade(unit))]
+		tile:unit.updateTileLocation(tile)
+		[c:opt this.occupant!=null]
+			tile:enemyUnit = this\.occupant
+			tile:enemyUnit.enemyVillage:=getVillage()
+			tile:enemyVillage.enemyRegion:=getRegion()
+			tile:enemyRegion.killUnit(enemyUnit)
+			tile:this\.occupant = unit
+		[/c]
+		tile:map.addTile(tile, unit)
+		[c:alt if playerOfTile != null]
+			tile:map.takeoverTile(tile)
+		[/c]
+		[c:opt landType == LandType.Tree]
+			tile:updateLandType(Grass)
+			tile:unit.village:=getVillage()
+			tile:village.addWood(1)
+			tile:unit.updateAction(ActionType.ChoppingTree)
+		[/c]
+		[c:opt structure == Structure.Tombstone]
+			tile:unit.updateAction(ActionType.ClearingTombstone)
+			tile:destroyStructure()
+		[/c]
+		[c:opt landType == LandType.Meadow and type == UnitType.Knight and structure != Structure.Road]
+			tile:updateLandType(Grass)
+		[/c]
+		##### Merging part
+		tile://merge part
+		tile:map.tiles := getNeighbouringTiles(tile)
+		tile:map.villages := getMyVillagesOfAdjacentTiles(tiles, myPlayer)
+		map:villages.new
+		[c:opt if villages.size() >= 1]
+			tile:map.biggestVillage := biggestOf(villages)
+			tile:map.mergeTo(villages, biggestVillage)
+		[/c]
+	[/c]
+[/c]
