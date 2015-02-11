@@ -1,0 +1,90 @@
+gm:GameManager[a]
+dest:Tile
+enemyRegion:Region
+myRegion:Region
+myUnit:Unit
+u:Unit
+p:Player
+enemy:Player
+map:Map
+v:Village
+myVillage:Village
+r:Region
+it:Iterator<Tile>
+t:Tile
+/newVillage:Village
+/myUnits:List<Unit>
+unitsOfNewRegion:Set<Unit>
+
+gm[1]:gm.map := getGameMap()
+gm[1]:map.enemyRegion:=getRegion(dest)
+gm:dest.enemy:=getPlayer()
+gm:dest.myUnit:=getUnit()
+gm:myUnit.myVillage:=getVillage()
+gm:myVillage.p:=getOwner()
+gm:myVillage.myRegion:=getRegion()
+gm:dest.updateOwner(p)
+gm:enemyRegion.removeTile(dest)
+gm:myRegion.addTile(dest)
+gm:map.villages:=getVillages(enemy)
+[c:loop for v in villages]
+	gm:v.t:=getTile()
+	[c:opt t == dest]
+		gm://enemy village is on dest tile
+		gm://transfer enemy resources to our village
+		############################
+		#### Need to destroy the village?
+		############################
+		gm:v.gold:=getGold()
+		gm:myVillage.addGold(gold)
+		gm:v.wood:=getWood()
+		gm:myVillage.addWood(wood)
+	[/c]
+[/c]
+gm://break up regions (if breakable)
+gm:map.regions:=breakUpRegion(enemyRegion, dest)
+gm://go through the enemy's region(s) around dest
+[c:loop for r in regions ]
+	gm:r.regionOwner:=getOwner()
+	gm:r.regionSize:=size()
+	gm:r.regionTiles:=getTiles()
+	gm://check if enemy region is too small
+	[c:alt regionSize < 3]
+		[c:loop for t in regionTiles]
+			gm:t.destroyStructure()
+			gm:t.updateOwner(null)
+			gm:t.u:=getUnit()
+			[c:opt u!=null]
+				gm:r.killUnit(u)
+			[/c]
+		[/c]
+		gm:map.deleteRegion(r)
+	--else [regionSize >= 3]
+		gm:r.v:=getVillage()
+		[c:opt if v == null]
+			gm:r.newTiles := getTiles()
+			gm:r.it := iterator()
+			gm:it.newSpotForVillage := next()
+			gm:newVillage.new(r, newSpotForVillage, enemy)
+			gm:r.setVillage(newVillage)
+		[/c]
+		gm://Update village's reference to units
+		gm:myUnits.new
+		[c:loop t : regionTiles]
+			gm:t.u:=getUnit()
+			[c:opt u != null]
+				gm:myUnits.add(u)
+			[/c]
+		[/c]
+		gm:r.unitsOfNewRegion := getUnits
+	 	gm:unitsOfNewRegion.addAll(myUnits)
+	[/c]
+[/c]
+gm:map.regionCount:=getRegionCount(enemy)
+[c:opt if regionCount == 0 ]
+	gm:enemy.increaseLosses()
+[/c]
+gm:map.playersLeft:=playersLeft()
+[c:opt if playersLeft == 1]
+	gm:p.increaseWins()
+[/c]

@@ -1,0 +1,48 @@
+#![GameMap.mergeTo(Village, Stack<Village>)]
+map:GameMap
+villages:Stack<Village>
+biggestVillage:Village
+nextToMerge:Village
+gm:GameManager [a]
+myRegion:Region
+otherRegion:Region
+myTiles:Set<Tile>
+myUnits:Set<Unit>
+otherTiles:Set<Tile>
+otherUnits:Set<Unit>
+
+map:villages.toBeMergedCount := size()
+map:biggestVillage \:= v
+[c:loop while toBeMergeCount is not 0]
+	map:villages. nextToMerge:= pop()
+	map:biggerViller=biggestVillage[b].biggestVillage := merge(nextToMerge)
+	biggestVillage[b]:biggestVillage.compareResults \:= compareTo(nextToMerge)
+	biggestVillage[b]:biggestVillage.myRegion \:= this\.getRegion()
+	biggestVillage[b]:nextToMerge.otherRegion := getRegion()
+	biggestVillage: biggerVillage \:= null
+	[c:alt if compareResults > 0]
+		biggestVillage:myRegion[r].merge(otherRegion)
+		myRegion[r]:myRegion.myUnits \:\= getUnits()
+		myRegion[r]:myRegion.myTiles \:\= getTiles()
+		myRegion[r]:otherRegion.otherUnits := getUnits()
+		myRegion[r]:otherRegion.otherTiles := getTiles()
+		myRegion[r]:myTiles.addAll(otherTiles)
+		myRegion[r]:myUnits.addAll(otherUnits)
+		myRegion[r]:gm.map := getGameMap()
+		myRegion[r]:map.deleteRegion(otherRegion)
+		biggestVillage:biggerVillage = this
+		--[else]
+		biggestVillage:otherRegion[o].merge(myRegion)
+		otherRegion[o]:otherRegion.otherUnits \:\= getUnits()
+		otherRegion[o]:otherRegion.otherTiles \:\= getTiles()
+		otherRegion[o]:myRegion.myUnits := getUnits()
+		otherRegion:myRegion.myTiles := getTiles()
+		otherRegion:otherTiles.addAll(myTiles)
+		otherRegion:otherUnits.addAll(myUnits)
+		otherRegion:gm.map := getGameMap()
+		otherRegion:map.deleteRegion(otherRegion)
+
+		biggestVillage:biggerVillage = nextToMerge
+	[/c]
+map:villages.toBeMergedCount = size()
+[/c]
