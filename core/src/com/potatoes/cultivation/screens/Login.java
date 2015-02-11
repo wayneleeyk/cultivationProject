@@ -94,6 +94,7 @@ public class Login extends ScreenAdapter {
 				System.out.println("Password: " + passwordField.getText());
 				Player player = pGame.client.login(usernameField.getText(), passwordField.getText());
 				System.out.println("Login successful? "+ ((player.notNull())? "yup" : "no"));
+				if (player.notNull()) game.setScreen(new InGame(game));
 			}
 		});
 		

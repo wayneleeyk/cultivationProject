@@ -3,6 +3,7 @@ package com.potatoes.cultivation.networking;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,8 +33,10 @@ public class Client{
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (Exception e){
+			e.printStackTrace();
 		}
-		return null;
+		return Player.nullPlayer;
 	}
 	
 	public Player createAccount(String username, String password){

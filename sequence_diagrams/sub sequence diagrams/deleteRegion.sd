@@ -1,0 +1,8 @@
+#![GameMap.deleteRegion( region )]
+map:GameMap
+
+[c:loop regions in this.regions.getValuesSet()]
+	[c:opt if regions.contains(region) ]
+		map:map.regions.remove(region)
+	[/c]
+[/c]

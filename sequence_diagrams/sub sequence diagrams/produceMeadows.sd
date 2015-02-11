@@ -1,0 +1,21 @@
+#![GameMap.produceMeadows(Player p)]
+cg:Game
+m:GameMap
+t:Tile
+v:Village
+u:Unit
+
+cg:m[r].produceMeadows(p)
+m[r]:m.myVillages:=getVillages(p)
+[c:loop for v in myVillages]
+	m[r]:v.units:=getUnits()
+	[c:loop for u in units]
+		m[r]:u.actionType:=getCurrentAction()
+		[c:opt actionType IS StartCultivating]
+			m:u.updateAction(FinishCultivating)
+		--[actionType IS FinishCultivating]
+			m:u.updateAction(ReadyForOrders)
+			m:t.updateLandType(Meadow)
+		[/c]
+	[/c]
+[/c]

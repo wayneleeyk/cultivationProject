@@ -4,86 +4,93 @@ size: 1024,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-potato_purple
+grass
   rotate: false
   xy: 2, 166
-  size: 150, 80
-  orig: 150, 80
+  size: 308, 88
+  orig: 308, 88
   offset: 0, 0
   index: -1
-potato_purple_infantry
+potato_purple
   rotate: false
   xy: 2, 84
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
-potato_purple_knight
-  rotate: false
-  xy: 154, 166
-  size: 150, 80
-  orig: 150, 80
-  offset: 0, 0
-  index: -1
-potato_purple_soldier
+potato_purple_infantry
   rotate: false
   xy: 2, 2
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
-potato_red
+potato_purple_knight
+  rotate: false
+  xy: 312, 174
+  size: 150, 80
+  orig: 150, 80
+  offset: 0, 0
+  index: -1
+potato_purple_soldier
   rotate: false
   xy: 154, 84
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
-potato_red_infantry
-  rotate: false
-  xy: 306, 166
-  size: 150, 80
-  orig: 150, 80
-  offset: 0, 0
-  index: -1
-potato_red_knight
+potato_red
   rotate: false
   xy: 154, 2
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
+potato_red_infantry
+  rotate: false
+  xy: 464, 174
+  size: 150, 80
+  orig: 150, 80
+  offset: 0, 0
+  index: -1
+potato_red_knight
+  rotate: false
+  xy: 616, 174
+  size: 150, 80
+  orig: 150, 80
+  offset: 0, 0
+  index: -1
 potato_red_soldier
   rotate: false
-  xy: 306, 84
+  xy: 768, 174
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow
   rotate: false
-  xy: 458, 166
+  xy: 312, 92
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_infantry
   rotate: false
-  xy: 306, 2
+  xy: 464, 92
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_knight
   rotate: false
-  xy: 458, 84
+  xy: 616, 92
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_soldier
   rotate: false
-  xy: 610, 166
+  xy: 768, 92
   size: 150, 80
   orig: 150, 80
   offset: 0, 0

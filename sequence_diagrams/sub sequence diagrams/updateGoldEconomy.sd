@@ -1,0 +1,32 @@
+#![GameMap.updateGoldEconomy(Player p)]
+cg:Game
+m:Map
+v: Village
+myRegion:Region
+t:Tile
+landType:LandType
+u:Unit
+unitType:UnitType
+myTile:Tile
+
+cg:m.myVillages:=getVillages(p)
+[c: loop for v in myVillages]
+	cg:m.myRegion:=getRegion()
+	cg:myRegion.myTiles:=getTiles()
+	[c: loop for t in myTiles]
+		cg:t.myLandType:=getLandType()
+		cg:landType.value:=getGoldValue()
+		cg:v.addGold(value)
+	[/c]
+	cg:myRegion.myUnits:=getUnits()
+	[c:loop for u in myUnits]
+		cg:u.unitType:=getType()
+		cg:unitType.salary:=getSalary()
+		cg:v.success:=removeGold(salary)
+		[c:alt if success==false]
+			cg:u.myTile:=getTile()
+			cg:myRegion.killUnit(u)
+			cg:myTile.addStructure(Tombstone)
+		[/c]
+	[/c]
+[/c]
