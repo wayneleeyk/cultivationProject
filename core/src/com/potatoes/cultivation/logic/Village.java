@@ -1,4 +1,6 @@
-package cultivationSkeleton;
+package com.potatoes.cultivation.logic;
+
+import java.util.Random;
 
 public class Village implements Comparable<Village> {
 
@@ -34,27 +36,41 @@ public class Village implements Comparable<Village> {
 	}
 	
 	public void setType(VillageType type){
-		
+		this.myType = type;
 	}
 	
-	public void addGold(int gold){
-		
+	public void addGold(int goldToAdd){
+		this.gold = this.gold + goldToAdd;
 	}
 	
-	public void removeGold(int gold){
-		
+	public void removeGold(int goldToRemove){
+		this.gold = this.gold - goldToRemove;
 	}
 	
-	public void addWood(int wood){
-		
+	public void addWood(int woodToAdd){
+		this.wood = this.wood + woodToAdd;  
 	}
 	
-	public void removeWood(int wood){
-		
+	public void removeWood(int woodToRemove){
+		this.wood = this.wood - woodToRemove;
 	}
 	
 	@Override 
+	//compares two villages first by type, then my amount gold, then by amount wood. If still equal, will randomly decide
+	//which village is higher rank
 	public int compareTo(Village v){
-		return 0;
+		int c = this.getType().ordinal() - v.getType().ordinal();
+		if (c == 0){
+			c = this.gold - v.gold;
+		}
+		if(c==0){
+			c = this.wood - v.wood;
+		}
+		if(c==0){
+			c = (new Random().nextInt(2) * 2) - 1;
+			
+		}
+		
+		return c;
 	}
 }

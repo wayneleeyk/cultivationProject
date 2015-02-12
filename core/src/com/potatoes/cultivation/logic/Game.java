@@ -1,4 +1,6 @@
-package cultivationSkeleton;
+package com.potatoes.cultivation.logic;
+
+
 
 import java.util.List;
 
@@ -35,5 +37,9 @@ public class Game {
 	
 	public void moveUnit(Unit u, Tile t){
 		
+	}
+	
+	public GameMap getGameMap(){
+		return map;
 	}
 }
