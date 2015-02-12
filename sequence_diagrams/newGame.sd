@@ -3,7 +3,7 @@ gm:GameManager
 /game:Game
 /map:GameMap
 /tile:Tile
-/landTypeGenerator:HexMap
+landTypeGenerator:HexMap
 /regions:HashMap<Player,Set<Region>>
 /v:Village
 region:Region
@@ -11,12 +11,11 @@ region:Region
 Client:gm.newGame(participants)
 gm:game.new(participants)
 game:map[r].new(participants)
-map[r]:landTypeGenerator.new(50,50)
-map[r]:landTypeGenerator.randomLandTypes:=getArray()
+map[r]:landTypeGenerator.randomLandType := createMap(50, 50)
 [c:loop for x in range [1,50]
 [c:loop for y in range [1,50]
 	map:newTile=tile.new(randomLandTypes[x][y])
-	map:this\,2Dmap[x][y] = newTile
+	map:this\.2Dmap[x][y] = newTile
 [/c]
 [/c]
 map[r]:regions.new
