@@ -1,6 +1,6 @@
-#![GameMap.updateGoldEconomy(Player p)]
+#![Game.updateGoldEconomy(Player p)]
 cg:Game
-m:Map
+m:GameMap
 v: Village
 myRegion:Region
 t:Tile
@@ -11,7 +11,7 @@ myTile:Tile
 
 cg:m.myVillages:=getVillages(p)
 [c: loop for v in myVillages]
-	cg:m.myRegion:=getRegion()
+	cg:v.myRegion:=getRegion()
 	cg:myRegion.myTiles:=getTiles()
 	[c: loop for t in myTiles]
 		cg:t.myLandType:=getLandType()
