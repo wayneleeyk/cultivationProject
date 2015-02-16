@@ -6,6 +6,7 @@ gm:GameManager[a]
 unit:Unit
 myTile:Tile
 map:GameMap
+neighbourTiles:Set<Tile>
 village:Village
 /villages:List<Village>
 enemyUnit:Unit
@@ -17,10 +18,11 @@ GUI:game.moveUnit(unit, tile)
 	tile[r]:unit.myTile := getTile()
 	tile[r]:gm.map:=getGameMap()
 	tile[r]:map.neighbourTiles:=getNeighbouringTiles(myTile)
-	[c:opt neighbourTiles.contains(tile)]
-	tile[r]:invadable=true
-	tile[r]:landType = getLandType()
-	tile[r]:structure = getStructure()
+	tile[r]:neighbourTiles.isNeighbourTile := contains(tile)
+	[c:opt isNeighbourTile]
+	tile[r]:invadable = true
+	tile[r]:tile.landType := getLandType()
+	tile[r]:tile.structure := getStructure()
 	tile[r]:unit.type:=getType()
 	tile[r]:tile.playerOfTile:= getPlayer()
 	
@@ -42,8 +44,8 @@ GUI:game.moveUnit(unit, tile)
 			tile:map.takeoverTile(tile)
 		[/c]
 		[c:opt landType == LandType.Tree]
-			tile:updateLandType(Grass)
-			tile:unit.village:=getVillage()
+			tile[r]:tile.updateLandType(Grass)
+			tile[r]:unit.village:=getVillage()
 			tile:village.addWood(1)
 			tile:unit.updateAction(ActionType.ChoppingTree)
 		[/c]
@@ -52,10 +54,10 @@ GUI:game.moveUnit(unit, tile)
 			tile:destroyStructure()
 		[/c]
 		[c:opt landType == LandType.Meadow and type == UnitType.Knight and structure != Structure.Road]
-			tile:updateLandType(Grass)
+			tile[r]:tile.updateLandType(Grass)
 		[/c]
 		##### Merging part
-		tile://merge part
+		tile[r]://merge part
 		tile:map.tiles := getNeighbouringTiles(tile)
 		tile:map.villages := getMyVillagesOfAdjacentTiles(tiles, myPlayer)
 		map:villages.new

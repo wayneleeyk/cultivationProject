@@ -2,8 +2,8 @@
 map:GameMap
 region:Region
 
-map:villages=new List<Village>()
-map:regionsList=(this\.regions\.getRegions(player))
+map:villages \:= new List<Village>()
+map:regionsList \:= this\.getRegions(player)
 [c:loop for region in regionsList]
 	map:region.tilesInRegion:=getTiles()
 	[c:loop for tile in tiles]
