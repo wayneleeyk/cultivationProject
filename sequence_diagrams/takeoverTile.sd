@@ -1,4 +1,5 @@
-gm:GameManager[a]
+TILE:Tile[a]
+gm:GameMap[a]
 dest:Tile
 enemyRegion:Region
 myRegion:Region
@@ -6,7 +7,6 @@ myUnit:Unit
 u:Unit
 p:Player
 enemy:Player
-map:GameMap
 v:Village
 myVillage:Village
 r:Region
@@ -16,75 +16,75 @@ t:Tile
 /myUnits:List<Unit>
 unitsOfNewRegion:Set<Unit>
 
-gm[1]:gm.map := getGameMap()
-gm[1]:map.enemyRegion:=getRegion(dest)
-gm:dest.enemy:=getPlayer()
-gm:dest.myUnit:=getUnit()
-gm:myUnit.myVillage:=getVillage()
-gm:myVillage.p:=getOwner()
-gm:myVillage.myRegion:=getRegion()
-gm:dest.updateOwner(p)
-gm:enemyRegion.removeTile(dest)
-gm:myRegion.addTile(dest)
-gm:map.villages:=getVillages(enemy)
+TILE:gm[r].takeoverTile(dest)
+gm[r]:gm.enemyRegion\:=getRegion(dest)
+gm[r]:dest.enemy:=getPlayer()
+gm[r]:dest.myUnit:=getUnit()
+gm[r]:myUnit.myVillage:=getVillage()
+gm[r]:myVillage.p:=getOwner()
+gm[r]:myVillage.myRegion:=getRegion()
+gm[r]:dest.updateOwner(p)
+gm[r]:enemyRegion.removeTile(dest)
+gm[r]:myRegion.addTile(dest)
+gm[r]:gm.villages:=getVillages(enemy)
 [c:loop for v in villages]
-	gm:v.t:=getTile()
+	gm[r]:v.t:=getTile()
 	[c:opt t == dest]
 		gm://enemy village is on dest tile
 		gm://transfer enemy resources to our village
 		############################
 		#### Need to destroy the village?
 		############################
-		gm:v.gold:=getGold()
-		gm:myVillage.addGold(gold)
-		gm:v.wood:=getWood()
-		gm:myVillage.addWood(wood)
+		gm[r]:v.gold:=getGold()
+		gm[r]:myVillage.addGold(gold)
+		gm[r]:v.wood:=getWood()
+		gm[r]:myVillage.addWood(wood)
 	[/c]
 [/c]
 gm://break up regions (if breakable)
-gm:map.regions:=breakUpRegion(enemyRegion, dest)
+gm[r]:gm.regions:=breakUpRegion(enemyRegion, dest)
 gm://go through the enemy's region(s) around dest
 [c:loop for r in regions ]
-	gm:r.regionOwner:=getOwner()
-	gm:r.regionSize:=size()
-	gm:r.regionTiles:=getTiles()
-	gm://check if enemy region is too small
+	gm[r]:r.regionOwner:=getOwner()
+	gm[r]:r.regionSize:=size()
+	gm[r]:r.regionTiles:=getTiles()
+	gm[r]://check if enemy region is too small
 	[c:alt regionSize < 3]
 		[c:loop for t in regionTiles]
-			gm:t.destroyStructure()
-			gm:t.updateOwner(null)
-			gm:t.u:=getUnit()
+			gm[r]:t.destroyStructure()
+			gm[r]:t.updateOwner(null)
+			gm[r]:t.u:=getUnit()
 			[c:opt u!=null]
-				gm:r.killUnit(u)
+				gm[r]:r.killUnit(u)
 			[/c]
 		[/c]
-		gm:map.deleteRegion(r)
+		gm[r]:gm.deleteRegion(r)
 	--else [regionSize >= 3]
-		gm:r.v:=getVillage()
+		gm[r]:r.v:=getVillage()
 		[c:opt if v == null]
-			gm:r.newTiles := getTiles()
-			gm:r.it := iterator()
-			gm:it.newSpotForVillage := next()
-			gm:newVillage.new(r, newSpotForVillage, enemy)
-			gm:r.setVillage(newVillage)
+			gm[r]:r.newTiles := getTiles()
+			gm[r]:r.it := iterator()
+			gm[r]:it.newSpotForVillage := next()
+			gm[r]:newVillage.new(r, newSpotForVillage, enemy)
+			gm[r]:r.setVillage(newVillage)
 		[/c]
 		gm://Update village's reference to units
-		gm:myUnits.new
+		gm[r]:myUnits.new
 		[c:loop t : regionTiles]
-			gm:t.u:=getUnit()
+			gm[r]:t.u:=getUnit()
 			[c:opt u != null]
-				gm:myUnits.add(u)
+				gm[r]:myUnits.add(u)
 			[/c]
 		[/c]
-		gm:r.unitsOfNewRegion := getUnits()
-	 	gm:unitsOfNewRegion.addAll(myUnits)
+		gm[r]:r.unitsOfNewRegion := getUnits()
+	 	gm[r]:unitsOfNewRegion.addAll(myUnits)
 	[/c]
 [/c]
-gm:map.regionCount:=getRegionCount(enemy)
+gm[r]:gm.regionCount:=getRegionCount(enemy)
 [c:opt if regionCount == 0 ]
-	gm:enemy.increaseLosses()
+	gm[r]:enemy.increaseLosses()
 [/c]
-gm:map.playersLeft:=playersLeft()
+gm:gm.playersLeft:=playersLeft()
 [c:opt if playersLeft == 1]
-	gm:p.increaseWins()
+	gm[r]:p.increaseWins()
 [/c]

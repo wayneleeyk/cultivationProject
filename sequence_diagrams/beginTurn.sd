@@ -8,3 +8,4 @@ g[r]:m.produceMeadows(p)
 g[r]:m.produceRoads(p)
 g[r]:g.updateGoldEconomy(p)
 g[r]:g.increaseRoundCount()
+g[r]:Client.true

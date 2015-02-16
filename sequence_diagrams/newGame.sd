@@ -9,6 +9,7 @@ landTypeGenerator:HexMap
 region:Region
 
 Client:gm.newGame(participants)
+gm:gameCreated\:=false
 gm:game.new(participants)
 game:map[r].new(participants)
 map[r]:landTypeGenerator.randomLandType := createMap(50, 50)
@@ -32,3 +33,5 @@ map[r]:currentPlayer = key
 	map[r]:region.setVillage(newVillage)
 [/c]
 [/c]
+gm:gameCreated\:=true
+gm:Client.gameCreated
