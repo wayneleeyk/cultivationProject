@@ -3,7 +3,7 @@ g:Game
 m:GameMap
 
 Client:g[r].beginTurn(g,p)
-g[r]:m.clearTombstone(p)
+g[r]:m.clearTombstones(p)
 g[r]:m.produceMeadows(p)
 g[r]:m.produceRoads(p)
 g[r]:g.updateGoldEconomy(p)

@@ -11,13 +11,13 @@ tilesFromTemp:Set<Tile>
 gm:newRegions=map[m].breakUpRegion(region, tile)
 map[m]:region.tiles\:\=region.getTiles()
 map[m]:tiles.remove(tile)
-map[m]:map.neighbouringTiles=gm.getNeighbouringTiles(tile)
+map[m]:map.neighbouringTiles:=getNeighbouringTiles(tile)
 map[m]:newRegions.new
-[c:loop for each tile in neighbouringTiles]
-	[c: opt if tiles.contains(tile)]
+[c:loop for each t in neighbouringTiles]
+	[c: opt if tiles.contains(t)]
 		map[m]:tempRegion.new
 		map:newRegions.add(tempRegion)
-		map:tilesToAdd=map.bfsTilesOfRegion(region,tile)
+		map:map.tilesToAdd:=bfsTilesOfRegion(region,t)
 		map[m]:tilesFromTemp=tempRegion.getTiles()
 		map[m]:tilesFromTemp.addAll(tilesToAdd)
 		map[m]:tiles.removeAll(tilesToAdd)

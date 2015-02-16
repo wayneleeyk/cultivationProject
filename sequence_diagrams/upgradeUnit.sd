@@ -6,15 +6,15 @@ currentType:UnitType
 newLevel:UnitType
 
 GUI:g.upgradeUnit(u, newLevel)
-g:unitUpgraded=false
+g:unitUpgraded\:=false
 g:u.v := getVillage()
 g:v.villageType := getType()
-g:support = false
-[c:alt villageType is VillageType.Hovel and newLevel is not (UnitType.Soldier or UnitType.Knight)]
+g:support \:= false
+[c:alt villageType == VillageType.Hovel and newLevel != (UnitType.Soldier or UnitType.Knight)]
 	g:support = true
---[village is VillageType.Town and newLevel is not UnitType.Knight]
+--[village == VillageType.Town and newLevel != UnitType.Knight]
 	g:support = true
---[village is VillageType.Fort]
+--[village == VillageType.Fort]
 	g:support = true
 [/c]
 
@@ -29,7 +29,7 @@ g:newLevel.newRank := ordinal()
 		[c:opt if goldCount >= cost]
 			g:u.setType(newLevel)
 			g:v.removeGold(cost)
-			g:unitUpgraded=true
+			g:unitUpgraded\:=true
 		[/c]
 	[/c]
 [/c]

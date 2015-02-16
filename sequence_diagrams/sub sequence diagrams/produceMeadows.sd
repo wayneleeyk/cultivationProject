@@ -11,9 +11,9 @@ m[r]:m.myVillages:=getVillages(p)
 	m[r]:v.units:=getUnits()
 	[c:loop for u in units]
 		m[r]:u.actionType:=getCurrentAction()
-		[c:opt actionType IS StartCultivating]
+		[c:opt actionType == StartCultivating]
 			m:u.updateAction(FinishCultivating)
-		--[actionType IS FinishCultivating]
+		--[actionType == FinishCultivating]
 			m:u.updateAction(ReadyForOrders)
 			m:t.updateLandType(Meadow)
 		[/c]

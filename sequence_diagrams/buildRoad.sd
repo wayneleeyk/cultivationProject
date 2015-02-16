@@ -7,6 +7,6 @@ g:u.unitType:=getType()
 g:u.currentAction:=getCurrentAction()
 g: success = false
 [c:opt unitType == Peasant and currentAction == ReadyForOrders]
-	g:u.success:=updateActionType(BuildingRoad)
+	g:u.success:=updateAction(BuildingRoad)
 [/c]
 g:GUI.success

@@ -11,7 +11,7 @@ m[e]:m.villages:=getVillages(p)
 	m[e]:v.units:=getUnits()
 	[c:loop for u in units]
 		m[e]:u.action:=getCurrentAction()
-		[c:opt if action IS BuildingRoad]
+		[c:opt if action == BuildingRoad]
 			m:u.updateAction(ReadyForOrders)
 			m:t.addStructure(Road)
 		[/c]

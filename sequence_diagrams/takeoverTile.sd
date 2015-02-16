@@ -6,7 +6,7 @@ myUnit:Unit
 u:Unit
 p:Player
 enemy:Player
-map:Map
+map:GameMap
 v:Village
 myVillage:Village
 r:Region
@@ -76,7 +76,7 @@ gm://go through the enemy's region(s) around dest
 				gm:myUnits.add(u)
 			[/c]
 		[/c]
-		gm:r.unitsOfNewRegion := getUnits
+		gm:r.unitsOfNewRegion := getUnits()
 	 	gm:unitsOfNewRegion.addAll(myUnits)
 	[/c]
 [/c]

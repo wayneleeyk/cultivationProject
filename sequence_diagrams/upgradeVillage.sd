@@ -9,7 +9,7 @@ g:v.currentType := getType()
 g:v.woodCount := getWood()
 g:newLevel.cost := getCost()
 
-[c:opt if (currentType is VillageType.Hovel and newLevel is VillageType.Town) or (currentType is VillageType.Town and newLevel is VillageType.Fort)]
+[c:opt if (currentType == VillageType.Hovel and newLevel == VillageType.Town) or (currentType == VillageType.Town and newLevel == VillageType.Fort)]
 	[c:opt if woodCount >= cost]
 		g:v.setType(newLevel)
 		g:v.removeWood(cost)

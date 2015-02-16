@@ -26,7 +26,7 @@ tile[r]:tile. occupied := (getUnit()==NULL and getStructure()==NULL)
 	tile:gm.map:=getGameMap()
 	tile:neighbours=map.getNeighbouringTiles(tile)
 	[c:loop for neighbour in neighbours]
-		[c:opt neighbour.occupant not NULL]
+		[c:opt neighbour.occupant != NULL]
 			tile:neighbour. invadable \= invadable and (occupant.getType().canInvadeBy(unit.getType()))
 		[/c]
 	[/c]

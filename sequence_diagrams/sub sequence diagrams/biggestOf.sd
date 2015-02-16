@@ -3,12 +3,12 @@ tile:Tile
 map:GameMap
 village:Village
 
-tile:currentVillage=map.biggestOf(villages)
-map:currentVillage = villages\.poll()
+tile:biggestVillage=map.biggestOf(villages)
+map:biggestVillage = villages\.poll()
 [c: loop: for each village in villages]
-map:village.isBigger:=compareTo(Village v)
-[c:opt isBigger<0]
-map:currentVillage = village 
+map:village.isBigger:=compareTo(biggestVillage)
+[c:opt isBigger>0]
+map:biggestVillage = village 
 [/c]
 [/c]
  

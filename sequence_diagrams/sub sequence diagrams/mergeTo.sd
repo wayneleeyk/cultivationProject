@@ -15,7 +15,7 @@ map:villages.toBeMergedCount := size()
 map:biggestVillage \:= v
 [c:loop while toBeMergeCount is not 0]
 	map:villages. nextToMerge:= pop()
-	map:biggerViller=biggestVillage[b].biggestVillage := merge(nextToMerge)
+	map:biggerVillage=biggestVillage[b].biggestVillage := merge(nextToMerge)
 	biggestVillage[b]:biggestVillage.compareResults \:= compareTo(nextToMerge)
 	biggestVillage[b]:biggestVillage.myRegion \:= this\.getRegion()
 	biggestVillage[b]:nextToMerge.otherRegion := getRegion()
