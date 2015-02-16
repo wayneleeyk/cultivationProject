@@ -1,4 +1,4 @@
-#![GameMap.mergeTo(Village, Stack<Village>)]
+#![GameMap.mergeTo(Village v, Stack<Village> villages)]
 map:GameMap
 villages:Stack<Village>
 biggestVillage:Village

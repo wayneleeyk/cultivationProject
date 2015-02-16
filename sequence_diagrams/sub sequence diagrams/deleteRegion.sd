@@ -1,4 +1,4 @@
-#![GameMap.deleteRegion( region )]
+#![GameMap.deleteRegion(Region region )]
 map:GameMap
 
 [c:loop regions in this.regions.getValuesSet()]

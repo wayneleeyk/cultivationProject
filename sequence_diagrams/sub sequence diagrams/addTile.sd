@@ -1,4 +1,4 @@
-#![Region.addTile(Tile, Unit)]
+#![Region.addTile(Tile tile, Unit unit)]
 map:GameMap
 unit:Unit
 village:Village
