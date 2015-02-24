@@ -1,3 +1,0 @@
-map:GameMap
-
-map:tile=map.getNeighbouringTile(tile)
