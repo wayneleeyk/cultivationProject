@@ -1,4 +1,4 @@
-package cultivationSkeleton;
+package com.potatoes.cultivation.logic;
 
 import java.net.Socket;
 import java.util.Map;

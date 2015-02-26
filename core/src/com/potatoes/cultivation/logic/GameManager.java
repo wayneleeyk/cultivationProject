@@ -1,5 +1,7 @@
 package com.potatoes.cultivation.logic;
 
+import java.util.List;
+
 public class GameManager {
 
 	private Game myGame;
@@ -9,7 +11,11 @@ public class GameManager {
 		return myGame;
 	}
 	
-	//TODO
+	public void newGame(List<Player> players ){
+		
+	}
+	
+	
 	public GameMap getGameMap(){
 		return myGame.getGameMap();
 	}

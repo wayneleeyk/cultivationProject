@@ -1,9 +1,11 @@
-<<<<<<< HEAD
-package cultivationSkeleton;
+package com.potatoes.cultivation.logic;
+
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 
 public class GameMap {
 	
@@ -87,10 +89,24 @@ public Village biggestOf(Collection<Village> villages){
 	return null;
 }
 
-=======
-package com.potatoes.cultivation.logic;
+public void takeOverTile(Tile t){
+	
+}
 
-public class GameMap {
-	private Tile[][] tiles;
->>>>>>> origin/master
+public List<Tile> bfsTileOfRegion(Region r, Tile t){
+	return null;
+}
+
+public void mergeTo(Village v, Stack<Village> villages){
+	
+}
+
+public void assignRandomLand(List<Player> players){
+	
+}
+
+public void generateRegionsFromLandOwnership(){
+	
+}
+
 }

@@ -1,7 +1,5 @@
 package com.potatoes.cultivation.logic;
 
-
-
 import java.util.List;
 
 public class Game {
@@ -18,9 +16,9 @@ public class Game {
 	public void beginTurn(Player p){
 		
 	}
-	
-	public void upgradeVillage(Village v, VillageType type){
-		
+	//return true if the village was successfully upgraded
+	public boolean upgradeVillage(Village v, VillageType type){
+		return false;
 	}
 	
 	public void upgradeUnit(Unit u, UnitType type ){
@@ -37,6 +35,11 @@ public class Game {
 	
 	public void moveUnit(Unit u, Tile t){
 		
+	}
+	
+	//return true on success
+	public boolean buildRoad(Unit u){
+		return false;
 	}
 	
 	public GameMap getGameMap(){
