@@ -1,12 +1,12 @@
-package cultivationSkeleton;
+package com.potatoes.cultivation.logic;
 
 import java.util.Set;
 
 public class Region {
 	
-	private Set<Tile> tiles;
+	private Set<Tile> myTiles;
 	private Village village;
-	private Set<Unit> units;
+	private Set<Unit> myUnits;
 	
 	
 	public void addTile(Tile t){
@@ -18,7 +18,7 @@ public class Region {
 	}
 	
 	public Set<Tile> getTiles(){
-	return tiles;	
+	return myTiles;	
 	}
 	
 	public Village getVillage(){
@@ -26,18 +26,19 @@ public class Region {
 	}
 	
 	public Set<Unit> getUnits(){
-	return units;	
+	return myUnits;	
 	}
 	
-	public Tile newVillage(){
+	public Player getOwner(){
 		return null;
 	}
 	
-	public void killUnit(Unit u){
+	
+	public void  setVillage(Village v){
 		
 	}
 	
-	public void updateVillageStats(){
+	public void killUnit(Unit u){
 		
 	}
 	
@@ -45,6 +46,8 @@ public class Region {
 		return 0;
 	}
 	
-	
+	public Region merge(Region r){
+		return null;
+	}
 
 }

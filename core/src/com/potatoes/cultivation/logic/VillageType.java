@@ -9,6 +9,8 @@ public enum VillageType {
 	public int getCost(){
 		return 0;
 	}
+	
+	
 	//returns true if "this" village type is a greater rank that the type passed to the function
 	public boolean isHigherRank(VillageType type){
 		int rank = this.ordinal() - type.ordinal();

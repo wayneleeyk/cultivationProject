@@ -1,4 +1,4 @@
-package cultivationSkeleton;
+package com.potatoes.cultivation.logic;
 
 public enum StructureType {
 	

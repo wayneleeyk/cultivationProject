@@ -15,20 +15,20 @@ public class Village implements Comparable<Village> {
 		return myType;
 	}
 	
-	public int getGold(){
-		return gold;
-	}
-	
-	public int getWood(){
-		return wood;
-	}
-	
 	public Region getRegion(){
 		return myRegion;
 	}
 	
 	public Tile getTile(){
 		return myTile;
+	}
+	
+	public int getGold(){
+		return gold;
+	}
+	
+	public int getWood(){
+		return wood;
 	}
 	
 	public Player getOwner(){
@@ -54,6 +54,11 @@ public class Village implements Comparable<Village> {
 	public void removeWood(int woodToRemove){
 		this.wood = this.wood - woodToRemove;
 	}
+	
+	public Village merge(Village v){
+		return null;
+	}
+	
 	
 	@Override 
 	//compares two villages first by type, then my amount gold, then by amount wood. If still equal, will randomly decide

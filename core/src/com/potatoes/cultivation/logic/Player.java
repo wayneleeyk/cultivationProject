@@ -2,19 +2,19 @@ package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
 
-import cultivationSkeleton.PlayerStatus;
-
 public class Player implements Serializable{
+	
 	private static final long serialVersionUID = 6376954568789670281L;
 	public static final Player nullPlayer = new Player("");
+	
+	
+	String username = null;
+	String password = null;
 	private PlayerStatus status;
 	private int wins;
 	private int losses;
 	
-	
-	
-	String username = null;
-	
+
 	public Player(String username) {
 		this.username = username;
 	}
@@ -28,11 +28,11 @@ public class Player implements Serializable{
 	}
 	
 	public void increaseWins(){
-		
+		wins++;
 	}
 	
 	public void increaseLosses(){
-		
+		losses++;
 	}
 	
 }

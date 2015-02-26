@@ -1,4 +1,4 @@
-package cultivationSkeleton;
+package com.potatoes.cultivation.logic;
 
 public class Unit {
 
@@ -11,6 +11,10 @@ public class Unit {
 		return currentAction;
 	}
 	
+	public void updateAction (ActionType action){
+		
+	}
+	
 	public UnitType getType(){
 		return mytype;
 	}
@@ -19,16 +23,12 @@ public class Unit {
 		return myTile;
 	}
 	
+	public void updateType(UnitType type){
+		
+	}
+	
 	public Village getVillage(){
 		return myVillage;
-		
-	}
-	
-	public void updateAction (ActionType action){
-		
-	}
-	
-	public void updateType(UnitType type){
 		
 	}
 	

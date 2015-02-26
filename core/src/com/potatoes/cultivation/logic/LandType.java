@@ -1,8 +1,8 @@
-package cultivationSkeleton;
+package com.potatoes.cultivation.logic;
 
 public enum LandType {
 
-	Sea, Grass, Tree, Meadow;
+	Sea, Tree, Grass, Meadow;
 	
 	public int getGoldValue(LandType type){
 		return 0;
