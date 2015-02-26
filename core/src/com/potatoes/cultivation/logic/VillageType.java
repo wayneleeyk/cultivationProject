@@ -5,9 +5,18 @@ public enum VillageType {
 	Hovel, Town, Fort;
 	
 	
-	
+	// if the type is a Hovel, no cost. Otherwise it costs 8 wood, though a fort also needs a Town to upgrade.
+	//If this method fails for some reason, return -1.
 	public int getCost(){
-		return 0;
+		if(this.ordinal() == 0){
+			return 0;
+		}
+		else if(this.ordinal() == 1 || this.ordinal() == 2){
+			return 8;
+		}
+		else{
+		return -1;
+		}
 	}
 	
 	
