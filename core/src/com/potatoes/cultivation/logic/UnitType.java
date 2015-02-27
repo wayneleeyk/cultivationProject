@@ -29,14 +29,21 @@ public enum UnitType {
 		}
 	}	
 	
-	//I'm going to assume this method is being called on an enemy tile.... not finished yet
+	/* I'm assuming this method will be called on an enemy tile.
+	 * Peasants ->can't invade anything, those poor things.
+	 * Infantry -> can only invade a tile that has no unit or has a peasant.
+	 * soldier-> can invade if infantry,peasant, or no unit
+	 * Knight-> you better watch out cuz ain't nothing stopping this unit from killing you (unless you're a knight too)
+	 */
 	public boolean canInvadeBy(UnitType type){
-		if (type.ordinal() == 0 ){
+		//if the unit passed has a greater value than the unit the method is called on, return true.
+		if (type.ordinal() - this.ordinal() > 0 ){
+		    return true;
+		}
+		else {
 			return false;
 		}
-		
-		return false;
-	}
+	}	
 	
 	
 	/* Returns the salary of the unit Type.
