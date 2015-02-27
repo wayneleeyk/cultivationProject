@@ -1,5 +1,5 @@
 package com.potatoes.cultivation.logic;
-
+//Author: Shivani Sharma 
 public enum UnitType {
 	
 	Peasant, Infantry, Soldier, Knight;
