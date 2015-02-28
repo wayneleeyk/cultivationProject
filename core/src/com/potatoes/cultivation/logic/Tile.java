@@ -56,6 +56,9 @@ public class Tile {
 	public Village returnVillage(){
 		return null;
 	}
-
+	@Override public String toString() {
+		return myType.toString();
+	}
+	
 	
 }

@@ -34,11 +34,12 @@ public class HexMapFileCreator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		String[][] array = map.getArray();
 		
 		for (int i = 0; i < width ; i++){
 			
 			for (int j = 0; j < height ; j++){
-				writer.print(map.array[i][j] + ", ");
+				writer.print(array[i][j] + ", ");
 			}
 			writer.println();
 		}

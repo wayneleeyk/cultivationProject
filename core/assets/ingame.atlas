@@ -11,6 +11,13 @@ grass
   orig: 308, 88
   offset: 0, 0
   index: -1
+sea
+  rotate: false
+  xy: 310, 0 
+  size: 308, 88
+  orig: 308, 88
+  offset: 0, 0
+  index: -1
 potato_purple
   rotate: false
   xy: 2, 84

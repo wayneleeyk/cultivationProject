@@ -1,4 +1,4 @@
-package com.potatoes.cultivation.utils;
+package com.potatoes.cultivation.logic;
 
 import java.util.Random;
 

@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.potatoes.cultivation.logic.Command;
+//import com.potatoes.cultivation.logic.Command;
 import com.potatoes.cultivation.logic.Player;
 
 public class Client{
@@ -55,5 +55,5 @@ public class Client{
 		return null;
 	}
 	public List<Player> updateLobby(){return new LinkedList<Player>();}
-	public void endTurn(List<Command> actions){}
+//	public void endTurn(List<Command> actions){}
 }

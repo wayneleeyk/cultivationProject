@@ -25,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.GameMap;
+import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.Tile;
 
 public class InGame extends ScreenAdapter{
@@ -32,12 +33,15 @@ public class InGame extends ScreenAdapter{
 	Cultivation game ;
 	SpriteBatch batch;
 	TextureAtlas atlas;
-	AtlasRegion hex;
+	AtlasRegion hex_grass;
+	AtlasRegion hex_sea;
 	float cameraWidth=800, cameraHeight=600;
 	Camera camera = new OrthographicCamera(cameraWidth,cameraHeight);
 	Stage gameStage = new Stage();
 	
-	GameMap gameMap = new GameMap();
+	int width = 5;
+	int height = 5;
+	GameMap gameMap = new GameMap(width,height);
 	
 	Set<Tile> tiles = new HashSet<>();
 	
@@ -45,25 +49,38 @@ public class InGame extends ScreenAdapter{
 		this.game = pGame;
 		this.batch = game.batch;
 		this.atlas = game.manager.get("ingame.atlas", TextureAtlas.class);
-		hex = atlas.findRegion("grass");
+		hex_grass = atlas.findRegion("grass");
+		hex_sea = atlas.findRegion("sea");
 		camera.lookAt(0, 0, 0);
 		// load map
 
-		int originX = hex.getRegionWidth()/2, originY = hex.getRegionHeight()/2;
-		
-		// for each tile create an Image actor 
-		final Image tile = new Image(hex);
-		tile.setPosition(0, 0);
-		tile.setOrigin(originX, originY);
-		tile.addListener(new EventListener() {
+		int originX = hex_grass.getRegionWidth()/2, originY = hex_grass.getRegionHeight()/2;
 			
-			@Override
-			public boolean handle(Event event) {
-				event.getListenerActor().rotateBy(10);
-				return false;
+		// for each tile create an Image actor 
+		Image[][] tiles = new Image[width][height];
+		for (int x=0; x<width; x++) {
+			for (int y=0;y<height;y++) {
+//				AtlasRegion hexToDraw = null;
+//				if (gameMap.getTile(x, y).getLandType() == LandType.Grass) {
+//					hexToDraw = hex_grass;
+//				} else if (gameMap.getTile(x, y).getLandType() == LandType.Sea) {
+//					hexToDraw = hex_sea;
+//				}
+				final Image tile = new Image(hex_grass);
+				tile.setPosition(x*tile.getWidth()*0.75f, x*tile.getHeight()/2.0f + (y*tile.getHeight()));
+				tile.setOrigin(originX, originY);
+				tile.addListener(new EventListener() {
+					@Override
+					public boolean handle(Event event) {
+//						event.getListenerActor().rotateBy(10);
+						return false;
+					}
+				});
+				gameStage.addActor(tile);
 			}
-		});
-		gameStage.addActor(tile);
+		}
+		
+		
 		// Stage
 		Gdx.input.setInputProcessor(gameStage);
 		gameStage.addListener(new DragListener(){
