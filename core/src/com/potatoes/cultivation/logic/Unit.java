@@ -29,7 +29,6 @@ public class Unit {
 	
 	public Village getVillage(){
 		return myVillage;
-		
 	}
 	
 	public boolean tryInvadeTile(Tile t){

@@ -42,9 +42,9 @@ public class InGame extends ScreenAdapter{
 	Camera camera = new OrthographicCamera(cameraWidth,cameraHeight);
 	Stage gameStage = new Stage();
 	
-	int width = 10;
-	int height = 10;
-	GameMap gameMap = new GameMap(width,height);
+	static int width = 10;
+	static int height = 10;
+	public static GameMap gameMap = new GameMap(width,height);
 	
 	Set<Tile> tiles = new HashSet<>();
 	
