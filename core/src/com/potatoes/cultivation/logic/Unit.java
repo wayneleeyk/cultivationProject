@@ -1,8 +1,8 @@
 package com.potatoes.cultivation.logic;
-
+//Author: Shivani Sharma
 public class Unit {
 
-	private UnitType mytype;
+	private UnitType myType;
 	private ActionType currentAction;
 	private Tile myTile;
 	private Village myVillage;
@@ -12,11 +12,11 @@ public class Unit {
 	}
 	
 	public void updateAction (ActionType action){
-		
+		currentAction = action;
 	}
 	
 	public UnitType getType(){
-		return mytype;
+		return myType;
 	}
 	
 	public Tile getTile(){
@@ -24,7 +24,7 @@ public class Unit {
 	}
 	
 	public void updateType(UnitType type){
-		
+		myType = type;
 	}
 	
 	public Village getVillage(){
@@ -33,10 +33,11 @@ public class Unit {
 	}
 	
 	public boolean tryInvadeTile(Tile t){
+		
 		return false;
 	}
-	
+	//a little unsure about this, but I'm assuming we set the Unit's tile as the tile passed as a parameter.
 	public void updateTileLocation(Tile t){
-		
+		myTile = t;
 	}
 }
