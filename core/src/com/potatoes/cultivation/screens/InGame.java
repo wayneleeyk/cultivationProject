@@ -2,6 +2,7 @@ package com.potatoes.cultivation.screens;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -35,12 +36,14 @@ public class InGame extends ScreenAdapter{
 	TextureAtlas atlas;
 	AtlasRegion hex_grass;
 	AtlasRegion hex_sea;
+	AtlasRegion hex_meadow;
+	AtlasRegion hex_tree;
 	float cameraWidth=800, cameraHeight=600;
 	Camera camera = new OrthographicCamera(cameraWidth,cameraHeight);
 	Stage gameStage = new Stage();
 	
-	int width = 5;
-	int height = 5;
+	int width = 10;
+	int height = 10;
 	GameMap gameMap = new GameMap(width,height);
 	
 	Set<Tile> tiles = new HashSet<>();
@@ -50,24 +53,33 @@ public class InGame extends ScreenAdapter{
 		this.batch = game.batch;
 		this.atlas = game.manager.get("ingame.atlas", TextureAtlas.class);
 		hex_grass = atlas.findRegion("grass");
-		hex_sea = atlas.findRegion("sea");
+		hex_sea = atlas.findRegion("tile_sea");
+		hex_meadow = atlas.findRegion("tile_meadow");
+		hex_tree = atlas.findRegion("tile_tree");
 		camera.lookAt(0, 0, 0);
 		// load map
 
 		int originX = hex_grass.getRegionWidth()/2, originY = hex_grass.getRegionHeight()/2;
-			
+		Stack<Image> stackToDraw = new Stack<Image>();	
+		
 		// for each tile create an Image actor 
 		Image[][] tiles = new Image[width][height];
-		for (int x=0; x<width; x++) {
-			for (int y=0;y<height;y++) {
-//				AtlasRegion hexToDraw = null;
-//				if (gameMap.getTile(x, y).getLandType() == LandType.Grass) {
-//					hexToDraw = hex_grass;
-//				} else if (gameMap.getTile(x, y).getLandType() == LandType.Sea) {
-//					hexToDraw = hex_sea;
-//				}
-				final Image tile = new Image(hex_grass);
+		Tile[][] map = gameMap.getMap();
+		for (int y=0; y<width; y++) {
+			for (int x=0;x<height;x++) {
+				AtlasRegion hexToDraw;
+				if (map[x][y].getLandType() == LandType.Sea) {
+					hexToDraw = hex_sea;
+				} else if (map[x][y].getLandType() == LandType.Meadow) {
+					hexToDraw = hex_meadow;
+				} else if (map[x][y].getLandType() == LandType.Tree) {
+					hexToDraw = hex_tree;
+				} else {
+					hexToDraw = hex_grass;
+				}
+				final Image tile = new Image(hexToDraw);
 				tile.setPosition(x*tile.getWidth()*0.75f, x*tile.getHeight()/2.0f + (y*tile.getHeight()));
+				tile.setPosition(x*308*0.75f, x*88/2.0f + (y*88));
 				tile.setOrigin(originX, originY);
 				tile.addListener(new EventListener() {
 					@Override
@@ -76,11 +88,12 @@ public class InGame extends ScreenAdapter{
 						return false;
 					}
 				});
-				gameStage.addActor(tile);
+				stackToDraw.push(tile);
 			}
 		}
-		
-		
+		while (stackToDraw.size()>0) {
+			gameStage.addActor(stackToDraw.pop());
+		}
 		// Stage
 		Gdx.input.setInputProcessor(gameStage);
 		gameStage.addListener(new DragListener(){

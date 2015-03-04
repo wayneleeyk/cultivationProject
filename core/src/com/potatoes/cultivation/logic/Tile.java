@@ -26,7 +26,7 @@ public class Tile {
 	}
 	
 	public void updateLandType(LandType land){
-		
+		myType = land;
 	}
 	
 	public void updateOwner(Player p){

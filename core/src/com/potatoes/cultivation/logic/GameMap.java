@@ -16,6 +16,10 @@ public class GameMap {
 		map = mapGenerator.getMap();
 	}
 	
+	public Tile[][] getMap() {
+		return this.map;
+	}
+	
 	public Tile getTile(int x, int y) {
 		return map[x][y];
 	}
