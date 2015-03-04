@@ -92,9 +92,10 @@ public class Login extends ScreenAdapter {
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("Username: " + usernameField.getText());
 				System.out.println("Password: " + passwordField.getText());
-				Player player = pGame.client.login(usernameField.getText(), passwordField.getText());
-				System.out.println("Login successful? "+ ((player.notNull())? "yup" : "no"));
-				if (player.notNull()) game.setScreen(new InGame(game));
+				pGame.client.login(usernameField.getText(), passwordField.getText());
+//				Player player = pGame.client.login(usernameField.getText(), passwordField.getText());
+//				System.out.println("Login successful? "+ ((player.notNull())? "yup" : "no"));
+//				if (player.notNull()) game.setScreen(new InGame(game));
 			}
 		});
 		
@@ -104,8 +105,8 @@ public class Login extends ScreenAdapter {
 		registerButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				Player player = pGame.client.createAccount(usernameField.getText(), passwordField.getText());
-				System.out.println("Login successful? "+ ((player!=null)? "yup" : "no"));
+//				Player player = pGame.client.createAccount(usernameField.getText(), passwordField.getText());
+//				System.out.println("Login successful? "+ ((player!=null)? "yup" : "no"));
 			}
 		});		
 

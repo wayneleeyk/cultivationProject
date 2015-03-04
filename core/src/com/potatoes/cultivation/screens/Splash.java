@@ -11,7 +11,7 @@ public class Splash extends ScreenAdapter {
 	Cultivation game;
 	SpriteBatch batch;
 	TextureRegion logo;
-	float splashTime = 0.75f;
+	float splashTime = 2.0f;
 	float fadeTime = 0.5f;
 	float elapsedTime;
 	

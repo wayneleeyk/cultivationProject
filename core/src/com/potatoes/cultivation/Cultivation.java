@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.networking.Client;
 import com.potatoes.cultivation.screens.InGame;
+import com.potatoes.cultivation.screens.Login;
 import com.potatoes.cultivation.screens.Splash;
 
 public class Cultivation extends Game {
@@ -19,7 +21,10 @@ public class Cultivation extends Game {
 	public Skin skin;
 	
 	// Connection related 
-	public Client client = new Client("localhost", 7470);
+	public Client client = new Client(this, "localhost", 7470);
+	
+	// Game related things
+	public Player player = null;
 	
 	@Override
 	public void create () {
@@ -28,7 +33,7 @@ public class Cultivation extends Game {
 		loadFiles();
 		manager.finishLoading();
 		skin = manager.get("gui.json", Skin.class);
-		this.setScreen(new InGame(this));
+		this.setScreen(new Login(this));
 	}
 
 	@Override
@@ -43,5 +48,9 @@ public class Cultivation extends Game {
 		
 		// Load in-game needed graphics
 		manager.load("ingame.atlas", TextureAtlas.class);
+	}
+	
+	public void setPlayer(Player p) {
+		player = p;
 	}
 }

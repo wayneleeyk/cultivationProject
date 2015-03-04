@@ -3,7 +3,8 @@
         white: { r: 1, g: 1, b: 1, a: 1 },
         red: { r: 1, g: 0, b: 0, a: 1 },
         orange: { r: 1, g: 0.5, b: 0, a: 1 },
-        yellow: { r: 0.5, g: 0.5, b: 0, a: 1 },
+        dark-yellow: { r: 0.5, g: 0.5, b: 0, a: 1 },
+        yellow: { r: 1, g: 1, b: 0, a: 1},
         potato: { r: 0.83, g: 0.745, b: 0, a: 1},
         navy: { r: 0.5, g: 0.58, b: 0.96, a: 0.7 },
         green: { r: 0, g: 1, b: 0, a: 1 },
@@ -21,14 +22,14 @@
         onepix-black: { name: onepix, color: light-black },
         onepix-light-brown: { name: onepix, color: light-brown },
         buttonUp-potato: { name: buttonUp, color: potato },
-        buttonDown-potato: { name: buttonDown, color: potato },
+        buttonDown-dark-yellow: { name: buttonDown, color: dark-yellow },
 		table-brown: { name: buttonDown, color: brown },        
-        buttonOver: { name: buttonUp, color: green }
+        buttonOver: { name: buttonUp, color: yellow }
     },
     com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
     	default: { selection: onepix-blue, font: pixFont-small, fontColor: light-black, messageFontColor: white, cursor: onepix-black }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-    	default: { down: buttonDown-potato, up: buttonUp-potato, over: buttonOver, font: pixFont-small, fontColor: white, downFontColor: light-gray }
+    	default: { down: buttonDown-dark-yellow, up: buttonUp-potato, over: buttonOver, font: pixFont-small, fontColor: white, downFontColor: light-gray }
 	}
 }
