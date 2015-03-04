@@ -31,8 +31,8 @@ public class Unit {
 		return myVillage;
 	}
 	
+	//I can't find this in the sequence diagrams. Might be an old method that we don't use anymore
 	public boolean tryInvadeTile(Tile t){
-		
 		return false;
 	}
 	//a little unsure about this, but I'm assuming we set the Unit's tile as the tile passed as a parameter.
