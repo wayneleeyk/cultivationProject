@@ -9,14 +9,12 @@ public class Player implements Serializable{
 	
 	
 	String username = null;
-	String password = null;
 	private PlayerStatus status;
-	private int wins;
-	private int losses;
 	
 
 	public Player(String username) {
 		this.username = username;
+		this.status = PlayerStatus.Online;
 	}
 	@Override
 	public String toString() {
@@ -28,11 +26,19 @@ public class Player implements Serializable{
 	}
 	
 	public void increaseWins(){
-		wins++;
+		//TODO: call to server to update file of player stats
 	}
 	
 	public void increaseLosses(){
-		losses++;
+		//TODO: call to server to update file of player stats
+	}
+	public PlayerStatus getStatus() {
+		//TODO: call to server to update 
+		return null;
+	}
+	public void setStatus(PlayerStatus s) {
+		//TODO: call to server to update 
+		this.status = s;
 	}
 	
 }
