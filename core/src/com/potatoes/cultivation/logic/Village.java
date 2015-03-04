@@ -55,8 +55,15 @@ public class Village implements Comparable<Village> {
 		this.wood = this.wood - woodToRemove;
 	}
 	
+	//Merges the smaller village to the larger village
 	public Village merge(Village v){
-		return null;
+		if (this.compareTo(v)>0) {
+			(this.myRegion).merge(v.getRegion());
+			return this;
+		} else {
+			(v.getRegion()).merge(this.myRegion);
+			return v;
+		}
 	}
 	
 	
@@ -73,9 +80,7 @@ public class Village implements Comparable<Village> {
 		}
 		if(c==0){
 			c = (new Random().nextInt(2) * 2) - 1;
-			
 		}
-		
 		return c;
 	}
 }
