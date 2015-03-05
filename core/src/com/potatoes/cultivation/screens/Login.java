@@ -15,7 +15,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -30,15 +33,14 @@ import com.potatoes.cultivation.logic.Player;
 public class Login extends ScreenAdapter {
 	Stage stage;
 	Cultivation game;
-	Table table;
 	Skin skin;
 	
 	SpriteBatch batch;
 	TextureRegion background;
 	TextureRegion title;
 
-	TextField usernameField;
-	TextField passwordField;
+	private TextField usernameField;
+	private TextField passwordField;
 	
 	Animation anim;
 	float frameCounter;
@@ -52,12 +54,64 @@ public class Login extends ScreenAdapter {
 		anim = GifDecoder.loadGIFAnimation(1, Gdx.files.internal("potato_bounce.gif").read());
 		frameCounter = 0;
 		
-		table = new Table();
+		final Table table = new Table();
+		
+		// Setting a dialog window -- This is gonna be changed later to
+		// something less hacky
+		class MessageDialog extends Table {
+			private Label msg = new Label("", skin, "default");
+			private TextButton cancel;
+			private float timer = 0;
+			
+			public MessageDialog(float posX, float posY, float width, float height ) {
+				setWidth(width);
+				setHeight(height);
+				setBackground(skin.getDrawable("table-brown"));
+				setPosition(posX, posY);
+				add(msg).pad(10, 0, 10, 0);
+				row();
+				cancel = new TextButton("Cancel", skin, "default");
+				cancel.setVisible(false);
+				cancel.addListener(new ChangeListener() {
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						MessageDialog.this.setVisible(false);
+						table.setTouchable(Touchable.enabled);
+					}
+				});
+				add(cancel).right();
+				setVisible(false);
+			}
+			
+			public Label getMsg() {
+				return msg;
+			}
+			
+			@Override
+			public void setVisible(boolean visible) {
+				super.setVisible(visible);
+				timer = 0;
+				cancel.setVisible(false);
+			}
+			
+			@Override
+			public void act(float delta) {
+				super.act(delta);
+				timer += delta;
+				if(timer > 5 && game.player == null) {
+					msg.setText("Net Error!");
+					cancel.setVisible(true);
+				}
+				if(game.player != null) {
+					game.setScreen(new InGame(game));
+				}
+			}
+		}
+		final MessageDialog dialog = new MessageDialog(Gdx.graphics.getWidth()/2 - 125, Gdx.graphics.getHeight()/2 - 60, 250, 120);
+	
 		table.setWidth(360);
 		table.setHeight(240);
 		table.setBackground(skin.getDrawable("table-brown"));
-//		table.debugAll();
-//		table.setPosition((Gdx.graphics.getWidth() - table.getWidth()) / 2.0f, (Gdx.graphics.getHeight() - table.getHeight()) / 2.0f);
 		table.setPosition(30, 85);
 		
 		usernameField = new TextField("", skin, "default");
@@ -68,7 +122,6 @@ public class Login extends ScreenAdapter {
 		usernameContainer.setBackground(skin.getDrawable("onepix-light-brown"));
 		usernameContainer.left().prefWidth(300).pad(3, 7, 3, 0);
 		
-//		table.add(usernameField).left().pad(10, 0, 10, 0).width(300).colspan(2);
 		table.add(usernameContainer).pad(10, 0, 10, 0).width(300).colspan(2);
 		table.row();
 		
@@ -82,7 +135,6 @@ public class Login extends ScreenAdapter {
 		passwordContainer.setBackground(skin.getDrawable("onepix-light-brown"));
 		passwordContainer.left().prefWidth(300).pad(3, 7, 3, 0);
 
-//		table.add(passwordField).left().pad(10, 0, 10, 0).width(300).colspan(2);
 		table.add(passwordContainer).pad(10, 0, 10, 0).width(300).colspan(2);
 		table.row();
 		
@@ -93,9 +145,9 @@ public class Login extends ScreenAdapter {
 				System.out.println("Username: " + usernameField.getText());
 				System.out.println("Password: " + passwordField.getText());
 				pGame.client.login(usernameField.getText(), passwordField.getText());
-//				Player player = pGame.client.login(usernameField.getText(), passwordField.getText());
-//				System.out.println("Login successful? "+ ((player.notNull())? "yup" : "no"));
-//				if (player.notNull()) game.setScreen(new InGame(game));
+				dialog.setVisible(true);
+				dialog.getMsg().setText("Logging in...");
+				table.setTouchable(Touchable.disabled);;
 			}
 		});
 		
@@ -105,14 +157,16 @@ public class Login extends ScreenAdapter {
 		registerButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-//				Player player = pGame.client.createAccount(usernameField.getText(), passwordField.getText());
-//				System.out.println("Login successful? "+ ((player!=null)? "yup" : "no"));
+				pGame.client.register(usernameField.getText(), passwordField.getText());
+				dialog.setVisible(true);
+				dialog.getMsg().setText("Registering...");
+				table.setTouchable(Touchable.disabled);
 			}
 		});		
 
 		table.add(registerButton).center().pad(10, 0, 10, 0);
 		stage.addActor(table);
-				
+		stage.addActor(dialog);
 	}
 	
 	@Override
