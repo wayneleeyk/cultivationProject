@@ -102,8 +102,15 @@ public class Login extends ScreenAdapter {
 					msg.setText("Net Error!");
 					cancel.setVisible(true);
 				}
-				if(game.player != null) {
-					game.setScreen(new InGame(game));
+				else if(game.player != null) {
+					if(!game.player.notNull()) {
+						msg.setText("Invalid player");
+						cancel.setVisible(true);
+					}
+					else {
+						System.out.println("Login Screen logged with " + game.player.toString());
+						game.setScreen(new InGame(game));
+					}
 				}
 			}
 		}
