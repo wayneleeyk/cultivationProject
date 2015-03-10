@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
@@ -86,18 +87,36 @@ public class GameMap {
 		return r;
 	}
 
+	
+	enum MapDirections{
+		Up(0,1), Down(0,-1), LeftUp(-1,1), LeftDown(-1,0), RightUp(1,0), RightDown(1,-1);
+		int iShift, jShift;
+		private MapDirections(int iShift, int jShift) {
+			this.iShift = iShift;
+			this.jShift = jShift;
+		}
+	}
+	
 	public Set<Tile> getNeighbouringTiles(Tile t) {
 		MapCoordinates tileLocation = getCoordinates(t);
 		Set<Tile> neighbours = new HashSet<>();
-		// TODO add map[i][j] that are neighbours to tileLpcation.i and tileLocation.j
-		return null;
+		for (MapDirections direction : MapDirections.values()) {
+			neighbours.add(tileLocation.go(direction).getTile());
+		}
+		return neighbours;
 	}
 	
-	private class MapCoordinates {
+	public class MapCoordinates {
 		int i,j;
 		public MapCoordinates(int i, int j) {
 			this.i = i;
 			this.j = j;
+		}
+		public MapCoordinates go(MapDirections direction){
+			return new MapCoordinates(this.i + direction.iShift, this.j + direction.jShift);
+		}
+		public Tile getTile(){
+			return map[i][j];
 		}
 	}
 	
@@ -157,11 +176,27 @@ public class GameMap {
 	}
 
 	public List<Tile> bfsTileOfRegion(Region r, Tile t) {
+		Set<Tile> visited = new HashSet<>();
+		Queue<Tile> toVisit = new LinkedList<>();
+		List<Tile> result = new LinkedList<>();
+		
+		Tile current = t;
+		while(!toVisit.isEmpty()){
+			result.add(current);
+			visited.add(current);
+			Set<Tile> neighbours = getNeighbouringTiles(current);
+			Iterator<Tile> it = neighbours.iterator();
+			while(it.hasNext()){
+				Tile tentative = it.next();
+				if(visited.contains(tentative) || !tentative.getPlayer().equals(t.getPlayer())) it.remove();
+			}
+			toVisit.addAll(neighbours);
+		}
 		return null;
 	}
 
 	public void mergeTo(Village v, Stack<Village> villages) {
-
+		mergeTo(villages.pop().merge(v), villages);
 	}
 
 	public void assignRandomLand(List<Player> players) {

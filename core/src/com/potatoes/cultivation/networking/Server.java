@@ -22,6 +22,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.potatoes.cultivation.logic.Game;
 import com.potatoes.cultivation.logic.Player;
 
 public class Server implements Runnable{
@@ -146,6 +147,13 @@ public class Server implements Runnable{
 		for (Player p : GamesManager.opponentsOf(sender)) {
 			String username = p.getUsername();
 			queue.add(new ServerTask(usernameToSockets.get(username), actionBlock));
+		}
+	}
+	
+	void propagate(Player sender, GameDataProtocol game){
+		for(Player p: GamesManager.opponentsOf(sender)){
+			String username = p.getUsername();
+			queue.add(new ServerTask(usernameToSockets.get(username), game));
 		}
 	}
 	
