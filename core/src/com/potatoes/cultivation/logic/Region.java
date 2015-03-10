@@ -1,14 +1,21 @@
 package com.potatoes.cultivation.logic;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.potatoes.cultivation.screens.InGame;
 
 public class Region {
 	
-	private Set<Tile> myTiles;
-	private Village village;
-	private Set<Unit> myUnits;
+	public static Region NO_REGION = new Region(null);
+	
+	private Set<Tile> myTiles = new HashSet<>();
+	private Village village ;
+	private Set<Unit> myUnits = new HashSet<>();
+	
+	public Region(Village village) {
+		this.village = village;
+	}
 	
 	public void addTile(Tile t){
 		myTiles.add(t);
