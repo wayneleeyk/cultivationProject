@@ -37,6 +37,6 @@ public class Player implements Serializable{
 		Cultivation.CLIENT.addWinLoss(WinLoss.LOSS);
 	}
 	public PlayerStatus getStatus() {
-		return (Cultivation.CLIENT.areOnline(Arrays.asList(new String[]{this.username})).get(this.username)) ? PlayerStatus.Online : PlayerStatus.Offline;
+		return (Cultivation.CLIENT.areOnline(Arrays.asList(new Player[]{this})).get(this.username)) ? PlayerStatus.Online : PlayerStatus.Offline;
 	}
 }

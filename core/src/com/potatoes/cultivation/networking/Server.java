@@ -13,7 +13,6 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +33,7 @@ public class Server implements Runnable{
 	Map<String, String> accountsForLogin = new ConcurrentHashMap<>();
 	Map<String, WinsAndLosses> winsAndLoses = new ConcurrentHashMap<>();
 	
-	Map<String, Socket> playerToSockets = new ConcurrentHashMap<>();
+	Map<String, Socket> usernameToSockets = new ConcurrentHashMap<>();
 	Map<String, Long> lastSeen = new ConcurrentHashMap<>();
 	
 	public Server(int port) {
@@ -62,7 +61,7 @@ public class Server implements Runnable{
 						if(protocol instanceof LoginProtocol){
 							protocol.execute(server);
 							String username = ((LoginProtocol) protocol).player().getUsername();
-							playerToSockets.put(username, incoming);
+							usernameToSockets.put(username, incoming);
 							lastSeen.put(username, System.currentTimeMillis());
 							new ObjectOutputStream(incoming.getOutputStream()).writeObject(protocol);
 							// Thread to listen on the socket
@@ -124,7 +123,7 @@ public class Server implements Runnable{
 						// if last seen was more than a minute ago
 						String user = entry.getKey();
 						try {
-							playerToSockets.get(user).close();
+							usernameToSockets.get(user).close();
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -143,16 +142,23 @@ public class Server implements Runnable{
 	
 	////////////////////Functions for server//////////////////////////
 	
+	void propagate(Player sender, ActionBlockProtocol actionBlock){
+		for (Player p : GamesManager.opponentsOf(sender)) {
+			String username = p.getUsername();
+			queue.add(new ServerTask(usernameToSockets.get(username), actionBlock));
+		}
+	}
+	
 	void heartbeat(String username){
 		if(this.lastSeen.get(username) != null){
 			this.lastSeen.put(username, System.currentTimeMillis());
 		}
 	}
 	
-	Map<String, Boolean> areOnline(List<String> usernames){
-		Map<String, Boolean> online = new HashMap<String, Boolean>();
-		for (String username : usernames) {
-			online.put(username, this.lastSeen.get(username)!=null && !this.playerToSockets.get(usernames).isClosed());
+	Map<Player, Boolean> areOnline(List<Player> usernames){
+		Map<Player, Boolean> online = new HashMap<>();
+		for (Player username : usernames) {
+			online.put(username, this.lastSeen.get(username)!=null && !this.usernameToSockets.get(usernames).isClosed());
 		}
 		return online;
 	}

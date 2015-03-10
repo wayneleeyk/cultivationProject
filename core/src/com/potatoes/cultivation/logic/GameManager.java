@@ -6,7 +6,6 @@ public class GameManager {
 
 	private Game myGame;
 	
-	
 	public Game getGame(){
 		return myGame;
 	}

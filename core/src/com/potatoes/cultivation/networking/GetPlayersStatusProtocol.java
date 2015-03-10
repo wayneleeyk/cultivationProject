@@ -3,12 +3,14 @@ package com.potatoes.cultivation.networking;
 import java.util.List;
 import java.util.Map;
 
+import com.potatoes.cultivation.logic.Player;
+
 public class GetPlayersStatusProtocol implements Protocol {
 	private static final long serialVersionUID = -869213514872634273L;
-	private List<String> username;
-	private Map<String, Boolean> online;
+	private List<Player> username;
+	private Map<Player, Boolean> online;
 	
-	public GetPlayersStatusProtocol(List<String> usernames) {
+	public GetPlayersStatusProtocol(List<Player> usernames) {
 		this.username = usernames;
 	}
 	
@@ -17,7 +19,7 @@ public class GetPlayersStatusProtocol implements Protocol {
 		this.online = server.areOnline(username);
 	}
 
-	public Map<String, Boolean> areOnline(){
+	public Map<Player, Boolean> areOnline(){
 		return online;
 	}
 }

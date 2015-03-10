@@ -99,7 +99,7 @@ public class Client{
 //	}
 	
 	
-	public Map<String, Boolean> areOnline(List<String> usernames){
+	public Map<Player, Boolean> areOnline(List<Player> usernames){
 		try {
 			new ObjectOutputStream(socket.getOutputStream()).writeObject(new GetPlayersStatusProtocol(usernames));
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
