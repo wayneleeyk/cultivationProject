@@ -7,7 +7,7 @@ import com.potatoes.cultivation.screens.InGame;
 
 public class Region {
 	
-	public static Region NO_REGION = new Region(null);
+	public final static Region NO_REGION = new Region(null);
 	
 	private Set<Tile> myTiles = new HashSet<>();
 	private Village village ;
