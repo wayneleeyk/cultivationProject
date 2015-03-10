@@ -26,6 +26,13 @@ public class Cultivation extends Game {
 	// Game related things
 	public Player player = null;
 	
+	//static client instance
+	public static Client CLIENT;
+	
+	public Cultivation() {
+		CLIENT = client;
+	}
+	
 	@Override
 	public void create () {
 		batch = new SpriteBatch();

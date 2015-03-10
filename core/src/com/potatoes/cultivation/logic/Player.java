@@ -1,24 +1,28 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
+import java.util.Arrays;
+
+import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.networking.Client.WinLoss;
 
 public class Player implements Serializable{
 	
 	private static final long serialVersionUID = 6376954568789670281L;
 	public static final Player nullPlayer = new Player("");
 	
-	
 	String username = null;
-	private PlayerStatus status;
-	
 
 	public Player(String username) {
 		this.username = username;
-		this.status = PlayerStatus.Online;
 	}
 	@Override
 	public String toString() {
 		return "Username : "+username;
+	}
+	
+	public String getUsername(){
+		return this.username;
 	}
 	
 	public boolean notNull(){
@@ -26,19 +30,13 @@ public class Player implements Serializable{
 	}
 	
 	public void increaseWins(){
-		//TODO: call to server to update file of player stats
+		Cultivation.CLIENT.addWinLoss(WinLoss.WIN);
 	}
 	
 	public void increaseLosses(){
-		//TODO: call to server to update file of player stats
+		Cultivation.CLIENT.addWinLoss(WinLoss.LOSS);
 	}
 	public PlayerStatus getStatus() {
-		//TODO: call to server to update 
-		return null;
+		return (Cultivation.CLIENT.areOnline(Arrays.asList(new String[]{this.username})).get(this.username)) ? PlayerStatus.Online : PlayerStatus.Offline;
 	}
-	public void setStatus(PlayerStatus s) {
-		//TODO: call to server to update 
-		this.status = s;
-	}
-	
 }

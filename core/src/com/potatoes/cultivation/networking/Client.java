@@ -5,19 +5,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.ConnectException;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-
-
-
-
-
-
 
 import com.potatoes.cultivation.Cultivation;
 //import com.potatoes.cultivation.logic.Command;
@@ -27,15 +21,35 @@ public class Client{
 	
 	String host;
 	int port;
-	private Socket mySocket;
+	private Socket socket;
 	private BlockingQueue<ClientTask> taskQueue = new LinkedBlockingQueue<ClientTask>();
 	Cultivation game;
+	
 	
 	public Client(Cultivation game, String host, int port) {
 		this.host = host;
 		this.port = port;
 		this.game = game;
-		new Thread(new ClientThread(this)).start();
+		try {
+			this.socket = new Socket(host, port);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+//		new Thread(new ClientThread(this)).start();
+		// heartbeat thread (ie tells server the connection is alive)
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					sendHeartbeat();
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
 	}
 	
 	// Adds the login method to the queue for ClientThread to execute it
@@ -45,10 +59,8 @@ public class Client{
 				doLogin.setAccessible(true);
 				taskQueue.add(new ClientTask(doLogin, username, password));
 			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	}
@@ -60,21 +72,87 @@ public class Client{
 			register.setAccessible(true);
 			taskQueue.add(new ClientTask(register, username, password));
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-}
+	}
+	
+//	public void addWinLoss(WinLoss status){
+//		try {
+//			Method add = this.getClass().getDeclaredMethod("doAddWinLoss", WinLoss.class);
+//			add.setAccessible(true);
+//			taskQueue.add(new ClientTask(add, status));
+//		} catch (NoSuchMethodException | SecurityException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	public void getWinLoss(WinLoss status){
+//		try {
+//			Method get = this.getClass().getDeclaredMethod("doGetWinLoss", WinLoss.class);
+//			get.setAccessible(true);
+//			taskQueue.add(new ClientTask(get, status));
+//		} catch (NoSuchMethodException | SecurityException e) {
+//			e.printStackTrace();
+//		}
+//	}
+	
+	
+	public Map<String, Boolean> areOnline(List<String> usernames){
+		try {
+			new ObjectOutputStream(socket.getOutputStream()).writeObject(new GetPlayersStatusProtocol(usernames));
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			GetPlayersStatusProtocol status = (GetPlayersStatusProtocol) in.readObject();
+			return status.areOnline();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return new HashMap<>();
+	}
+	
+	private void sendHeartbeat(){
+		try {
+			new ObjectOutputStream(socket.getOutputStream()).writeObject(new HeartbeatProtocol(this.game.player.getUsername()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public enum WinLoss{
+		WIN, LOSS;
+	}
+	
+	public void addWinLoss(WinLoss status){
+		String playerName = this.game.player.getUsername();
+		try {
+			new ObjectOutputStream(socket.getOutputStream()).writeObject((status.equals(WinLoss.WIN))? new AddWinProtocol(playerName):new AddLossProtocol(playerName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public int getWinLoss(Player player, WinLoss status){
+		String playerName = player.getUsername();
+		try {
+			new ObjectOutputStream(socket.getOutputStream()).writeObject(new GetWinLossProtocol(playerName));
+			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+			GetWinLossProtocol returnedMessage = (GetWinLossProtocol) in.readObject();
+			socket.close();
+			return (status.equals(WinLoss.WIN))? returnedMessage.getWins() : returnedMessage.getLosses();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		throw new IllegalArgumentException(playerName + " is not a valid player found in server");
+	}
 
-	private Player doLogin(String username, String password){
+	public Player doLogin(String username, String password){
 		try{
-			Socket socket = new Socket(host, port);
 			new ObjectOutputStream(socket.getOutputStream()).writeObject(new LoginProtocol(username, password));
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			LoginProtocol returnedMessage = (LoginProtocol) in.readObject();
-			socket.close();
 			return returnedMessage.player();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -86,13 +164,11 @@ public class Client{
 		return Player.nullPlayer;
 	}
 	
-	private Player createAccount(String username, String password){
+	public Player createAccount(String username, String password){
 		try{
-			Socket socket = new Socket(host, port);
 			new ObjectOutputStream(socket.getOutputStream()).writeObject(new RegisterProtocol(username, password));
 			ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 			RegisterProtocol returnedMessage = (RegisterProtocol) in.readObject();
-			socket.close();
 			return returnedMessage.player();
 		} catch (IOException e) {
 			e.printStackTrace();
