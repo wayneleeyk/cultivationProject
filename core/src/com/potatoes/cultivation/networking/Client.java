@@ -35,21 +35,21 @@ public class Client{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		new Thread(new ClientThread(this)).start();
+		new Thread(new ClientThread(this)).start();
 		// heartbeat thread (ie tells server the connection is alive)
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while(true){
-					sendHeartbeat();
-					try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				while(true){
+//					sendHeartbeat();
+//					try {
+//						Thread.sleep(10000);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}).start();
 	}
 	
 	// Adds the login method to the queue for ClientThread to execute it

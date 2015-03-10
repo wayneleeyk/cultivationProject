@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -74,7 +75,7 @@ public class Server implements Runnable{
 											queue.put(new ServerTask(incoming, protocol));
 											Thread.sleep(100);
 										} catch (ClassNotFoundException| IOException | InterruptedException e) {
-											e.printStackTrace();
+											return;
 										}
 									}
 								}
@@ -188,7 +189,9 @@ public class Server implements Runnable{
 			while((line = br.readLine()) != null){
 				String[] elements = line.split("\t");
 				this.putIfAbsent(this.accountsForLogin, elements[0], elements[1]);
-				this.putIfAbsent(this.winsAndLoses, elements[0], new WinsAndLosses(Integer.getInteger(elements[2]).intValue(), Integer.getInteger(elements[3]).intValue()));
+				this.putIfAbsent(this.winsAndLoses, 
+								elements[0], 
+								new WinsAndLosses(Integer.valueOf(elements[2]).intValue(), Integer.valueOf(elements[3]).intValue()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

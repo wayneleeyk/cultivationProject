@@ -52,7 +52,7 @@ public class InGame extends ScreenAdapter{
 	public InGame(final Cultivation pGame ) {
 		this.game = pGame;
 		this.batch = game.batch;
-//		this.hud = new HUD(this.batch, this.gameMap, this.game.player);
+		this.hud = new HUD(this.batch, this.gameMap, this.game.player);
 		this.atlas = game.manager.get("ingame.atlas", TextureAtlas.class);
 		hex_grass = atlas.findRegion("grass");
 		hex_sea = atlas.findRegion("tile_sea");
