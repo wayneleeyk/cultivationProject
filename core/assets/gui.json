@@ -33,6 +33,7 @@
     	default: { down: buttonDown-dark-yellow, up: buttonUp-potato, over: buttonOver, font: pixFont-small, fontColor: white, downFontColor: light-gray, disabled: buttonDown-dark-yellow, disabledFontColor: light-gray }
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
-    	default: { font: pixFont-small, fontColor: light-black }
+    	default: { font: pixFont-small, fontColor: light-black },
+    	white: { font: pixFont-small, fontColor: white }
 	}
 }

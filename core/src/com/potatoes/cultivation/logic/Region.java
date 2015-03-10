@@ -3,7 +3,7 @@ package com.potatoes.cultivation.logic;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.potatoes.cultivation.screens.InGame;
+import com.potatoes.cultivation.Cultivation;
 
 public class Region {
 	
@@ -63,7 +63,7 @@ public class Region {
 			this.myTiles.add(t);
 		}
 		//Delete Region r
-		InGame.gameMap.deleteRegion(r);
+		Cultivation.GAMEMANAGER.getGameMap().deleteRegion(r);
 	}
 
 }

@@ -13,11 +13,15 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -36,12 +40,18 @@ public class Server implements Runnable{
 	Map<String, Socket> usernameToSockets = new ConcurrentHashMap<>();
 	Map<String, Long> lastSeen = new ConcurrentHashMap<>();
 	
+	@SuppressWarnings("unchecked")
+	Set<Player>[] gameRooms = (Set<Player>[]) new Set[10];
+	
 	public Server(int port) {
 		try {
 			this.socket = new ServerSocket(port);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// Initialize game room 0 for testing purposes
+		gameRooms[0] = new LinkedHashSet<Player>();
 	}
 
 	@Override
@@ -65,15 +75,21 @@ public class Server implements Runnable{
 							lastSeen.put(username, System.currentTimeMillis());
 							new ObjectOutputStream(incoming.getOutputStream()).writeObject(protocol);
 							// Thread to listen on the socket
+							System.out.println("Starting task listener...");
 							new Thread(new Runnable() {
 								@Override
 								public void run() {
+									System.out.println("Task Listener started!");
 									while(!incoming.isClosed()){
+										System.out.println("Looping...");
 										try {
 											Protocol protocol = (Protocol) in.readObject();
+											System.out.println("Read a new protocol from in");
 											queue.put(new ServerTask(incoming, protocol));
+											System.out.println("New task was put!");
 											Thread.sleep(100);
 										} catch (ClassNotFoundException| IOException | InterruptedException e) {
+											e.printStackTrace();
 											return;
 										}
 									}
@@ -226,7 +242,7 @@ public class Server implements Runnable{
 		}
 		return file;
 	}
-
+	
 	// Class for wins and losses, along with functions related to it
 	class WinsAndLosses{
 		int wins, losses;
@@ -278,6 +294,30 @@ public class Server implements Runnable{
 		}
 		else{
 			throw new IllegalArgumentException("Wrong player name");
+		}
+	}
+	
+	public Set<Player> getPlayersForRoom(int i) {
+//		if(gameRooms.size() - 1 < i) return null;
+//		if(gameRooms.get(i) == null) {
+//			gameRooms.set(i, new HashSet<Player>());
+//		}
+//		
+//		return gameRooms.get(i);
+		return gameRooms[i];
+	}
+	
+	public boolean addPlayerToRoom(int i, Player p) {
+//		if(gameRooms.size() - 1 < i) return false;
+//		if(gameRooms.get(i) == null) return false;
+//		else {
+//			gameRooms.get(i).add(p);
+//			return true;
+//		}
+		if(gameRooms[i] == null) return false;
+		else {
+			gameRooms[i].add(p);
+			return true;
 		}
 	}
 }

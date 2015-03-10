@@ -4,9 +4,8 @@ import java.util.List;
 
 public class GameManager {
 
-	private Game myGame;
-	
-	public Game getGame(){
+	private CultivationGame myGame;
+	public CultivationGame getGame(){
 		return myGame;
 	}
 	

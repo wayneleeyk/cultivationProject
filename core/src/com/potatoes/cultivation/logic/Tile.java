@@ -2,6 +2,7 @@ package com.potatoes.cultivation.logic;
 
 import java.util.Set;
 
+import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.screens.InGame;
 
 public class Tile {
@@ -61,7 +62,7 @@ public class Tile {
 		}
 		//Check neighbouring tiles to see if an enemy exists
 		if (invadable && occupant==null) {
-			Set<Tile> neighbourTiles = InGame.gameMap.getNeighbouringTiles(this);
+			Set<Tile> neighbourTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(this);
 			for (Tile tile : neighbourTiles) {
 				if (tile.getUnit()!=null) {
 					invadable = invadable && tile.getUnit().getType().canInvadeBy(u.getType());
@@ -76,11 +77,11 @@ public class Tile {
 	}
 	
 	public Region getRegion(){
-		return InGame.gameMap.getRegion(this);
+		return Cultivation.GAMEMANAGER.getGameMap().getRegion(this);
     }
 	
 	public Village getVillage(){
-		return InGame.gameMap.getRegion(this).getVillage();
+		return Cultivation.GAMEMANAGER.getGameMap().getRegion(this).getVillage();
 	}
 	@Override public String toString() {
 		return myType.toString();
