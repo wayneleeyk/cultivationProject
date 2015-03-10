@@ -43,9 +43,9 @@ public class InGame extends ScreenAdapter{
 	Stage gameStage = new Stage();
 	HUD hud;
 	
-	int width = 10;
-	int height = 10;
-	GameMap gameMap = new GameMap(width,height);
+	static int width = 10;
+	static int height = 10;
+	public static GameMap gameMap = new GameMap(width,height);
 	
 	Set<Tile> tiles = new HashSet<>();
 	

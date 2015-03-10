@@ -161,7 +161,7 @@ public class Client{
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-		return Player.nullPlayer;
+		return null;
 	}
 	
 	public Player createAccount(String username, String password){

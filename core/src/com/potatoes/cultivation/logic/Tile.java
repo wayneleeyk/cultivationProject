@@ -1,5 +1,9 @@
 package com.potatoes.cultivation.logic;
 
+import java.util.Set;
+
+import com.potatoes.cultivation.screens.InGame;
+
 public class Tile {
 	
 	private LandType myType;
@@ -7,10 +11,12 @@ public class Tile {
 	private Unit occupant;
 	private Player owner;
 	
-	
+	public Tile() {
+		structure = StructureType.None;
+	}
 	
 	public void addStructure(StructureType structure){
-		
+		this.structure = structure;
 	}
 	
 	public StructureType getStructure(){
@@ -18,7 +24,7 @@ public class Tile {
 	}
 	
 	public void destroyStructure(){
-		
+		this.structure = StructureType.None;
 	}
 	
 	public LandType getLandType(){
@@ -30,7 +36,7 @@ public class Tile {
 	}
 	
 	public void updateOwner(Player p){
-		
+		owner = p;
 	}
 	
 	public Player getPlayer(){
@@ -40,9 +46,29 @@ public class Tile {
 	public Unit getUnit(){
 		return occupant;
 	}
-	
-	public boolean canInvade(Unit U){
-		return false;
+	//Checks if Unit u can invade this tile
+	public boolean canInvade(Unit u){
+		boolean occupied = occupant!=null || structure!=StructureType.None;
+		boolean invadable = true;
+		if (getRegion()!=null && getVillage()!=null) {
+			if (getVillage().getType()==VillageType.Fort && u.getType()!=UnitType.Knight) {
+				invadable = false;
+			} else if (u.getType()==UnitType.Peasant) {
+				invadable = false;
+			} else if (structure==StructureType.Watchtower && u.getType()!=UnitType.Knight && u.getType()!=UnitType.Soldier) {
+				invadable = false;
+			}
+		}
+		//Check neighbouring tiles to see if an enemy exists
+		if (invadable && occupant==null) {
+			Set<Tile> neighbourTiles = InGame.gameMap.getNeighbouringTiles(this);
+			for (Tile tile : neighbourTiles) {
+				if (tile.getUnit()!=null) {
+					invadable = invadable && tile.getUnit().getType().canInvadeBy(u.getType());
+				}
+			}
+		}
+		return invadable;
 	}
 	
 	public void tryInvade(Unit u){
@@ -50,11 +76,11 @@ public class Tile {
 	}
 	
 	public Region getRegion(){
-		return null;
+		return InGame.gameMap.getRegion(this);
     }
 	
-	public Village returnVillage(){
-		return null;
+	public Village getVillage(){
+		return InGame.gameMap.getRegion(this).getVillage();
 	}
 	@Override public String toString() {
 		return myType.toString();
