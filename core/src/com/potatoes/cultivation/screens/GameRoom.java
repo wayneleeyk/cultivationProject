@@ -42,6 +42,8 @@ public class GameRoom extends ScreenAdapter {
 	Label listOfPlayers;
 	private float timer = 0;
 	
+	ProtocolHandler<Set<Player>> getRoomHandler;
+	
 	public GameRoom(final Cultivation pGame, int room) {
 		roomNumber = room;
 		game = pGame;
@@ -49,7 +51,7 @@ public class GameRoom extends ScreenAdapter {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		
-		ProtocolHandler<Set<Player>> getRoomHandler = new ProtocolHandler<Set<Player>>() {
+		getRoomHandler = new ProtocolHandler<Set<Player>>() {
 			@Override
 			public void handle(Protocol p) {
 				if(p instanceof GetARoomProtocol) {
@@ -111,7 +113,7 @@ public class GameRoom extends ScreenAdapter {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//		updateRoomInfo(delta);
+		updateRoomInfo();
 		stage.act(delta);
 		stage.draw();
 	}
@@ -137,16 +139,12 @@ public class GameRoom extends ScreenAdapter {
 		return list;
 	}
 	
-//	private void updateRoomInfo(float delta) {
-//		timer += delta;
-//		// Update every 1 seconds
-//		if(timer > 1) {
-//			System.out.println("Getting room info");
-//			game.client.updateRoomInfo(roomNumber);
-//			timer = 0;
-//			listOfPlayers.setText(getPlayerNames());
-//		}
-//	}
+	private void updateRoomInfo() {
+		if(getRoomHandler.isAvailable()) {
+			playersInRoom = getRoomHandler.getResult();
+			listOfPlayers.setText(getPlayerNames());
+		}
+	}
 	
 //	public void updateRoomInfo(Collection<Player> players){
 //		playersInRoom.clear();

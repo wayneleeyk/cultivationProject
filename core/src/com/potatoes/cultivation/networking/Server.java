@@ -237,6 +237,12 @@ public class Server implements Runnable{
 		if(gameRooms.get(i) == null) return false;
 		else {
 			gameRooms.get(i).add(p);
+			for(Player player : gameRooms.get(i)) {
+				User user = usernameToUser.get(player.getUsername());
+				GetARoomProtocol gp = new GetARoomProtocol(i);
+				gp.setList(gameRooms.get(i));
+				queue.add(new ServerTask(user.oos, gp));
+			}
 			return true;
 		}
 	}
