@@ -156,10 +156,25 @@ public class Tile {
     }
 	
 	public Village getVillage(){
-		return Cultivation.GAMEMANAGER.getGameMap().getRegion(this).getVillage();
+		Region region = Cultivation.GAMEMANAGER.getGameMap().getRegion(this);
+		if (region!=Region.NO_REGION) {
+			return region.getVillage();
+		}
+		return null;
 	}
 	@Override public String toString() {
 		return myType.toString();
+	}
+	/**
+	 * 
+	 * @return true if this tile contains its village building, false otherwise
+	 */
+	public boolean containsVillage() {
+		Village myVillage = getVillage();
+		if (myVillage!=null && myVillage.getTile().equals(this)) {
+			return true;
+		}
+		return false;
 	}
 	
 	

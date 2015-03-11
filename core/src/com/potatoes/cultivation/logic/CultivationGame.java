@@ -12,11 +12,14 @@ public class CultivationGame {
 	
 	public CultivationGame(List<Player> participants) {
 		players = participants;
-		map = new GameMap(10, 10);
-		roundsPlayed = 0;
+		map = new GameMap(10, 10, participants);
+		System.out.println("Made new game map");
+		this.roundsPlayed = 0;
+		turnOf = participants.get(0);
 	}
 	
 	public List<Player> getPlayers(){
+		List<Player> players = new LinkedList<Player>(this.players);
 		return players;
 	}
 	//Mang0-Tang0
