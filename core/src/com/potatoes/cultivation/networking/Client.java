@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +14,12 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.Set;
+
+import jdk.nashorn.internal.ir.Block;
+
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.logic.CultivationGame;
+import com.potatoes.cultivation.logic.GameManager;
 //import com.potatoes.cultivation.logic.Command;
 import com.potatoes.cultivation.logic.Player;
 
@@ -23,11 +29,12 @@ public class Client{
 	int port;
 	private Socket socket;
 	private BlockingQueue<ClientTask> taskQueue = new LinkedBlockingQueue<ClientTask>();
+	private BlockingQueue<ClientEvent> events = new LinkedBlockingQueue<>();
 	Cultivation game;
 	ObjectOutputStream out;
 	ObjectInputStream in;
 	
-	public Client(Cultivation game, String host, int port) {
+	public Client(final Cultivation game, String host, int port) {
 		this.host = host;
 		this.port = port;
 		this.game = game;
@@ -40,20 +47,36 @@ public class Client{
 			e.printStackTrace();
 		}
 		new Thread(new ClientThread(this)).start();
+		
 		// heartbeat thread (ie tells server the connection is alive)
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				while(true){
-//					sendHeartbeat();
-//					try {
-//						Thread.sleep(10000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("Starting heart ");
+				while(true){
+					if(game.player!=null) sendHeartbeat();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+		
+		// event listener
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					try {
+						events.take().execute();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
 	}
 	
 	// Adds the login method to the queue for ClientThread to execute it
@@ -82,6 +105,14 @@ public class Client{
 		}
 	}
 	
+	public void startGame(CultivationGame game){
+		try {
+			out.writeObject(new GameDataProtocol(this.game.player, game));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Map<Player, Boolean> areOnline(List<Player> usernames){
 		try {
 			out.writeObject(new GetPlayersStatusProtocol(usernames));
@@ -98,7 +129,8 @@ public class Client{
 	private void sendHeartbeat(){
 		try {
 			out.writeObject(new HeartbeatProtocol(this.game.player.getUsername()));
-		} catch (IOException e) {
+			in.readObject();
+		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
@@ -140,8 +172,13 @@ public class Client{
 		}
 	}
 	
+//	public void updateRoomInfo(Collection<Player> players){
+//		game.
+//	}
+	
 	public Set<Player> getPlayersForRoom(int number) {
 		try {
+			System.out.println("Getting players for room "+number);
 			out.writeObject(new GetARoomProtocol(number));
 			GetARoomProtocol returnedMessage = (GetARoomProtocol) in.readObject();
 			return returnedMessage.getList();

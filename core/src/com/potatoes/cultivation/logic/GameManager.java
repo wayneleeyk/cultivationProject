@@ -11,6 +11,7 @@ public class GameManager {
 	}
 	
 	public boolean newGame(List<Player> players ){
+		System.out.println("Making new game");
 		this.myGame = new CultivationGame(players);
 		return true;
 	}

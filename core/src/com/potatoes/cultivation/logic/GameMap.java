@@ -19,13 +19,18 @@ public class GameMap {
 	private HashMap<Player, Set<Region>> regions = new HashMap<>();
 	
 	public GameMap(int width, int height, List<Player> participants) {
+		System.out.println("Generating hex map");
 		HexMap mapGenerator = new HexMap(width, height);
+		System.out.println("Done hex map");
 		map = mapGenerator.getMap();
+		System.out.println("Done generator");
 		for (Player player : participants) {
 			regions.put(player, new HashSet<Region>());
 		}
 		this.assignRandomLand(participants);
+		System.out.println("assigned land");
 		this.generateRegionsFromLandOwnership();
+		System.out.println("Generated ownership");
 	}
 	
 	public Tile[][] getMap() {
@@ -264,6 +269,7 @@ public class GameMap {
 				r.setVillage(v);
 				this.regions.get(tile.getPlayer()).add(r);
 			}
+			tiles.remove(tile);
 		}
 	}
 	

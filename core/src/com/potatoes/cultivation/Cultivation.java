@@ -68,6 +68,7 @@ public class Cultivation extends Game {
 	}
 	
 	public void updateRoomPlayerList(Set<Player> list) {
+		System.out.println("incoming list "+list);
 		if(getScreen().getClass() == GameRoom.class) {
 			GameRoom screen = (GameRoom) this.getScreen();
 			screen.playersInRoom = list;
