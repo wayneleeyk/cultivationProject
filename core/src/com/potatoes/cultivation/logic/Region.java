@@ -73,4 +73,5 @@ public class Region implements Serializable{
 		Cultivation.GAMEMANAGER.getGameMap().deleteRegion(r);
 	}
 
+	
 }

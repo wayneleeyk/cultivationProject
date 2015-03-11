@@ -2,6 +2,7 @@ package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.Stack;
 
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.screens.InGame;
@@ -48,9 +49,10 @@ public class Tile implements Serializable{
 	public Unit getUnit(){
 		return occupant;
 	}
+
 	//Checks if Unit u can invade this tile
+	//NOTE: I added a check if the invader unit (u) can defeat the unit on the tile (if any). This seems missing in the sequence diagram..
 	public boolean canInvade(Unit u){
-		boolean occupied = occupant!=null || structure!=StructureType.None;
 		boolean invadable = true;
 		if (getRegion()!=null && getVillage()!=null) {
 			if (getVillage().getType()==VillageType.Fort && u.getType()!=UnitType.Knight) {
@@ -60,21 +62,94 @@ public class Tile implements Serializable{
 			} else if (structure==StructureType.Watchtower && u.getType()!=UnitType.Knight && u.getType()!=UnitType.Soldier) {
 				invadable = false;
 			}
-		}
-		//Check neighbouring tiles to see if an enemy exists
-		if (invadable && occupant==null) {
+		}		
+		if (invadable && occupant !=null) {
+			//Check if unit on this tile can be invaded by the invader unit u
+			invadable = this.occupant.getType().canInvadeBy(u.getType());
+		} else if (invadable && occupant==null) {
+			//Check neighbouring tiles to see if an enemy exists
 			Set<Tile> neighbourTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(this);
 			for (Tile tile : neighbourTiles) {
 				if (tile.getUnit()!=null) {
 					invadable = invadable && tile.getUnit().getType().canInvadeBy(u.getType());
+					//Check if neighbouring tile has a tower, if so, any invader Unit that is infantry cannot invade
+					if (invadable && tile.getStructure() == StructureType.Watchtower && u.getType() == UnitType.Infantry) {
+						invadable = false;
+					}
 				}
 			}
 		}
 		return invadable;
 	}
-	
-	public void tryInvade(Unit u){
-		
+	/*
+	 * Questions or mistakes? --> Monica
+	 * Unit u is the unit that tries to go on this tile
+	 */
+	public boolean tryInvade(Unit u){
+		boolean moved = false;
+		Tile tileOfUnit = u.getTile();
+		Set<Tile> neighbouringTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(tileOfUnit);
+		if (neighbouringTiles.contains(this)) { //We only enter this if Unit u is one tile away from this tile
+			boolean invadable = true;
+			if (u.getType()==UnitType.Knight && (structure==StructureType.Tombstone || myType == LandType.Tree)) {
+				//If invader is knight, he cannot invade tile that contains tomb stone nor tree
+				invadable = false;
+			}
+			if (invadable && myType!= LandType.Sea && (owner == tileOfUnit.getPlayer() || this.canInvade(u))) {
+				//Enter here if unit can be moved onto this tile
+				moved = true;
+				u.updateTileLocation(this);
+				//If there is already an occupant on this tile, destroy it
+				if (occupant!=null) {
+					Region victimsRegion = this.occupant.getTile().getRegion();
+					//Remove this tile from victim's region since it got invaded
+					victimsRegion.removeTile(this);
+					//Remove victim unit from region
+					victimsRegion.killUnit(this.occupant);
+					//Add this tile to the invader's region
+					tileOfUnit.getRegion().addTile(this);
+					//Update occupant to the invader unit
+					this.occupant = u;
+					//Note: we don't change the ownership of the tile yet because we need it in takeoverTile
+				}
+				//Handle village invasion, splitting/merging regions in takeoverTile
+				if (owner!=null) {
+					Cultivation.GAMEMANAGER.getGameMap().takeOverTile(this);
+				}
+				//If there is a tree on this tile, cut it down
+				if (myType == LandType.Tree) {
+					//Change landtype to grass
+					myType = LandType.Grass;
+					//Update wood stats of village
+					this.getVillage().addWood(1);
+					//Update unit's action to cutting wood
+					u.updateAction(ActionType.ChoppingTree);
+				}
+				//If there is a tomb stone on tile, clear it
+				if (structure == StructureType.Tombstone) {
+					//Set unit's action to clearing tomb stone
+					u.updateAction(ActionType.ClearingTombStone);
+					//Destroy tomb stone
+					structure = StructureType.None;
+				}
+				//If unit is Knight and there is a meadow and no road, he tramples the meadow 
+				if (structure!=StructureType.Road && u.getType()==UnitType.Knight && myType==LandType.Meadow) {
+					myType = LandType.Grass;
+				}
+				//Merge part 
+				Set<Village> myNeighbouringVillages = Cultivation.GAMEMANAGER.getGameMap().getMyVillagesOfAdjacentTiles(neighbouringTiles, owner);
+				//Convert to stack for mergeTo method
+				if (myNeighbouringVillages.size()>=1) {
+					Village biggestVillage = Cultivation.GAMEMANAGER.getGameMap().biggestOf(myNeighbouringVillages);
+					Stack<Village> stackOfVillages = new Stack<Village>();
+					for (Village v : myNeighbouringVillages) {
+						stackOfVillages.push(v);
+					}
+					Cultivation.GAMEMANAGER.getGameMap().mergeTo(biggestVillage, stackOfVillages);
+				}
+			}
+		}
+		return moved;
 	}
 	
 	public Region getRegion(){
@@ -82,11 +157,29 @@ public class Tile implements Serializable{
     }
 	
 	public Village getVillage(){
-		return Cultivation.GAMEMANAGER.getGameMap().getRegion(this).getVillage();
+		Region region = Cultivation.GAMEMANAGER.getGameMap().getRegion(this);
+		if (region!=Region.NO_REGION) {
+			return region.getVillage();
+		}
+		return null;
 	}
 	@Override public String toString() {
 		return myType.toString();
 	}
+	/**
+	 * 
+	 * @return true if this tile contains its village building, false otherwise
+	 */
+	public boolean containsVillage() {
+		Village myVillage = getVillage();
+		if (myVillage!=null && myVillage.getTile()==(this)) {
+//			System.out.println("Found village in containsVillage method");
+			return true;
+		}
+//		System.out.println("Cannot find village in containsVillage");
+		return false;
+	}
+
 	
 	
 }

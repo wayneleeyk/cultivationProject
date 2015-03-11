@@ -48,7 +48,7 @@ public class Client{
 		
 		// heartbeat thread (ie tells server the connection is alive)
 		new Thread(new HeartBeat(this, game)).start();
-		
+
 		// event listener
 		new Thread(new EventListener(this)).start();
 		
