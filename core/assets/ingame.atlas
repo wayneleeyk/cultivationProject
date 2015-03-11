@@ -6,119 +6,133 @@ filter: Nearest,Nearest
 repeat: none
 grass
   rotate: false
-  xy: 2, 256
+  xy: 2, 321
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
 potato_purple
   rotate: false
-  xy: 312, 275
+  xy: 312, 340
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_infantry
   rotate: false
-  xy: 622, 365
+  xy: 622, 430
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_knight
   rotate: false
-  xy: 2, 84
+  xy: 2, 149
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_soldier
   rotate: false
-  xy: 312, 193
+  xy: 312, 258
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red
   rotate: false
-  xy: 464, 275
+  xy: 464, 340
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_infantry
   rotate: false
-  xy: 774, 365
+  xy: 774, 430
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_knight
   rotate: false
-  xy: 2, 2
+  xy: 2, 67
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_soldier
   rotate: false
-  xy: 154, 84
+  xy: 154, 149
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow
   rotate: false
-  xy: 464, 193
+  xy: 464, 258
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_infantry
   rotate: false
-  xy: 154, 2
+  xy: 154, 67
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_knight
   rotate: false
-  xy: 312, 111
+  xy: 312, 176
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_soldier
   rotate: false
-  xy: 464, 111
+  xy: 464, 176
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 tile_meadow
   rotate: false
-  xy: 312, 357
+  xy: 312, 422
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
 tile_sea
   rotate: false
-  xy: 2, 166
+  xy: 2, 231
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
 tile_tree
   rotate: false
-  xy: 2, 346
+  xy: 2, 411
   size: 308, 99
   orig: 308, 99
   offset: 0, 0
   index: -1
+village-fort
+  rotate: false
+  xy: 926, 425
+  size: 93, 85
+  orig: 93, 85
+  offset: 0, 0
+  index: -1
 village-hovel
   rotate: false
-  xy: 926, 360
+  xy: 306, 89
+  size: 93, 85
+  orig: 93, 85
+  offset: 0, 0
+  index: -1
+village-town
+  rotate: false
+  xy: 306, 2
   size: 93, 85
   orig: 93, 85
   offset: 0, 0
