@@ -116,12 +116,12 @@ public class InGame extends ScreenAdapter{
 				tile.setPosition(x*tile.getWidth()*0.75f, x*tile.getHeight()/2.0f + (y*tile.getHeight()));
 				tile.setPosition(x*308*0.75f, x*88/2.0f + (y*88));
 				tile.setOrigin(originX, originY);
-				tile.addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						event.getListenerActor().setColor(1, 1, 1, 0.5f);
-					}
-				});
+//				tile.addListener(new ClickListener() {
+//					@Override
+//					public void clicked(InputEvent event, float x, float y) {
+//						hud.tileClicked(map[x][y].getRegion());
+//					}
+//				});
 //				tile.addListener(new EventListener() {
 //					@Override
 //					public boolean handle(Event event) {
@@ -182,6 +182,6 @@ public class InGame extends ScreenAdapter{
 		gameStage.draw();
 		batch.end();
 		
-//		hud.draw();
+		hud.draw();
 	}
 }

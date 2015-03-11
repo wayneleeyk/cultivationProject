@@ -295,7 +295,7 @@ public class GameMap implements Serializable {
 		int count = 0;
 		for (Tile tile : tiles) {
 			int randomIndex = count % n;
-			if (randomIndex < players.size()) {
+			if (randomIndex < players.size() && tile.getLandType()!=LandType.Sea) {
 				Player p = players.get(randomIndex);
 				tile.updateOwner(p);
 			}
