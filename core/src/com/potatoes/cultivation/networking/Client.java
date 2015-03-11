@@ -28,10 +28,8 @@ public class Client{
 	String host;
 	int port;
 	private Socket socket;
-	private BlockingQueue<ClientTask> taskQueue = new LinkedBlockingQueue<ClientTask>();
-	private BlockingQueue<Protocol> incomingQueue = new LinkedBlockingQueue<>();
-	private BlockingQueue<Protocol> handledQueue = new LinkedBlockingQueue<>();
-	private List<ProtocolHandler> handlers = new LinkedList<>();
+	BlockingQueue<Protocol> incomingQueue = new LinkedBlockingQueue<>();
+	List<ProtocolHandler> handlers = new LinkedList<>();
 	
 	Cultivation game;
 	ObjectOutputStream out;
@@ -49,43 +47,15 @@ public class Client{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-//		new Thread(new ClientThread(this)).start();
 		
 		// heartbeat thread (ie tells server the connection is alive)
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				System.out.println("Starting heart ");
-				while(true){
-					if(game.player!=null) sendHeartbeat();
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
+		new Thread(new HeartBeat(this, game)).start();
 		
 		// event listener
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while(true){
-					try {
-						Protocol p = incomingQueue.take();
-						System.out.println("Protocol has arrived ");
-						for (ProtocolHandler protocolHandler : handlers) {
-							protocolHandler.handle(p);
-						}
-						handledQueue.offer(p);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
+		new Thread(new EventListener(this)).start();
 		
+		// socket listener
+		new Thread(new SocketListener(this));
 		
 	}
 	
@@ -101,34 +71,10 @@ public class Client{
 		this.handlers.clear();
 	}
 	
-	// Adds the login method to the queue for ClientThread to execute it
-//	public void login(String username, String password) {
-//			try {
-//				Method doLogin = this.getClass().getDeclaredMethod("doLogin", String.class, String.class);
-//				doLogin.setAccessible(true);
-//				taskQueue.add(new ClientTask(doLogin, username, password));
-//			} catch (NoSuchMethodException e) {
-//				e.printStackTrace();
-//			} catch (SecurityException e) {
-//				e.printStackTrace();
-//			}
-//	}
-	
-	// Adds the register method to the queue for ClientThread to execute it
-//	public void register(String username, String password) {
-//		try {
-//			Method register = this.getClass().getDeclaredMethod("createAccount", String.class, String.class);
-//			register.setAccessible(true);
-//			taskQueue.add(new ClientTask(register, username, password));
-//		} catch (NoSuchMethodException e) {
-//			e.printStackTrace();
-//		} catch (SecurityException e) {
-//			e.printStackTrace();
-//		}
-//	}
 	
 	public void startGame(CultivationGame game){
 		try {
+			
 			out.writeObject(new GameDataProtocol(this.game.player, game));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -148,7 +94,7 @@ public class Client{
 		return new HashMap<>();
 	}
 	
-	private void sendHeartbeat(){
+	void sendHeartbeat(){
 		try {
 			out.writeObject(new HeartbeatProtocol(this.game.player.getUsername()));
 		} catch (IOException e) {
@@ -182,17 +128,17 @@ public class Client{
 		throw new IllegalArgumentException(playerName + " is not a valid player found in server");
 	}
 
-	public void updateRoomInfo(int number) {
-		try {
-			Method getPlayersForRoom = this.getClass().getDeclaredMethod("getPlayersForRoom", int.class);
-			taskQueue.add(new ClientTask(getPlayersForRoom, number));
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
-	}
-	
+//	public void updateRoomInfo(int number) {
+//		try {
+//			Method getPlayersForRoom = this.getClass().getDeclaredMethod("getPlayersForRoom", int.class);
+//			taskQueue.add(new ClientTask(getPlayersForRoom, number));
+//		} catch (NoSuchMethodException e) {
+//			e.printStackTrace();
+//		} catch (SecurityException e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
 //	public void updateRoomInfo(Collection<Player> players){
 //		game.
 //	}
