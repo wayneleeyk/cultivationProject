@@ -11,6 +11,12 @@ public class Village implements Comparable<Village> {
 	private Tile myTile;
 	private Player owner;
 	
+	public Village(Player owner, Region region, Tile tile) {
+		this.owner = owner;
+		this.myRegion = region;
+		this.myTile = tile;
+	}
+	
 	public VillageType getType(){
 		return myType;
 	}

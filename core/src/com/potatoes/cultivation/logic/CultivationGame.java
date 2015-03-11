@@ -1,5 +1,6 @@
 package com.potatoes.cultivation.logic;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class CultivationGame {
@@ -11,11 +12,13 @@ public class CultivationGame {
 	
 	public CultivationGame(List<Player> participants) {
 		players = participants;
-		map = new GameMap(10, 10);
-		roundsPlayed = 0;
+		map = new GameMap(10, 10, participants);
+		this.roundsPlayed = 0;
+		turnOf = participants.get(0);
 	}
 	
 	public List<Player> getPlayers(){
+		List<Player> players = new LinkedList<Player>(this.players);
 		return players;
 	}
 	
@@ -51,4 +54,17 @@ public class CultivationGame {
 	public GameMap getGameMap(){
 		return map;
 	}
+
+	public int getRoundsPlayed() {
+		return roundsPlayed;
+	}
+	
+	public Player turnOf(){
+		return this.turnOf;
+	}
+	
+	public void turnOf(Player player){
+		this.turnOf(player);
+	}
+
 }

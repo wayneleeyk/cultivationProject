@@ -6,18 +6,26 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
+import com.badlogic.gdx.utils.Predicate;
+
 public class GameMap {
 
 	private Tile[][] map;
-	private HashMap<Player, Set<Region>> regions;
+	private HashMap<Player, Set<Region>> regions = new HashMap<>();
 	
-	public GameMap(int width, int height) {
+	public GameMap(int width, int height, List<Player> participants) {
 		HexMap mapGenerator = new HexMap(width, height);
 		map = mapGenerator.getMap();
+		for (Player player : participants) {
+			regions.put(player, new HashSet<Region>());
+		}
+		this.assignRandomLand(participants);
+		this.generateRegionsFromLandOwnership();
 	}
 	
 	public Tile[][] getMap() {
@@ -175,7 +183,7 @@ public class GameMap {
 
 	}
 
-	public List<Tile> bfsTileOfRegion(Region r, Tile t) {
+	public List<Tile> bfsTile(Predicate<Tile> p, Tile t){
 		Set<Tile> visited = new HashSet<>();
 		Queue<Tile> toVisit = new LinkedList<>();
 		List<Tile> result = new LinkedList<>();
@@ -186,25 +194,77 @@ public class GameMap {
 			visited.add(current);
 			Set<Tile> neighbours = getNeighbouringTiles(current);
 			Iterator<Tile> it = neighbours.iterator();
+			// remove neightbours that are visited or not of interest
 			while(it.hasNext()){
 				Tile tentative = it.next();
-				if(visited.contains(tentative) || !tentative.getPlayer().equals(t.getPlayer())) it.remove();
+				if(visited.contains(tentative) || !p.evaluate(tentative)) it.remove();
 			}
 			toVisit.addAll(neighbours);
+			current = toVisit.poll();
 		}
-		return null;
+		return result;
+	}
+	
+	
+	public List<Tile> bfsTileOfPlayer(Tile t){
+		final Player player = t.getPlayer();
+		return bfsTile(new Predicate<Tile>(){
+			@Override
+			public boolean evaluate(Tile tile) {
+				return tile.getPlayer().equals(player);
+			}
+		}, t);
+	}
+	
+	public List<Tile> bfsTileOfRegion(Tile t) {
+		final Region region = t.getRegion(); 
+		return bfsTile(new Predicate<Tile>(){
+			@Override
+			public boolean evaluate(Tile tile) {
+				return tile.getRegion().equals(region);
+			}
+		}, t);
 	}
 
 	public void mergeTo(Village v, Stack<Village> villages) {
 		mergeTo(villages.pop().merge(v), villages);
 	}
 
+	private Set<Tile> getMapTiles(){
+		Set<Tile> tiles = new HashSet<>();
+		for (Tile[] rows : map) {
+			for (Tile tile : rows) {
+				tiles.add(tile);
+			}
+		}
+		return tiles;
+	}
+	
 	public void assignRandomLand(List<Player> players) {
-
+		Set<Tile> tiles = getMapTiles();
+		int n = players.size();
+		int count = 0;
+		for (Tile tile : tiles) {
+			Player p = players.get(count % n);
+			tile.updateOwner(p);
+		}
+		
 	}
 
 	public void generateRegionsFromLandOwnership() {
-
+		Set<Tile> tiles = getMapTiles();
+		while(tiles.size() != 0){
+			Tile tile = tiles.iterator().next();
+			Set<Tile> regionalTiles = new HashSet<>( bfsTileOfPlayer(tile));
+			if(regionalTiles.size() >2){
+				Region r = new Region(null);
+				r.addTiles(regionalTiles);
+				Tile aTile = regionalTiles.iterator().next();
+				Village v = new Village(tile.getPlayer(), r, aTile);
+				r.setVillage(v);
+				this.regions.get(tile.getPlayer()).add(r);
+			}
+		}
 	}
 	
 	private <T> T pop(Collection<T> collection){

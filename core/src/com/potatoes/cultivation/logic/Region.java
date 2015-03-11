@@ -1,5 +1,6 @@
 package com.potatoes.cultivation.logic;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,10 @@ public class Region {
 	
 	public void addTile(Tile t){
 		myTiles.add(t);
+	}
+	
+	public void addTiles(Collection<Tile> tiles){
+		myTiles.addAll(tiles);
 	}
 	
 	public void removeTile(Tile t){
