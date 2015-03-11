@@ -33,8 +33,9 @@ public class Client{
 		this.game = game;
 		try {
 			this.socket = new Socket(host, port);
-			out = new ObjectOutputStream(this.socket.getOutputStream());
-			in = new ObjectInputStream(this.socket.getInputStream());
+			this.out = new ObjectOutputStream(this.socket.getOutputStream());
+			out.flush();
+			this.in = new ObjectInputStream(this.socket.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
