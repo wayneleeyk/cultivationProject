@@ -26,9 +26,16 @@ final class ClientAcceptor implements Runnable {
 				final ObjectInputStream in = new ObjectInputStream(incoming.getInputStream());
 				Protocol protocol = (Protocol) in.readObject();
 				
-				if(protocol instanceof LoginProtocol){
+				if(protocol instanceof LoginProtocol || protocol instanceof RegisterProtocol){
 					protocol.execute(server);
-					final String username = ((LoginProtocol) protocol).player().getUsername();
+					String user = "";
+					if(protocol instanceof LoginProtocol) {
+						user = ((LoginProtocol) protocol).player().getUsername();
+					}
+					else {
+						user = ((RegisterProtocol) protocol).player().getUsername();
+					}
+					final String username = user;
 					server.usernameToUser.put(username, new User(incoming, out));
 					
 					out.writeObject(protocol);
@@ -40,7 +47,9 @@ final class ClientAcceptor implements Runnable {
 							System.out.println("Task Listener started!");
 							while(!incoming.isClosed()){
 								try {
+									System.out.println("Before reading...");
 									Protocol protocol = (Protocol) in.readObject();
+									System.out.println("After reading...");
 									ClientAcceptor.this.server.queue.put(new ServerTask(out, protocol));
 									Thread.sleep(100);
 								} 
@@ -50,6 +59,7 @@ final class ClientAcceptor implements Runnable {
 									} catch (IOException io) {
 										io.printStackTrace();
 									}
+									e.printStackTrace();
 									return;
 								}
 							}
@@ -62,6 +72,7 @@ final class ClientAcceptor implements Runnable {
 				}
 			}
 			catch (IOException |ClassNotFoundException e) {
+				e.printStackTrace();
 			}
 		}
 	}

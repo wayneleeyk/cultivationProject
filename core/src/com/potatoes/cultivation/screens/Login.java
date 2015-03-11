@@ -29,6 +29,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.Player;
+import com.potatoes.cultivation.networking.JoinRoomProtocol;
+import com.potatoes.cultivation.networking.LoginProtocol;
+import com.potatoes.cultivation.networking.Protocol;
+import com.potatoes.cultivation.networking.ProtocolHandler;
+import com.potatoes.cultivation.networking.RegisterProtocol;
 
 public class Login extends ScreenAdapter {
 	Stage stage;
@@ -53,6 +58,27 @@ public class Login extends ScreenAdapter {
 		skin = pGame.skin;
 		anim = GifDecoder.loadGIFAnimation(1, Gdx.files.internal("potato_bounce.gif").read());
 		frameCounter = 0;
+		
+		////////////////////////////////////////////////
+		// HANDLERS
+		game.client.insertHandler(new ProtocolHandler() {
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof LoginProtocol) {
+					game.setPlayer(((LoginProtocol) p).player());
+				}
+			}
+		});
+		
+		game.client.insertHandler(new ProtocolHandler() {
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof RegisterProtocol) {
+					game.setPlayer(((RegisterProtocol) p).player());
+				}
+			}
+		});
+		////////////////////////////////////////////////
 		
 		final Table table = new Table();
 		
@@ -110,10 +136,21 @@ public class Login extends ScreenAdapter {
 					}
 					else {
 						// Enter the game room 0 (for testing)
+						class JoinHandler implements ProtocolHandler {
+							public boolean joinResult;
+							@Override
+							public void handle(Protocol p) {
+								if(p instanceof JoinRoomProtocol) {
+									joinResult = ((JoinRoomProtocol) p).getResult();
+								}
+							}
+						}
+						JoinHandler jh = new JoinHandler();
+						game.client.insertHandler(jh);
 						System.out.println("Before enter");
-						boolean result = game.client.joinRoom(0, game.player);
+						game.client.joinRoom(0, game.player);
 						System.out.println("Entering");
-						if(result) game.setScreen(new GameRoom(game, 0));
+						if(jh.joinResult) game.setScreen(new GameRoom(game, 0));
 						else {
 							game.setPlayer(null);
 							msg.setText("Net Error!");

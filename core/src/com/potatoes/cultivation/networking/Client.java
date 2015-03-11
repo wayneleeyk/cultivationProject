@@ -15,8 +15,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.Set;
 
-import jdk.nashorn.internal.ir.Block;
-
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameManager;
@@ -159,45 +157,45 @@ public class Client{
 	public List<Player> updateLobby(){return new LinkedList<Player>();}
 //	public void endTurn(List<Command> actions){}
 	
-	public boolean joinRoom(int number, Player p) {
+	public void joinRoom(int number, Player p) {
 		try {
 			out.writeObject(new JoinRoomProtocol(number, p));
-			JoinRoomProtocol returnedMessage = (JoinRoomProtocol) in.readObject();
-			return returnedMessage.getResult();
-		} catch (IOException | ClassNotFoundException e) {
+//			JoinRoomProtocol returnedMessage = (JoinRoomProtocol) in.readObject();
+//			return returnedMessage.getResult();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return false; 
+//		return false; 
 	}
 	
-	public Player login(String username, String password){
+	public void login(String username, String password){
 		try{
 			out.writeObject(new LoginProtocol(username, password));
-			LoginProtocol returnedMessage = (LoginProtocol) in.readObject();
-			game.setPlayer(returnedMessage.player());
-			return returnedMessage.player();
+//			LoginProtocol returnedMessage = (LoginProtocol) in.readObject();
+//			game.setPlayer(returnedMessage.player());
+//			return returnedMessage.player();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (Exception e){
-			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (Exception e){
+//			e.printStackTrace();
 		}
-		return null;
+//		return null;
 	}
 	
-	public Player register(String username, String password){
+	public void register(String username, String password){
 		try{
 			out.writeObject(new RegisterProtocol(username, password));
-			RegisterProtocol returnedMessage = (RegisterProtocol) in.readObject();
-			game.setPlayer(returnedMessage.player());
-			return returnedMessage.player();
+//			RegisterProtocol returnedMessage = (RegisterProtocol) in.readObject();
+//			game.setPlayer(returnedMessage.player());
+//			return returnedMessage.player();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
 		}
-		return null;
+//		return null;
 	}
 //	
 //	class ClientThread implements Runnable {
