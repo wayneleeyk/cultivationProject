@@ -30,7 +30,7 @@ public class GamesManager {
 	}
 	
 	public static Collection<Player> otherPlayersInRoom(int roomNumber){
-		if(roomNumber>0){
+		if(roomNumber>=0){
 			return games.get(roomNumber);
 		}
 		return new HashSet<>();

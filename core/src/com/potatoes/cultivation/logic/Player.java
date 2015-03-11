@@ -7,7 +7,6 @@ import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.networking.Client.WinLoss;
 
 public class Player implements Serializable{
-	
 	private static final long serialVersionUID = 6376954568789670281L;
 	public static final Player nullPlayer = new Player("");
 	

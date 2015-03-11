@@ -1,10 +1,11 @@
 package com.potatoes.cultivation.logic;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CultivationGame {
-
+public class CultivationGame implements Serializable{
+	private static final long serialVersionUID = 5863425364436347495L;
 	private int roundsPlayed;
 	private Player turnOf;
 	private List<Player> players;

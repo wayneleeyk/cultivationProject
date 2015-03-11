@@ -1,7 +1,10 @@
 package com.potatoes.cultivation.logic;
-//Author: Shivani Sharma
-public class Unit {
 
+import java.io.Serializable;
+
+//Author: Shivani Sharma
+public class Unit implements Serializable{
+	private static final long serialVersionUID = -4822623392988569568L;
 	private UnitType myType;
 	private ActionType currentAction;
 	private Tile myTile;

@@ -27,6 +27,9 @@ import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameManager;
 import com.potatoes.cultivation.logic.Player;
+import com.potatoes.cultivation.networking.GameDataProtocol;
+import com.potatoes.cultivation.networking.Protocol;
+import com.potatoes.cultivation.networking.ProtocolHandler;
 
 public class GameRoom extends ScreenAdapter {
 	int roomNumber;
@@ -46,6 +49,16 @@ public class GameRoom extends ScreenAdapter {
 		Gdx.input.setInputProcessor(stage);
 		
 		playersInRoom = game.client.getPlayersForRoom(room);
+		
+		game.client.insertHandler(new ProtocolHandler() {
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof GameDataProtocol){
+					System.out.println("Handling a game protocol");
+					game.setScreen(new InGame(pGame, ((GameDataProtocol) p).getGame()));
+				}
+			}
+		});
 		
 		// Setting up the room
 		
@@ -111,7 +124,7 @@ public class GameRoom extends ScreenAdapter {
 	
 	private void updateRoomInfo(float delta) {
 		timer += delta;
-		// Update every 5 seconds
+		// Update every 1 seconds
 		if(timer > 1) {
 			System.out.println("Getting room info");
 			game.client.updateRoomInfo(roomNumber);

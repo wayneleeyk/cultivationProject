@@ -1,12 +1,13 @@
 package com.potatoes.cultivation.logic;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.screens.InGame;
 
-public class Tile {
-	
+public class Tile implements Serializable{
+	private static final long serialVersionUID = -6410265910809526066L;
 	private LandType myType;
 	private StructureType structure;
 	private Unit occupant;

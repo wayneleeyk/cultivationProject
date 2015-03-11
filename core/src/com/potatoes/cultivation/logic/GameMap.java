@@ -1,5 +1,6 @@
 package com.potatoes.cultivation.logic;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,8 +14,8 @@ import java.util.Stack;
 
 import com.badlogic.gdx.utils.Predicate;
 
-public class GameMap {
-
+public class GameMap implements Serializable{
+	private static final long serialVersionUID = 1777608645753451446L;
 	private Tile[][] map;
 	private HashMap<Player, Set<Region>> regions = new HashMap<>();
 	

@@ -2,7 +2,7 @@ package com.potatoes.cultivation.logic;
 
 //Author: Shivani Sharma
 
-public enum LandType {
+public enum LandType{
 
 	Sea, Tree, Grass, Meadow;
 	

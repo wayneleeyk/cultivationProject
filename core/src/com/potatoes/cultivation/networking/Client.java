@@ -29,7 +29,10 @@ public class Client{
 	int port;
 	private Socket socket;
 	private BlockingQueue<ClientTask> taskQueue = new LinkedBlockingQueue<ClientTask>();
-	private BlockingQueue<ClientEvent> events = new LinkedBlockingQueue<>();
+	private BlockingQueue<Protocol> incomingQueue = new LinkedBlockingQueue<>();
+	
+	private List<ProtocolHandler> handlers = new LinkedList<>();
+	
 	Cultivation game;
 	ObjectOutputStream out;
 	ObjectInputStream in;
@@ -70,13 +73,28 @@ public class Client{
 			public void run() {
 				while(true){
 					try {
-						events.take().execute();
+						Protocol p = incomingQueue.take();
+						for (ProtocolHandler protocolHandler : handlers) {
+							protocolHandler.handle(p);
+						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		}).start();
+	}
+	
+	public void insertHandler(ProtocolHandler handler){
+		this.handlers.add(handler);
+	}
+	
+	public void removeHandler(ProtocolHandler handler){
+		this.handlers.remove(handler);
+	}
+	
+	public void clearAllHandlers(){
+		this.handlers.clear();
 	}
 	
 	// Adds the login method to the queue for ClientThread to execute it
@@ -129,8 +147,7 @@ public class Client{
 	private void sendHeartbeat(){
 		try {
 			out.writeObject(new HeartbeatProtocol(this.game.player.getUsername()));
-			in.readObject();
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
