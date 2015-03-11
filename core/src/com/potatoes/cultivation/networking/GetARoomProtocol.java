@@ -1,5 +1,6 @@
 package com.potatoes.cultivation.networking;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.potatoes.cultivation.logic.Player;
@@ -15,7 +16,7 @@ public class GetARoomProtocol implements Protocol {
 	
 	@Override
 	public void execute(Server server) {
-		playerList = server.getPlayersForRoom(number);
+		playerList = new HashSet<>( server.getPlayersForRoom(number) );
 	}
 	
 	public Set<Player> getList() {

@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,7 +14,12 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.Set;
+
+import jdk.nashorn.internal.ir.Block;
+
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.logic.CultivationGame;
+import com.potatoes.cultivation.logic.GameManager;
 //import com.potatoes.cultivation.logic.Command;
 import com.potatoes.cultivation.logic.Player;
 
@@ -23,11 +29,15 @@ public class Client{
 	int port;
 	private Socket socket;
 	private BlockingQueue<ClientTask> taskQueue = new LinkedBlockingQueue<ClientTask>();
+	private BlockingQueue<Protocol> incomingQueue = new LinkedBlockingQueue<>();
+	
+	private List<ProtocolHandler> handlers = new LinkedList<>();
+	
 	Cultivation game;
 	ObjectOutputStream out;
 	ObjectInputStream in;
 	
-	public Client(Cultivation game, String host, int port) {
+	public Client(final Cultivation game, String host, int port) {
 		this.host = host;
 		this.port = port;
 		this.game = game;
@@ -40,20 +50,51 @@ public class Client{
 			e.printStackTrace();
 		}
 		new Thread(new ClientThread(this)).start();
+		
 		// heartbeat thread (ie tells server the connection is alive)
-//		new Thread(new Runnable() {
-//			@Override
-//			public void run() {
-//				while(true){
-//					sendHeartbeat();
-//					try {
-//						Thread.sleep(10000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println("Starting heart ");
+				while(true){
+					if(game.player!=null) sendHeartbeat();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+		
+		// event listener
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while(true){
+					try {
+						Protocol p = incomingQueue.take();
+						for (ProtocolHandler protocolHandler : handlers) {
+							protocolHandler.handle(p);
+						}
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+	}
+	
+	public void insertHandler(ProtocolHandler handler){
+		this.handlers.add(handler);
+	}
+	
+	public void removeHandler(ProtocolHandler handler){
+		this.handlers.remove(handler);
+	}
+	
+	public void clearAllHandlers(){
+		this.handlers.clear();
 	}
 	
 	// Adds the login method to the queue for ClientThread to execute it
@@ -82,26 +123,13 @@ public class Client{
 		}
 	}
 	
-//	public void addWinLoss(WinLoss status){
-//		try {
-//			Method add = this.getClass().getDeclaredMethod("doAddWinLoss", WinLoss.class);
-//			add.setAccessible(true);
-//			taskQueue.add(new ClientTask(add, status));
-//		} catch (NoSuchMethodException | SecurityException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	public void getWinLoss(WinLoss status){
-//		try {
-//			Method get = this.getClass().getDeclaredMethod("doGetWinLoss", WinLoss.class);
-//			get.setAccessible(true);
-//			taskQueue.add(new ClientTask(get, status));
-//		} catch (NoSuchMethodException | SecurityException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
+	public void startGame(CultivationGame game){
+		try {
+			out.writeObject(new GameDataProtocol(this.game.player, game));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public Map<Player, Boolean> areOnline(List<Player> usernames){
 		try {
@@ -155,23 +183,23 @@ public class Client{
 			Method getPlayersForRoom = this.getClass().getDeclaredMethod("getPlayersForRoom", int.class);
 			taskQueue.add(new ClientTask(getPlayersForRoom, number));
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
+//	public void updateRoomInfo(Collection<Player> players){
+//		game.
+//	}
+	
 	public Set<Player> getPlayersForRoom(int number) {
 		try {
-//			Socket socket = new Socket(host, port);
+			System.out.println("Getting players for room "+number);
 			out.writeObject(new GetARoomProtocol(number));
 			GetARoomProtocol returnedMessage = (GetARoomProtocol) in.readObject();
-//			socket.close();
 			return returnedMessage.getList();
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null; 
@@ -182,13 +210,10 @@ public class Client{
 	
 	public boolean joinRoom(int number, Player p) {
 		try {
-//			Socket socket = new Socket(host, port);
 			out.writeObject(new JoinRoomProtocol(number, p));
 			JoinRoomProtocol returnedMessage = (JoinRoomProtocol) in.readObject();
-//			socket.close();
 			return returnedMessage.getResult();
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false; 

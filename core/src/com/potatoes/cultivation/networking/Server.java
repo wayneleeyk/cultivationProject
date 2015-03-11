@@ -14,19 +14,19 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.Player;
 
 public class Server implements Runnable{
@@ -38,12 +38,9 @@ public class Server implements Runnable{
 	Map<String, String> accountsForLogin = new ConcurrentHashMap<>();
 	Map<String, WinsAndLosses> winsAndLoses = new ConcurrentHashMap<>();
 	
-	Map<String, Socket> usernameToSockets = new ConcurrentHashMap<>();
-	Map<String, ObjectOutputStream> usernameToOOS= new ConcurrentHashMap<>();
-	Map<String, Long> lastSeen = new ConcurrentHashMap<>();
+	Map<String, User> usernameToUser = new ConcurrentHashMap<String, User>();
 	
-	@SuppressWarnings("unchecked")
-	Set<Player>[] gameRooms = (Set<Player>[]) new Set[10];
+	List<Set<Player>> gameRooms = Collections.synchronizedList(new ArrayList<Set<Player>>(10));
 	
 	public Server(int port) {
 		try {
@@ -53,7 +50,7 @@ public class Server implements Runnable{
 		}
 		
 		// Initialize game room 0 for testing purposes
-		gameRooms[0] = new LinkedHashSet<Player>();
+		gameRooms.add(0,new LinkedHashSet<Player>());
 	}
 
 	@Override
@@ -72,12 +69,12 @@ public class Server implements Runnable{
 						out.flush();
 						final ObjectInputStream in = new ObjectInputStream(incoming.getInputStream());
 						Protocol protocol = (Protocol) in.readObject();
+						
 						if(protocol instanceof LoginProtocol){
 							protocol.execute(server);
-							String username = ((LoginProtocol) protocol).player().getUsername();
-							usernameToSockets.put(username, incoming);
-							usernameToOOS.put(username, out);
-							lastSeen.put(username, System.currentTimeMillis());
+							final String username = ((LoginProtocol) protocol).player().getUsername();
+							usernameToUser.put(username, new User(incoming, out));
+							
 							out.writeObject(protocol);
 							// Thread to listen on the socket
 							System.out.println("Starting task listener...");
@@ -86,15 +83,17 @@ public class Server implements Runnable{
 								public void run() {
 									System.out.println("Task Listener started!");
 									while(!incoming.isClosed()){
-										System.out.println("Looping...");
 										try {
 											Protocol protocol = (Protocol) in.readObject();
-											System.out.println("Read a new protocol from in");
 											queue.put(new ServerTask(incoming, out, protocol));
-											System.out.println("New task was put!");
 											Thread.sleep(100);
-										} catch (ClassNotFoundException| IOException | InterruptedException e) {
-											e.printStackTrace();
+										} 
+										catch (ClassNotFoundException| IOException | InterruptedException e) {
+											try {
+												usernameToUser.get(username).closeConnection();
+											} catch (IOException io) {
+												io.printStackTrace();
+											}
 											return;
 										}
 									}
@@ -106,10 +105,7 @@ public class Server implements Runnable{
 							incoming.close();
 						}
 					}
-					catch (IOException e) {
-						e.printStackTrace();
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
+					catch (IOException |ClassNotFoundException e) {
 					}
 				}
 			}
@@ -121,9 +117,9 @@ public class Server implements Runnable{
 				while(true){
 					try {
 						ServerTask task = queue.take();
-						System.out.println("New task was taken");
 						task.protocol.execute(server);
 						task.oos.writeObject(task.protocol);
+						task.oos.flush();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -136,20 +132,28 @@ public class Server implements Runnable{
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Iterator<Entry<String, Long>> it = lastSeen.entrySet().iterator();
-				while (it.hasNext()){
-					Entry<String, Long> entry = it.next();
-					long current = System.currentTimeMillis();
-					if(current - entry.getValue() > 60000){
-						// if last seen was more than a minute ago
-						String user = entry.getKey();
-						try {
-							usernameToSockets.get(user).close();
-						} catch (IOException e) {
-							e.printStackTrace();
+				while(true){
+					Iterator<Entry<String, User>> it = usernameToUser.entrySet().iterator();
+					while (it.hasNext()){
+						Entry<String, User> entry = it.next();
+						long current = System.currentTimeMillis();
+//						System.out.println(entry.getKey() +" was last seen "+(current - entry.getValue().lastSeen));
+						if(current - entry.getValue().lastSeen > 3000){
+							// if last seen was more than half a minute ago
+							String user = entry.getKey();
+							try {
+								entry.getValue().closeConnection();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							it.remove();
+							System.out.println(user + " has disconnected");
 						}
-						it.remove();
-						System.out.println(user + " has disconnected");
+					}
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
 			}
@@ -165,28 +169,30 @@ public class Server implements Runnable{
 	
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
 		for (Player p : GamesManager.opponentsOf(sender)) {
-			String username = p.getUsername();
-			queue.add(new ServerTask(usernameToSockets.get(username), usernameToOOS.get(username),actionBlock));
+			User user = usernameToUser.get(p.getUsername());
+			queue.add(new ServerTask(user.socket, user.oos ,actionBlock));
 		}
 	}
 	
 	void propagate(Player sender, GameDataProtocol game){
 		for(Player p: GamesManager.opponentsOf(sender)){
-			String username = p.getUsername();
-			queue.add(new ServerTask(usernameToSockets.get(username), usernameToOOS.get(username),game));
+			User user = usernameToUser.get(p.getUsername());
+			queue.add(new ServerTask(user.socket, user.oos,game));
 		}
 	}
 	
 	void heartbeat(String username){
-		if(this.lastSeen.get(username) != null){
-			this.lastSeen.put(username, System.currentTimeMillis());
+		User user = usernameToUser.get(username);
+		if(user != null){
+			user.updateLastSeen();
 		}
 	}
 	
-	Map<Player, Boolean> areOnline(List<Player> usernames){
+	Map<Player, Boolean> areOnline(List<Player> players){
 		Map<Player, Boolean> online = new HashMap<>();
-		for (Player username : usernames) {
-			online.put(username, this.lastSeen.get(username)!=null && !this.usernameToSockets.get(usernames).isClosed());
+		for (Player player : players) {
+			User user = usernameToUser.get(player.getUsername());
+			online.put(player, user!=null && !user.socket.isClosed());
 		}
 		return online;
 	}
@@ -316,7 +322,8 @@ public class Server implements Runnable{
 //		}
 //		
 //		return gameRooms.get(i);
-		return gameRooms[i];
+		
+		return new HashSet<>( gameRooms.get(i) );
 	}
 	
 	public boolean addPlayerToRoom(int i, Player p) {
@@ -326,9 +333,9 @@ public class Server implements Runnable{
 //			gameRooms.get(i).add(p);
 //			return true;
 //		}
-		if(gameRooms[i] == null) return false;
+		if(gameRooms.get(i) == null) return false;
 		else {
-			gameRooms[i].add(p);
+			gameRooms.get(i).add(p);
 			return true;
 		}
 	}

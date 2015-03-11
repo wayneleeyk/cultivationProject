@@ -1,12 +1,15 @@
 package com.potatoes.cultivation.logic;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import com.potatoes.cultivation.Cultivation;
 
-public class Region {
-	
+public class Region implements Serializable{
+	private static final long serialVersionUID = -6761074377290852816L;
+
 	public final static Region NO_REGION = new Region(null);
 	
 	private Set<Tile> myTiles = new HashSet<>();
@@ -19,6 +22,10 @@ public class Region {
 	
 	public void addTile(Tile t){
 		myTiles.add(t);
+	}
+	
+	public void addTiles(Collection<Tile> tiles){
+		myTiles.addAll(tiles);
 	}
 	
 	public void removeTile(Tile t){

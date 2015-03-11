@@ -5,12 +5,15 @@ import java.util.List;
 public class GameManager {
 
 	private CultivationGame myGame;
+	
 	public CultivationGame getGame(){
 		return myGame;
 	}
 	
-	public void newGame(List<Player> players ){
-		
+	public boolean newGame(List<Player> players ){
+		System.out.println("Making new game");
+		this.myGame = new CultivationGame(players);
+		return true;
 	}
 	
 	
