@@ -1,7 +1,7 @@
 package com.potatoes.cultivation.networking;
 
 public abstract class ProtocolHandler <T> {
-	private T result = null;
+	protected T result = null;
 	public abstract void handle(Protocol p);
 	public T getResult(){
 		while(result == null){
@@ -11,6 +11,6 @@ public abstract class ProtocolHandler <T> {
 				e.printStackTrace();
 			}
 		}
-		return null;
+		return result;
 	}
 }

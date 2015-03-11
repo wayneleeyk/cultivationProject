@@ -61,7 +61,7 @@ public class Login extends ScreenAdapter {
 		
 		////////////////////////////////////////////////
 		// HANDLERS
-		game.client.insertHandler(new ProtocolHandler() {
+		game.client.insertHandler(new ProtocolHandler<Void>() {
 			@Override
 			public void handle(Protocol p) {
 				if(p instanceof LoginProtocol) {
@@ -70,7 +70,7 @@ public class Login extends ScreenAdapter {
 			}
 		});
 		
-		game.client.insertHandler(new ProtocolHandler() {
+		game.client.insertHandler(new ProtocolHandler<Void>() {
 			@Override
 			public void handle(Protocol p) {
 				if(p instanceof RegisterProtocol) {
@@ -136,21 +136,46 @@ public class Login extends ScreenAdapter {
 					}
 					else {
 						// Enter the game room 0 (for testing)
-						class JoinHandler implements ProtocolHandler {
-							public boolean joinResult;
+//						class JoinHandler implements ProtocolHandler {
+//							private Boolean joinResult = null;
+//							@Override
+//							public void handle(Protocol p) {
+//								if(p instanceof JoinRoomProtocol) {
+//									joinResult = ((JoinRoomProtocol) p).getResult();
+//								}
+//							}
+//							
+//							public boolean getResult() {
+//								while(joinResult == null) {
+//									try {
+//										Thread.sleep(100);
+//									} catch (InterruptedException e) {
+//										e.printStackTrace();
+//									}
+//								}
+//								return joinResult.booleanValue();
+//							}
+//						}
+//						
+//						JoinHandler jh = new JoinHandler();
+						
+						ProtocolHandler<Boolean> jh = new ProtocolHandler<Boolean>() {
 							@Override
 							public void handle(Protocol p) {
 								if(p instanceof JoinRoomProtocol) {
-									joinResult = ((JoinRoomProtocol) p).getResult();
+									result = ((JoinRoomProtocol) p).getResult();
 								}
 							}
-						}
-						JoinHandler jh = new JoinHandler();
+						};
+						
 						game.client.insertHandler(jh);
 						System.out.println("Before enter");
 						game.client.joinRoom(0, game.player);
 						System.out.println("Entering");
-						if(jh.joinResult) game.setScreen(new GameRoom(game, 0));
+						if(jh.getResult()) {
+							game.client.clearAllHandlers();
+							game.setScreen(new GameRoom(game, 0));
+						}
 						else {
 							game.setPlayer(null);
 							msg.setText("Net Error!");

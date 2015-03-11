@@ -28,6 +28,7 @@ import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameManager;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.networking.GameDataProtocol;
+import com.potatoes.cultivation.networking.GetARoomProtocol;
 import com.potatoes.cultivation.networking.Protocol;
 import com.potatoes.cultivation.networking.ProtocolHandler;
 
@@ -48,21 +49,34 @@ public class GameRoom extends ScreenAdapter {
 		stage = new Stage();
 		Gdx.input.setInputProcessor(stage);
 		
-		playersInRoom = game.client.getPlayersForRoom(room);
+		ProtocolHandler<Set<Player>> getRoomHandler = new ProtocolHandler<Set<Player>>() {
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof GetARoomProtocol) {
+					result = ((GetARoomProtocol) p).getList();
+				}
+			}
+		};
 		
-		game.client.insertHandler(new ProtocolHandler() {
+		game.client.insertHandler(getRoomHandler);
+
+		game.client.insertHandler(new ProtocolHandler<CultivationGame>() {
 			@Override
 			public void handle(Protocol p) {
 				if(p instanceof GameDataProtocol){
 					System.out.println("Handling a game protocol");
-					game.setScreen(new InGame(pGame, ((GameDataProtocol) p).getGame()));
-					game.client.removeHandler(this);
+					result = ((GameDataProtocol) p).getGame();
+					game.GAMEMANAGER.setGame(result);
+					game.client.clearAllHandlers();
+					game.setScreen(new InGame(game, game.GAMEMANAGER.getGame()));
 				}
 			}
 		});
 		
-		// Setting up the room
+		game.client.getPlayersForRoom(room);
+		playersInRoom = getRoomHandler.getResult();
 		
+		// Setting up the room		
 		Table table = new Table();
 		table.setFillParent(true);
 		
@@ -74,16 +88,16 @@ public class GameRoom extends ScreenAdapter {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("Pressed start");
-				GameManager gameManager = new GameManager();
 				System.out.println("Made game");
 				List<Player> players = new LinkedList<>();
 				players.addAll(playersInRoom);
 				System.out.println("added players");
-				gameManager.newGame(players);
+				game.GAMEMANAGER.newGame(players);
 				System.out.println("Generated new game");
-				game.client.startGame(gameManager.getGame());
+				game.client.clearAllHandlers();
+				game.client.startGame(game.GAMEMANAGER.getGame());
 				System.out.println("sent game");
-				game.setScreen(new InGame(pGame, gameManager.getGame()));
+				game.setScreen(new InGame(pGame, game.GAMEMANAGER.getGame()));
 			}
 		});
 		table.add(start).width(200).expand().center();
@@ -97,7 +111,7 @@ public class GameRoom extends ScreenAdapter {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		updateRoomInfo(delta);
+//		updateRoomInfo(delta);
 		stage.act(delta);
 		stage.draw();
 	}
@@ -123,16 +137,16 @@ public class GameRoom extends ScreenAdapter {
 		return list;
 	}
 	
-	private void updateRoomInfo(float delta) {
-		timer += delta;
-		// Update every 1 seconds
-		if(timer > 1) {
-			System.out.println("Getting room info");
-			game.client.updateRoomInfo(roomNumber);
-			timer = 0;
-			listOfPlayers.setText(getPlayerNames());
-		}
-	}
+//	private void updateRoomInfo(float delta) {
+//		timer += delta;
+//		// Update every 1 seconds
+//		if(timer > 1) {
+//			System.out.println("Getting room info");
+//			game.client.updateRoomInfo(roomNumber);
+//			timer = 0;
+//			listOfPlayers.setText(getPlayerNames());
+//		}
+//	}
 	
 //	public void updateRoomInfo(Collection<Player> players){
 //		playersInRoom.clear();

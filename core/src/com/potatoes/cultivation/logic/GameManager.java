@@ -21,6 +21,9 @@ public class GameManager {
 		return myGame.getGameMap();
 	}
 	
+	public void setGame(CultivationGame g) {
+		myGame = g;
+	}
 	
 	
 }

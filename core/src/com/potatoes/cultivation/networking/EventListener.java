@@ -15,12 +15,13 @@ class EventListener implements Runnable {
 		while(true){
 			try {
 				Protocol p = this.client.incomingQueue.take();
-				System.out.println("Protocol has arrived ");
-				for (ProtocolHandler protocolHandler : this.client.handlers) {
+				System.out.println("Protocol has arrived " + p.getClass().toString());
+				for (ProtocolHandler<?> protocolHandler : this.client.handlers) {
 					protocolHandler.handle(p);
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				return;
 			}
 		}
 	}

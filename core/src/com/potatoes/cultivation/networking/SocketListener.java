@@ -23,6 +23,7 @@ final class SocketListener implements Runnable {
 				this.client.incomingQueue.offer(protocol);
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
+				return;
 			}
 		}
 	}

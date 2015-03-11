@@ -53,15 +53,15 @@ public class Client{
 		new Thread(new EventListener(this)).start();
 		
 		// socket listener
-		new Thread(new SocketListener(this));
+		new Thread(new SocketListener(this)).start();
 		
 	}
 	
-	public void insertHandler(ProtocolHandler handler){
+	public void insertHandler(ProtocolHandler<?> handler){
 		this.handlers.add(handler);
 	}
 	
-	public void removeHandler(ProtocolHandler handler){
+	public void removeHandler(ProtocolHandler<?> handler){
 		this.handlers.remove(handler);
 	}
 	
@@ -141,17 +141,17 @@ public class Client{
 //		game.
 //	}
 	
-	public Set<Player> getPlayersForRoom(int number) {
+	public void getPlayersForRoom(int number) {
 		try {
-			System.out.println("Getting players for room "+number);
+			System.out.println("Getting players for room " + number);
 			out.writeObject(new GetARoomProtocol(number));
-			GetARoomProtocol returnedMessage = (GetARoomProtocol) in.readObject();
-			game.updateRoomPlayerList(returnedMessage.getList());
-			return returnedMessage.getList();
-		} catch (IOException | ClassNotFoundException e) {
+//			GetARoomProtocol returnedMessage = (GetARoomProtocol) in.readObject();
+//			game.updateRoomPlayerList(returnedMessage.getList());
+//			return returnedMessage.getList();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return null; 
+//		return null; 
 	}
 	
 	public List<Player> updateLobby(){return new LinkedList<Player>();}
