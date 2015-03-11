@@ -129,8 +129,12 @@ public class GameMap {
 		return new MapCoordinates(-1,-1);
 	}
 
-	public Set<Village> getMyVillagesOfAdjacentTiles(Queue<Tile> tiles, Player p) {
-		Tile t = tiles.poll();
+	public Set<Village> getMyVillagesOfAdjacentTiles(Set<Tile> tiles, Player p) {
+		Queue<Tile> qTiles = new LinkedList<Tile>();
+		for (Tile t : tiles) {
+			qTiles.add(t);
+		}
+		Tile t = qTiles.poll();
 		Set<Village> villages = getMyVillagesOfAdjacentTiles(tiles, p);
 		if(t.getPlayer().equals(p)) villages.add(getRegion(t).getVillage());
 		return villages;

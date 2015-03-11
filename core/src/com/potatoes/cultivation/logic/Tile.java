@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.logic;
 
 import java.util.Set;
+import java.util.Stack;
 
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.screens.InGame;
@@ -83,7 +84,7 @@ public class Tile {
 	 * Questions or mistakes? --> Monica
 	 * Unit u is the unit that tries to go on this tile
 	 */
-	public void tryInvade(Unit u){
+	public boolean tryInvade(Unit u){
 		boolean moved = false;
 		Tile tileOfUnit = u.getTile();
 		Set<Tile> neighbouringTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(tileOfUnit);
@@ -125,11 +126,29 @@ public class Tile {
 				}
 				//If there is a tomb stone on tile, clear it
 				if (structure == StructureType.Tombstone) {
-					
-					
+					//Set unit's action to clearing tomb stone
+					u.updateAction(ActionType.ClearingTombStone);
+					//Destroy tomb stone
+					structure = StructureType.None;
+				}
+				//If unit is Knight and there is a meadow and no road, he tramples the meadow 
+				if (structure!=StructureType.Road && u.getType()==UnitType.Knight && myType==LandType.Meadow) {
+					myType = LandType.Grass;
+				}
+				//Merge part 
+				Set<Village> myNeighbouringVillages = Cultivation.GAMEMANAGER.getGameMap().getMyVillagesOfAdjacentTiles(neighbouringTiles, owner);
+				//Convert to stack for mergeTo method
+				if (myNeighbouringVillages.size()>=1) {
+					Village biggestVillage = Cultivation.GAMEMANAGER.getGameMap().biggestOf(myNeighbouringVillages);
+					Stack<Village> stackOfVillages = new Stack<Village>();
+					for (Village v : myNeighbouringVillages) {
+						stackOfVillages.push(v);
+					}
+					Cultivation.GAMEMANAGER.getGameMap().mergeTo(biggestVillage, stackOfVillages);
 				}
 			}
 		}
+		return moved;
 	}
 	
 	public Region getRegion(){
