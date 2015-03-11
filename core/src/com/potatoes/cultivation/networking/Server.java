@@ -57,7 +57,7 @@ public class Server implements Runnable{
 		// Thread to process tasks
 		new Thread(new TaskProcessor(this)).start();
 		// Thread to monitor clients
-		new Thread(new ClientMonitor(this)).start();
+//		new Thread(new ClientMonitor(this)).start();
 	}
 	
 	public static void main(String[] args) {
