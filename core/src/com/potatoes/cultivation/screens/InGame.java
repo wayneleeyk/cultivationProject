@@ -61,7 +61,7 @@ public class InGame extends ScreenAdapter{
 		//Assigns a unique color to each player to colour the tiles that they own
 		colorByIndex = new ArrayList<Color>();
 		colorByIndex.add(new Color(1,0,0,0.99f));
-		colorByIndex.add(new Color(0,0.5f,0.5f,0.99f));
+		colorByIndex.add(new Color(0,1f,1f,0.99f));
 		colorByIndex.add(new Color(0.47f,0,1,0.99f));
 		
 		hex_grass = atlas.findRegion("grass");
