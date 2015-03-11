@@ -56,6 +56,7 @@ public class GameRoom extends ScreenAdapter {
 				if(p instanceof GameDataProtocol){
 					System.out.println("Handling a game protocol");
 					game.setScreen(new InGame(pGame, ((GameDataProtocol) p).getGame()));
+					game.client.removeHandler(this);
 				}
 			}
 		});

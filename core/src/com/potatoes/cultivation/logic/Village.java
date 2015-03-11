@@ -1,9 +1,10 @@
 package com.potatoes.cultivation.logic;
 
+import java.io.Serializable;
 import java.util.Random;
 
-public class Village implements Comparable<Village> {
-
+public class Village implements Comparable<Village>, Serializable {
+	private static final long serialVersionUID = -8934307394308919420L;
 	private VillageType myType;
 	private int gold;
 	private int wood;

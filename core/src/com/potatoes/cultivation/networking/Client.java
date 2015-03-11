@@ -49,7 +49,7 @@ public class Client{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		new Thread(new ClientThread(this)).start();
+//		new Thread(new ClientThread(this)).start();
 		
 		// heartbeat thread (ie tells server the connection is alive)
 		new Thread(new Runnable() {
@@ -74,6 +74,7 @@ public class Client{
 				while(true){
 					try {
 						Protocol p = incomingQueue.take();
+						System.out.println("Protocol has arrived ");
 						for (ProtocolHandler protocolHandler : handlers) {
 							protocolHandler.handle(p);
 						}
@@ -98,30 +99,30 @@ public class Client{
 	}
 	
 	// Adds the login method to the queue for ClientThread to execute it
-	public void login(String username, String password) {
-			try {
-				Method doLogin = this.getClass().getDeclaredMethod("doLogin", String.class, String.class);
-				doLogin.setAccessible(true);
-				taskQueue.add(new ClientTask(doLogin, username, password));
-			} catch (NoSuchMethodException e) {
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				e.printStackTrace();
-			}
-	}
+//	public void login(String username, String password) {
+//			try {
+//				Method doLogin = this.getClass().getDeclaredMethod("doLogin", String.class, String.class);
+//				doLogin.setAccessible(true);
+//				taskQueue.add(new ClientTask(doLogin, username, password));
+//			} catch (NoSuchMethodException e) {
+//				e.printStackTrace();
+//			} catch (SecurityException e) {
+//				e.printStackTrace();
+//			}
+//	}
 	
 	// Adds the register method to the queue for ClientThread to execute it
-	public void register(String username, String password) {
-		try {
-			Method register = this.getClass().getDeclaredMethod("createAccount", String.class, String.class);
-			register.setAccessible(true);
-			taskQueue.add(new ClientTask(register, username, password));
-		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		}
-	}
+//	public void register(String username, String password) {
+//		try {
+//			Method register = this.getClass().getDeclaredMethod("createAccount", String.class, String.class);
+//			register.setAccessible(true);
+//			taskQueue.add(new ClientTask(register, username, password));
+//		} catch (NoSuchMethodException e) {
+//			e.printStackTrace();
+//		} catch (SecurityException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	public void startGame(CultivationGame game){
 		try {
@@ -198,6 +199,7 @@ public class Client{
 			System.out.println("Getting players for room "+number);
 			out.writeObject(new GetARoomProtocol(number));
 			GetARoomProtocol returnedMessage = (GetARoomProtocol) in.readObject();
+			game.updateRoomPlayerList(returnedMessage.getList());
 			return returnedMessage.getList();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -219,10 +221,11 @@ public class Client{
 		return false; 
 	}
 	
-	public Player doLogin(String username, String password){
+	public Player login(String username, String password){
 		try{
 			out.writeObject(new LoginProtocol(username, password));
 			LoginProtocol returnedMessage = (LoginProtocol) in.readObject();
+			game.setPlayer(returnedMessage.player());
 			return returnedMessage.player();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -234,10 +237,11 @@ public class Client{
 		return null;
 	}
 	
-	public Player createAccount(String username, String password){
+	public Player register(String username, String password){
 		try{
 			out.writeObject(new RegisterProtocol(username, password));
 			RegisterProtocol returnedMessage = (RegisterProtocol) in.readObject();
+			game.setPlayer(returnedMessage.player());
 			return returnedMessage.player();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -246,39 +250,39 @@ public class Client{
 		}
 		return null;
 	}
-	
-	class ClientThread implements Runnable {
-		private Client client;
-		
-		public ClientThread(Client master) {
-			client = master;
-		}
-
-		@Override
-		public void run() {
-			while(true) {
-				try {
-					ClientTask c = taskQueue.take();
-					Method toExecute = c.getMethodToExecute();
-					Object[] params = c.getParameters();
-					
-					Object methodReturn = toExecute.invoke(client, params);
-					System.out.println(methodReturn);
-					switch(toExecute.getName()) {
-						case "doLogin": 
-							game.setPlayer((Player) methodReturn);
-							break;
-						case "createAccount":
-							game.setPlayer((Player) methodReturn);
-							break;
-						case "getPlayersForRoom":
-							game.updateRoomPlayerList((Set<Player>) methodReturn);
-							break;
-					}
-				} catch (InterruptedException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
+//	
+//	class ClientThread implements Runnable {
+//		private Client client;
+//		
+//		public ClientThread(Client master) {
+//			client = master;
+//		}
+//
+//		@Override
+//		public void run() {
+//			while(true) {
+//				try {
+//					ClientTask c = taskQueue.take();
+//					Method toExecute = c.getMethodToExecute();
+//					Object[] params = c.getParameters();
+//					
+//					Object methodReturn = toExecute.invoke(client, params);
+//					System.out.println(methodReturn);
+//					switch(toExecute.getName()) {
+//						case "doLogin": 
+//							game.setPlayer((Player) methodReturn);
+//							break;
+//						case "createAccount":
+//							game.setPlayer((Player) methodReturn);
+//							break;
+//						case "getPlayersForRoom":
+//							game.updateRoomPlayerList((Set<Player>) methodReturn);
+//							break;
+//					}
+//				} catch (InterruptedException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//	}
 }

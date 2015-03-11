@@ -115,7 +115,8 @@ public class GameMap implements Serializable{
 		MapCoordinates tileLocation = getCoordinates(t);
 		Set<Tile> neighbours = new HashSet<>();
 		for (MapDirections direction : MapDirections.values()) {
-			neighbours.add(tileLocation.go(direction).getTile());
+			Tile tile = tileLocation.go(direction).getTile();
+			if (tile != null) neighbours.add(tile);
 		}
 		return neighbours;
 	}
@@ -130,7 +131,8 @@ public class GameMap implements Serializable{
 			return new MapCoordinates(this.i + direction.iShift, this.j + direction.jShift);
 		}
 		public Tile getTile(){
-			return map[i][j];
+			if(i > 0 && i < map.length && j > 0 && j<map[0].length) return map[i][j];
+			return null;
 		}
 	}
 	
@@ -186,7 +188,7 @@ public class GameMap implements Serializable{
 	}
 
 	public void takeOverTile(Tile t) {
-
+		
 	}
 
 	public List<Tile> bfsTile(Predicate<Tile> p, Tile t){
@@ -195,6 +197,7 @@ public class GameMap implements Serializable{
 		List<Tile> result = new LinkedList<>();
 		
 		Tile current = t;
+		toVisit.add(t);
 		while(!toVisit.isEmpty()){
 			result.add(current);
 			visited.add(current);
