@@ -25,13 +25,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.Tile;
 
 public class InGame extends ScreenAdapter{
 
-	Cultivation game ;
+	Cultivation game;
 	SpriteBatch batch;
 	TextureAtlas atlas;
 	AtlasRegion hex_grass;
@@ -41,26 +42,28 @@ public class InGame extends ScreenAdapter{
 	float cameraWidth=800, cameraHeight=600;
 	Camera camera = new OrthographicCamera(cameraWidth,cameraHeight);
 	Stage gameStage = new Stage();
-	HUD hud;
-	
-	static int width = 10;
-	static int height = 10;
-	public static GameMap gameMap = new GameMap(width,height);
-	
+	HUD hud;	
+	GameMap gameMap;
 	Set<Tile> tiles = new HashSet<>();
 	
-	public InGame(final Cultivation pGame ) {
+	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
 		this.batch = game.batch;
 		this.hud = new HUD(this.batch, this.gameMap, this.game.player);
 		this.atlas = game.manager.get("ingame.atlas", TextureAtlas.class);
+		
+		this.gameMap = aGameRound.getGameMap();
+		
 		hex_grass = atlas.findRegion("grass");
 		hex_sea = atlas.findRegion("tile_sea");
 		hex_meadow = atlas.findRegion("tile_meadow");
 		hex_tree = atlas.findRegion("tile_tree");
 		camera.lookAt(0, 0, 0);
-		// load map
 
+		// load map
+		int width = gameMap.getMap().length;
+		int height = gameMap.getMap()[0].length;
+		
 		int originX = hex_grass.getRegionWidth()/2, originY = hex_grass.getRegionHeight()/2;
 		Stack<Image> stackToDraw = new Stack<Image>();	
 		

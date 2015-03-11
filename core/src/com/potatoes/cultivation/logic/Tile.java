@@ -2,6 +2,7 @@ package com.potatoes.cultivation.logic;
 
 import java.util.Set;
 
+import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.screens.InGame;
 
 public class Tile {
@@ -59,14 +60,13 @@ public class Tile {
 			} else if (structure==StructureType.Watchtower && u.getType()!=UnitType.Knight && u.getType()!=UnitType.Soldier) {
 				invadable = false;
 			}
-		}
-		
+		}		
 		if (invadable && occupant !=null) {
 			//Check if unit on this tile can be invaded by the invader unit u
 			invadable = this.occupant.getType().canInvadeBy(u.getType());
 		} else if (invadable && occupant==null) {
 			//Check neighbouring tiles to see if an enemy exists
-			Set<Tile> neighbourTiles = InGame.gameMap.getNeighbouringTiles(this);
+			Set<Tile> neighbourTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(this);
 			for (Tile tile : neighbourTiles) {
 				if (tile.getUnit()!=null) {
 					invadable = invadable && tile.getUnit().getType().canInvadeBy(u.getType());
@@ -86,7 +86,7 @@ public class Tile {
 	public void tryInvade(Unit u){
 		boolean moved = false;
 		Tile tileOfUnit = u.getTile();
-		Set<Tile> neighbouringTiles = InGame.gameMap.getNeighbouringTiles(tileOfUnit);
+		Set<Tile> neighbouringTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(tileOfUnit);
 		if (neighbouringTiles.contains(this)) { //We only enter this if Unit u is one tile away from this tile
 			boolean invadable = true;
 			if (u.getType()==UnitType.Knight && (structure==StructureType.Tombstone || myType == LandType.Tree)) {
@@ -112,7 +112,7 @@ public class Tile {
 				}
 				//Handle village invasion, splitting/merging regions in takeoverTile
 				if (owner!=null) {
-					InGame.gameMap.takeOverTile(this);
+					Cultivation.GAMEMANAGER.getGameMap().takeOverTile(this);
 				}
 				//If there is a tree on this tile, cut it down
 				if (myType == LandType.Tree) {
@@ -133,11 +133,11 @@ public class Tile {
 	}
 	
 	public Region getRegion(){
-		return InGame.gameMap.getRegion(this);
+		return Cultivation.GAMEMANAGER.getGameMap().getRegion(this);
     }
 	
 	public Village getVillage(){
-		return InGame.gameMap.getRegion(this).getVillage();
+		return Cultivation.GAMEMANAGER.getGameMap().getRegion(this).getVillage();
 	}
 	@Override public String toString() {
 		return myType.toString();

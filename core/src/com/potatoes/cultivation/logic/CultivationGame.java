@@ -2,12 +2,18 @@ package com.potatoes.cultivation.logic;
 
 import java.util.List;
 
-public class Game {
+public class CultivationGame {
 
 	private int roundsPlayed;
 	private Player turnOf;
 	private List<Player> players;
 	private GameMap map;
+	
+	public CultivationGame(List<Player> participants) {
+		players = participants;
+		map = new GameMap(10, 10);
+		roundsPlayed = 0;
+	}
 	
 	public List<Player> getPlayers(){
 		return players;
@@ -26,7 +32,7 @@ public class Game {
 	}
 	
 	public void increaseRoundCount(){
-		
+		roundsPlayed++;
 	}
 	
 	public void updateGoldEconomy(Player p){

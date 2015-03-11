@@ -13,16 +13,20 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.potatoes.cultivation.logic.Game;
+import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.Player;
 
 public class Server implements Runnable{
@@ -35,7 +39,11 @@ public class Server implements Runnable{
 	Map<String, WinsAndLosses> winsAndLoses = new ConcurrentHashMap<>();
 	
 	Map<String, Socket> usernameToSockets = new ConcurrentHashMap<>();
+	Map<String, ObjectOutputStream> usernameToOOS= new ConcurrentHashMap<>();
 	Map<String, Long> lastSeen = new ConcurrentHashMap<>();
+	
+	@SuppressWarnings("unchecked")
+	Set<Player>[] gameRooms = (Set<Player>[]) new Set[10];
 	
 	public Server(int port) {
 		try {
@@ -43,6 +51,9 @@ public class Server implements Runnable{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		// Initialize game room 0 for testing purposes
+		gameRooms[0] = new LinkedHashSet<Player>();
 	}
 
 	@Override
@@ -57,24 +68,33 @@ public class Server implements Runnable{
 					try {
 						final Socket incoming = socket.accept();
 						System.out.println("Accepted a connection");
+						final ObjectOutputStream out = new ObjectOutputStream(incoming.getOutputStream());
+						out.flush();
 						final ObjectInputStream in = new ObjectInputStream(incoming.getInputStream());
 						Protocol protocol = (Protocol) in.readObject();
 						if(protocol instanceof LoginProtocol){
 							protocol.execute(server);
 							String username = ((LoginProtocol) protocol).player().getUsername();
 							usernameToSockets.put(username, incoming);
+							usernameToOOS.put(username, out);
 							lastSeen.put(username, System.currentTimeMillis());
-							new ObjectOutputStream(incoming.getOutputStream()).writeObject(protocol);
+							out.writeObject(protocol);
 							// Thread to listen on the socket
+							System.out.println("Starting task listener...");
 							new Thread(new Runnable() {
 								@Override
 								public void run() {
+									System.out.println("Task Listener started!");
 									while(!incoming.isClosed()){
+										System.out.println("Looping...");
 										try {
 											Protocol protocol = (Protocol) in.readObject();
-											queue.put(new ServerTask(incoming, protocol));
+											System.out.println("Read a new protocol from in");
+											queue.put(new ServerTask(incoming, out, protocol));
+											System.out.println("New task was put!");
 											Thread.sleep(100);
 										} catch (ClassNotFoundException| IOException | InterruptedException e) {
+											e.printStackTrace();
 											return;
 										}
 									}
@@ -103,7 +123,7 @@ public class Server implements Runnable{
 						ServerTask task = queue.take();
 						System.out.println("New task was taken");
 						task.protocol.execute(server);
-						new ObjectOutputStream(task.out.getOutputStream()).writeObject(task.protocol);
+						task.oos.writeObject(task.protocol);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -146,14 +166,14 @@ public class Server implements Runnable{
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
 		for (Player p : GamesManager.opponentsOf(sender)) {
 			String username = p.getUsername();
-			queue.add(new ServerTask(usernameToSockets.get(username), actionBlock));
+			queue.add(new ServerTask(usernameToSockets.get(username), usernameToOOS.get(username),actionBlock));
 		}
 	}
 	
 	void propagate(Player sender, GameDataProtocol game){
 		for(Player p: GamesManager.opponentsOf(sender)){
 			String username = p.getUsername();
-			queue.add(new ServerTask(usernameToSockets.get(username), game));
+			queue.add(new ServerTask(usernameToSockets.get(username), usernameToOOS.get(username),game));
 		}
 	}
 	
@@ -234,7 +254,7 @@ public class Server implements Runnable{
 		}
 		return file;
 	}
-
+	
 	// Class for wins and losses, along with functions related to it
 	class WinsAndLosses{
 		int wins, losses;
@@ -286,6 +306,30 @@ public class Server implements Runnable{
 		}
 		else{
 			throw new IllegalArgumentException("Wrong player name");
+		}
+	}
+	
+	public Set<Player> getPlayersForRoom(int i) {
+//		if(gameRooms.size() - 1 < i) return null;
+//		if(gameRooms.get(i) == null) {
+//			gameRooms.set(i, new HashSet<Player>());
+//		}
+//		
+//		return gameRooms.get(i);
+		return gameRooms[i];
+	}
+	
+	public boolean addPlayerToRoom(int i, Player p) {
+//		if(gameRooms.size() - 1 < i) return false;
+//		if(gameRooms.get(i) == null) return false;
+//		else {
+//			gameRooms.get(i).add(p);
+//			return true;
+//		}
+		if(gameRooms[i] == null) return false;
+		else {
+			gameRooms[i].add(p);
+			return true;
 		}
 	}
 }

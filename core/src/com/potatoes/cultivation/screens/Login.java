@@ -104,12 +104,21 @@ public class Login extends ScreenAdapter {
 				}
 				else if(game.player != null) {
 					if(!game.player.notNull()) {
+						game.setPlayer(null);
 						msg.setText("Invalid player");
 						cancel.setVisible(true);
 					}
 					else {
-						System.out.println("Login Screen logged with " + game.player.toString());
-						game.setScreen(new InGame(game));
+						// Enter the game room 0 (for testing)
+						System.out.println("Before enter");
+						boolean result = game.client.joinRoom(0, game.player);
+						System.out.println("Entering");
+						if(result) game.setScreen(new GameRoom(game, 0));
+						else {
+							game.setPlayer(null);
+							msg.setText("Net Error!");
+							cancel.setVisible(true);
+						}
 					}
 				}
 			}
@@ -149,8 +158,6 @@ public class Login extends ScreenAdapter {
 		playButton.addListener(new ChangeListener(){
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				System.out.println("Username: " + usernameField.getText());
-				System.out.println("Password: " + passwordField.getText());
 				pGame.client.login(usernameField.getText(), passwordField.getText());
 				dialog.setVisible(true);
 				dialog.getMsg().setText("Logging in...");
@@ -164,7 +171,7 @@ public class Login extends ScreenAdapter {
 		registerButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				pGame.client.register(usernameField.getText(), passwordField.getText());
+				game.client.register(usernameField.getText(), passwordField.getText());
 				dialog.setVisible(true);
 				dialog.getMsg().setText("Registering...");
 				table.setTouchable(Touchable.disabled);
