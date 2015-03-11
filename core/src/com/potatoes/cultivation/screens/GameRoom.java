@@ -62,18 +62,7 @@ public class GameRoom extends ScreenAdapter {
 		
 		game.client.insertHandler(getRoomHandler);
 
-		game.client.insertHandler(new ProtocolHandler<CultivationGame>() {
-			@Override
-			public void handle(Protocol p) {
-				if(p instanceof GameDataProtocol){
-					System.out.println("Handling a game protocol");
-					result = ((GameDataProtocol) p).getGame();
-					game.GAMEMANAGER.setGame(result);
-					game.client.clearAllHandlers();
-					game.setScreen(new InGame(game, game.GAMEMANAGER.getGame()));
-				}
-			}
-		});
+		
 		
 		game.client.getPlayersForRoom(room);
 		playersInRoom = getRoomHandler.getResult();
@@ -107,6 +96,19 @@ public class GameRoom extends ScreenAdapter {
 		table.setDebug(true);
 		
 		stage.addActor(table);
+		game.client.insertHandler(new ProtocolHandler<CultivationGame>() {
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof GameDataProtocol){
+					System.out.println("Handling a game protocol");
+					result = ((GameDataProtocol) p).getGame();
+					game.GAMEMANAGER.setGame(result);
+					System.out.println(game.GAMEMANAGER.getGame().getGameMap());
+					game.client.clearAllHandlers();
+					game.setScreen(new InGame(game, game.GAMEMANAGER.getGame()));
+				}
+			}
+		});
 	}
 
 	@Override
