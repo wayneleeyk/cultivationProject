@@ -82,27 +82,6 @@ public class Client{
 		}
 	}
 	
-//	public void addWinLoss(WinLoss status){
-//		try {
-//			Method add = this.getClass().getDeclaredMethod("doAddWinLoss", WinLoss.class);
-//			add.setAccessible(true);
-//			taskQueue.add(new ClientTask(add, status));
-//		} catch (NoSuchMethodException | SecurityException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	public void getWinLoss(WinLoss status){
-//		try {
-//			Method get = this.getClass().getDeclaredMethod("doGetWinLoss", WinLoss.class);
-//			get.setAccessible(true);
-//			taskQueue.add(new ClientTask(get, status));
-//		} catch (NoSuchMethodException | SecurityException e) {
-//			e.printStackTrace();
-//		}
-//	}
-	
-	
 	public Map<Player, Boolean> areOnline(List<Player> usernames){
 		try {
 			out.writeObject(new GetPlayersStatusProtocol(usernames));
@@ -155,23 +134,18 @@ public class Client{
 			Method getPlayersForRoom = this.getClass().getDeclaredMethod("getPlayersForRoom", int.class);
 			taskQueue.add(new ClientTask(getPlayersForRoom, number));
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
 	public Set<Player> getPlayersForRoom(int number) {
 		try {
-//			Socket socket = new Socket(host, port);
 			out.writeObject(new GetARoomProtocol(number));
 			GetARoomProtocol returnedMessage = (GetARoomProtocol) in.readObject();
-//			socket.close();
 			return returnedMessage.getList();
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null; 
@@ -182,13 +156,10 @@ public class Client{
 	
 	public boolean joinRoom(int number, Player p) {
 		try {
-//			Socket socket = new Socket(host, port);
 			out.writeObject(new JoinRoomProtocol(number, p));
 			JoinRoomProtocol returnedMessage = (JoinRoomProtocol) in.readObject();
-//			socket.close();
 			return returnedMessage.getResult();
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return false; 

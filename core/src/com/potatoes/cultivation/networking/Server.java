@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.networking;
 
 import java.io.BufferedReader;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -16,6 +17,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -38,9 +40,7 @@ public class Server implements Runnable{
 	Map<String, String> accountsForLogin = new ConcurrentHashMap<>();
 	Map<String, WinsAndLosses> winsAndLoses = new ConcurrentHashMap<>();
 	
-	Map<String, Socket> usernameToSockets = new ConcurrentHashMap<>();
-	Map<String, ObjectOutputStream> usernameToOOS= new ConcurrentHashMap<>();
-	Map<String, Long> lastSeen = new ConcurrentHashMap<>();
+	Map<String, User> usernameToUser = new ConcurrentHashMap<String, User>();
 	
 	@SuppressWarnings("unchecked")
 	Set<Player>[] gameRooms = (Set<Player>[]) new Set[10];
@@ -72,12 +72,12 @@ public class Server implements Runnable{
 						out.flush();
 						final ObjectInputStream in = new ObjectInputStream(incoming.getInputStream());
 						Protocol protocol = (Protocol) in.readObject();
+						
 						if(protocol instanceof LoginProtocol){
 							protocol.execute(server);
-							String username = ((LoginProtocol) protocol).player().getUsername();
-							usernameToSockets.put(username, incoming);
-							usernameToOOS.put(username, out);
-							lastSeen.put(username, System.currentTimeMillis());
+							final String username = ((LoginProtocol) protocol).player().getUsername();
+							usernameToUser.put(username, new User(incoming, out));
+							
 							out.writeObject(protocol);
 							// Thread to listen on the socket
 							System.out.println("Starting task listener...");
@@ -86,14 +86,21 @@ public class Server implements Runnable{
 								public void run() {
 									System.out.println("Task Listener started!");
 									while(!incoming.isClosed()){
-										System.out.println("Looping...");
+										System.out.println("Looping..."+username);
 										try {
 											Protocol protocol = (Protocol) in.readObject();
-											System.out.println("Read a new protocol from in");
 											queue.put(new ServerTask(incoming, out, protocol));
-											System.out.println("New task was put!");
 											Thread.sleep(100);
-										} catch (ClassNotFoundException| IOException | InterruptedException e) {
+										} 
+										catch (EOFException e){
+											try {
+												usernameToUser.get(username).closeConnection();
+											} catch (IOException io) {
+												io.printStackTrace();
+											}
+											return;
+										}
+										catch (ClassNotFoundException| IOException | InterruptedException e) {
 											e.printStackTrace();
 											return;
 										}
@@ -136,15 +143,15 @@ public class Server implements Runnable{
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Iterator<Entry<String, Long>> it = lastSeen.entrySet().iterator();
+				Iterator<Entry<String, User>> it = usernameToUser.entrySet().iterator();
 				while (it.hasNext()){
-					Entry<String, Long> entry = it.next();
+					Entry<String, User> entry = it.next();
 					long current = System.currentTimeMillis();
-					if(current - entry.getValue() > 60000){
+					if(current - entry.getValue().lastSeen > 60000){
 						// if last seen was more than a minute ago
 						String user = entry.getKey();
 						try {
-							usernameToSockets.get(user).close();
+							entry.getValue().closeConnection();
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -165,28 +172,30 @@ public class Server implements Runnable{
 	
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
 		for (Player p : GamesManager.opponentsOf(sender)) {
-			String username = p.getUsername();
-			queue.add(new ServerTask(usernameToSockets.get(username), usernameToOOS.get(username),actionBlock));
+			User user = usernameToUser.get(p.getUsername());
+			queue.add(new ServerTask(user.socket, user.oos ,actionBlock));
 		}
 	}
 	
 	void propagate(Player sender, GameDataProtocol game){
 		for(Player p: GamesManager.opponentsOf(sender)){
-			String username = p.getUsername();
-			queue.add(new ServerTask(usernameToSockets.get(username), usernameToOOS.get(username),game));
+			User user = usernameToUser.get(p.getUsername());
+			queue.add(new ServerTask(user.socket, user.oos,game));
 		}
 	}
 	
 	void heartbeat(String username){
-		if(this.lastSeen.get(username) != null){
-			this.lastSeen.put(username, System.currentTimeMillis());
+		User user = usernameToUser.get(username);
+		if(user != null){
+			user.updateLastSeen();
 		}
 	}
 	
-	Map<Player, Boolean> areOnline(List<Player> usernames){
+	Map<Player, Boolean> areOnline(List<Player> players){
 		Map<Player, Boolean> online = new HashMap<>();
-		for (Player username : usernames) {
-			online.put(username, this.lastSeen.get(username)!=null && !this.usernameToSockets.get(usernames).isClosed());
+		for (Player player : players) {
+			User user = usernameToUser.get(player.getUsername());
+			online.put(player, user!=null && !user.socket.isClosed());
 		}
 		return online;
 	}
