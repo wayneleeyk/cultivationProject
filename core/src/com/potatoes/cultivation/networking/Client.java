@@ -30,7 +30,7 @@ public class Client{
 	private Socket socket;
 	private BlockingQueue<ClientTask> taskQueue = new LinkedBlockingQueue<ClientTask>();
 	private BlockingQueue<Protocol> incomingQueue = new LinkedBlockingQueue<>();
-	
+	private BlockingQueue<Protocol> handledQueue = new LinkedBlockingQueue<>();
 	private List<ProtocolHandler> handlers = new LinkedList<>();
 	
 	Cultivation game;
@@ -78,12 +78,15 @@ public class Client{
 						for (ProtocolHandler protocolHandler : handlers) {
 							protocolHandler.handle(p);
 						}
+						handledQueue.offer(p);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		}).start();
+		
+		
 	}
 	
 	public void insertHandler(ProtocolHandler handler){
