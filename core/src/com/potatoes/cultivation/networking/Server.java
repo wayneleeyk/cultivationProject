@@ -129,35 +129,35 @@ public class Server implements Runnable{
 			}
 		}).start();
 		// Thread to monitor clients
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while(true){
-					Iterator<Entry<String, User>> it = usernameToUser.entrySet().iterator();
-					while (it.hasNext()){
-						Entry<String, User> entry = it.next();
-						long current = System.currentTimeMillis();
-//						System.out.println(entry.getKey() +" was last seen "+(current - entry.getValue().lastSeen));
-						if(current - entry.getValue().lastSeen > 3000){
-							// if last seen was more than half a minute ago
-							String user = entry.getKey();
-							try {
-								entry.getValue().closeConnection();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							it.remove();
-							System.out.println(user + " has disconnected");
-						}
-					}
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}).start();
+//		new Thread(new Runnable() {
+//			@Override
+//			public void run() {
+//				while(true){
+//					Iterator<Entry<String, User>> it = usernameToUser.entrySet().iterator();
+//					while (it.hasNext()){
+//						Entry<String, User> entry = it.next();
+//						long current = System.currentTimeMillis();
+////						System.out.println(entry.getKey() +" was last seen "+(current - entry.getValue().lastSeen));
+//						if(current - entry.getValue().lastSeen > 3000){
+//							// if last seen was more than half a minute ago
+//							String user = entry.getKey();
+//							try {
+//								entry.getValue().closeConnection();
+//							} catch (IOException e) {
+//								e.printStackTrace();
+//							}
+//							it.remove();
+//							System.out.println(user + " has disconnected");
+//						}
+//					}
+//					try {
+//						Thread.sleep(3000);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}).start();
 	}
 	
 	public static void main(String[] args) {

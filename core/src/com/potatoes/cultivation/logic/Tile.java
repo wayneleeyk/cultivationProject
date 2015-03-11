@@ -172,11 +172,14 @@ public class Tile implements Serializable{
 	 */
 	public boolean containsVillage() {
 		Village myVillage = getVillage();
-		if (myVillage!=null && myVillage.getTile().equals(this)) {
+		if (myVillage!=null && myVillage.getTile()==(this)) {
+//			System.out.println("Found village in containsVillage method");
 			return true;
 		}
+//		System.out.println("Cannot find village in containsVillage");
 		return false;
 	}
+
 	
 	
 }

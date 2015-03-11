@@ -82,7 +82,9 @@ public class GameRoom extends ScreenAdapter {
 				System.out.println("Generated new game");
 				game.client.startGame(gameManager.getGame());
 				System.out.println("sent game");
-				game.setScreen(new InGame(pGame, gameManager.getGame()));
+				game.GAMEMANAGER.newGame(players);
+				game.setScreen(new InGame(game, game.GAMEMANAGER.getGame()));
+//				game.setScreen(new InGame(pGame, gameManager.getGame()));
 			}
 		});
 		table.add(start).width(200).expand().center();

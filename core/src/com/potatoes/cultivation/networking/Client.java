@@ -54,12 +54,12 @@ public class Client{
 			public void run() {
 				System.out.println("Starting heart ");
 				while(true){
-					if(game.player!=null) sendHeartbeat();
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+//					if(game.player!=null) sendHeartbeat();
+//					try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
 				}
 			}
 		}).start();

@@ -73,9 +73,5 @@ public class Region implements Serializable{
 		Cultivation.GAMEMANAGER.getGameMap().deleteRegion(r);
 	}
 
-	public void addTiles(Set<Tile> regionalTiles) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 }

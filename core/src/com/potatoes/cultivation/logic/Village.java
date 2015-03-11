@@ -95,4 +95,5 @@ public class Village implements Comparable<Village> {
 		}
 		return c;
 	}
+	
 }

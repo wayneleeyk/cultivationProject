@@ -42,6 +42,7 @@ public class InGame extends ScreenAdapter{
 	AtlasRegion hex_sea;
 	AtlasRegion hex_meadow;
 	AtlasRegion hex_tree;
+	AtlasRegion village_hovel;
 	float cameraWidth=800, cameraHeight=600;
 	Camera camera = new OrthographicCamera(cameraWidth,cameraHeight);
 	Stage gameStage = new Stage();
@@ -59,17 +60,20 @@ public class InGame extends ScreenAdapter{
 		
 		//Assigns a unique color to each player to colour the tiles that they own
 		colorByIndex = new ArrayList<Color>();
-		colorByIndex.add(new Color(1,0,0,0.2f));
-		colorByIndex.add(new Color(0,1,0,0.2f));
-		colorByIndex.add(new Color(0,0,1,0.2f));
-		colorByIndex.add(new Color(0,0.5f,0.5f,0.2f));
+		colorByIndex.add(new Color(1,0,0,0.99f));
+		colorByIndex.add(new Color(0,1,0,0.99f));
+		colorByIndex.add(new Color(0,0,1,0.99f));
+		colorByIndex.add(new Color(0,0.5f,0.5f,0.99f));
 		
 		hex_grass = atlas.findRegion("grass");
 		hex_sea = atlas.findRegion("tile_sea");
 		hex_meadow = atlas.findRegion("tile_meadow");
 		hex_tree = atlas.findRegion("tile_tree");
+		village_hovel = atlas.findRegion("village-hovel");
 		camera.lookAt(0, 0, 0);
 
+		Tile[][] map = gameMap.getMap();
+		
 		// load map
 		int width = gameMap.getMap().length;
 		int height = gameMap.getMap()[0].length;
@@ -79,9 +83,19 @@ public class InGame extends ScreenAdapter{
 		
 		// for each tile create an Image actor 
 		Image[][] tiles = new Image[width][height];
-		Tile[][] map = gameMap.getMap();
+		
 		for (int y=0; y<width; y++) {
 			for (int x=0;x<height;x++) {
+				//Draw village on top of tile 
+				if (map[x][y].containsVillage()) {
+					System.out.println("Found village");
+					final Image village = new Image(village_hovel);
+					village.setPosition(x*308*0.75f+150, x*88/2.0f + (y*88));
+					village.setOrigin(originX, originY);
+					stackToDraw.push(village);
+				}
+				
+				
 				AtlasRegion hexToDraw;
 				if (map[x][y].getLandType() == LandType.Sea) {
 					hexToDraw = hex_sea;
@@ -93,6 +107,7 @@ public class InGame extends ScreenAdapter{
 					hexToDraw = hex_grass;
 				}
 				final Image tile = new Image(hexToDraw);
+//				System.out.println("Number of players:"+aGameRound.getPlayers().size());
 				int playerNum = aGameRound.getPlayers().indexOf(map[x][y].getPlayer());
 				if (playerNum != -1) {
 					//If tile is owned by a player, tint it the corresponding colour
