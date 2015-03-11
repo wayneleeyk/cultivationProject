@@ -5,11 +5,9 @@ import java.net.Socket;
 
 public class ServerTask {
 	
-	Socket out; 
 	ObjectOutputStream oos;
 	Protocol protocol;
-	public ServerTask(Socket out, ObjectOutputStream oos, Protocol protocol) {
-		this.out = out;
+	public ServerTask(ObjectOutputStream oos, Protocol protocol) {
 		this.oos = oos;
 		this.protocol = protocol;
 	}
