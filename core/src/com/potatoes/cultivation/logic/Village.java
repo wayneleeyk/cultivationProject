@@ -42,9 +42,15 @@ public class Village implements Comparable<Village> {
 	public void addGold(int goldToAdd){
 		this.gold = this.gold + goldToAdd;
 	}
-	
-	public void removeGold(int goldToRemove){
-		this.gold = this.gold - goldToRemove;
+	//just added in an if statement incase we go negative.
+	public boolean removeGold(int goldToRemove){
+		if(this.gold - goldToRemove > 0){
+			this.gold = this.gold - goldToRemove;
+			return true;		
+		}
+		else{
+			return false;
+		}	
 	}
 	
 	public void addWood(int woodToAdd){
