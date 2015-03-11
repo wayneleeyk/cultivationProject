@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -84,7 +85,7 @@ public class InGame extends ScreenAdapter{
 		int height = gameMap.getMap()[0].length;
 		
 		int originX = hex_grass.getRegionWidth()/2, originY = hex_grass.getRegionHeight()/2;
-		Stack<Image> stackToDraw = new Stack<Image>();	
+		Stack<Actor> stackToDraw = new Stack<Actor>();	
 		
 		// for each tile create an Image actor 
 		Image[][] tiles = new Image[width][height];
@@ -120,16 +121,25 @@ public class InGame extends ScreenAdapter{
 				} else {
 					hexToDraw = hex_grass;
 				}
+				final Group tileGroup = new Group();
 				final Image tile = new Image(hexToDraw);
+				tileGroup.addActor(tile);
+				if(map[x][y].containsVillage()) {
+					Image village = new Image(village_hovel);
+					tileGroup.addActor(village);
+					village.toFront();
+					village.setPosition(150, 44);
+				}
 //				System.out.println("Number of players:"+aGameRound.getPlayers().size());
 				int playerNum = aGameRound.getPlayers().indexOf(map[x][y].getPlayer());
 				if (playerNum != -1) {
 					//If tile is owned by a player, tint it the corresponding colour
 					tile.setColor(colorByIndex.get(playerNum));
 				}
-				tile.setPosition(x*tile.getWidth()*0.75f, x*tile.getHeight()/2.0f + (y*tile.getHeight()));
-				tile.setPosition(x*308*0.75f, x*88/2.0f + (y*88));
-				tile.setOrigin(originX, originY);
+//				tile.setPosition(x*tile.getWidth()*0.75f, x*tile.getHeight()/2.0f + (y*tile.getHeight()));
+				tileGroup.setPosition(x*308*0.75f, x*88/2.0f + (y*88));
+//				tile.setPosition(x*308*0.75f, x*88/2.0f + (y*88));
+//				tile.setOrigin(originX, originY);
 				final Tile clickedTile = map[x][y];
 				tile.addListener(new ClickListener() {
 					@Override
@@ -144,7 +154,8 @@ public class InGame extends ScreenAdapter{
 //						return false;
 //					}
 //				});
-				stackToDraw.push(tile);
+//				stackToDraw.push(tile);
+				stackToDraw.push(tileGroup);
 			}
 		}
 		while (stackToDraw.size()>0) {
