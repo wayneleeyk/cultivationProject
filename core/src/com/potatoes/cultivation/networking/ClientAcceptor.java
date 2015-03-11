@@ -47,9 +47,9 @@ final class ClientAcceptor implements Runnable {
 							System.out.println("Task Listener started!");
 							while(!incoming.isClosed()){
 								try {
-									System.out.println("Before reading...");
+//									System.out.println("Before reading...");
 									Protocol protocol = (Protocol) in.readObject();
-									System.out.println("After reading...");
+//									System.out.println("After reading...");
 									ClientAcceptor.this.server.queue.put(new ServerTask(out, protocol));
 									Thread.sleep(100);
 								} 

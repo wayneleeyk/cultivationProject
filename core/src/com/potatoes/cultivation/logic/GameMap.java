@@ -22,6 +22,7 @@ public class GameMap implements Serializable {
 	public void PrintPlayersStuff(Player p) {
 	
 		Set<Region> myRegions = regions.get(p);
+		System.out.println("Number of regions:" + myRegions.size());
 		if (myRegions.size()>0) {
 			for (Region r : myRegions) {
 				if (r.getVillage()==null) {
@@ -250,14 +251,14 @@ public class GameMap implements Serializable {
 
 	public List<Tile> bfsTileOfPlayer(Tile t) {
 //		System.out.println("tile's player" + t.getPlayer());
-		if (t.getPlayer()==null) {
+		if (t.getPlayer()==null || t.getPlayer()==Player.nullPlayer) {
 			return new LinkedList<Tile>();
 		}
 		final Player player = t.getPlayer();
 		return bfsTile(new Predicate<Tile>() {
 			@Override
 			public boolean evaluate(Tile tile) {
-				if (tile!=null && tile.getPlayer()!=null) {
+				if (tile!=null && tile.getPlayer()!=null && tile.getPlayer()!=Player.nullPlayer) {
 					return tile.getPlayer().username.equals(player.username);
 				} else {
 					return false;
@@ -312,15 +313,22 @@ public class GameMap implements Serializable {
 			Set<Tile> regionalTiles = new HashSet<>(bfsTileOfPlayer(tile));
 //			System.out.println("BFS grabbed tiles:" + regionalTiles.size());
 			if (regionalTiles.size() > 2) {
-//				System.out.println("Region found, size:" + regionalTiles.size());
+				System.out.println("Region found, size:" + regionalTiles.size());
 				Region r = new Region(null);
 				r.addTiles(regionalTiles);
 				Tile aTile = regionalTiles.iterator().next();
 				Village v = new Village(tile.getPlayer(), r, aTile);
 				r.setVillage(v);
 				this.regions.get(tile.getPlayer()).add(r);
-//				System.out.println("Added region to player. Region is size:" + regionalTiles.size() + " == " + r.size());
+				//Remove these regional tiles from tiles list
 				for (Tile rTile : regionalTiles) {
+					tiles.remove(rTile);
+				}
+			} else {
+				//Remove ownership of these regionalTiles since it contains less than 3 tiles
+				//and remove these tiles from tiles list 
+				for (Tile rTile : regionalTiles) {
+					rTile.updateOwner(Player.nullPlayer);
 					tiles.remove(rTile);
 				}
 			}

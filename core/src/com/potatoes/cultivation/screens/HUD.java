@@ -20,6 +20,8 @@ public class HUD extends Stage{
 	GameMap map;
 	Player currentPlayer;
 	int logCount;
+	int goldCount;
+	String villageType;
 	
 	public HUD(SpriteBatch batch, GameMap map, Player currentPlayer) {
 		
@@ -30,6 +32,7 @@ public class HUD extends Stage{
 		this.height = Gdx.graphics.getHeight();
 		this.currentPlayer = currentPlayer;
 		this.logCount = 0;
+		this.goldCount = 0;
 		System.out.println(this.width/2 + " " + this.height/2);
 		
 	}
@@ -39,14 +42,22 @@ public class HUD extends Stage{
 		super.draw();
 		
 		batch.begin();
-//		font.draw(batch, "Logs "+this.getNumberOfLogs(), - this.width/2, this.height/2);
-		font.draw(batch, "Logs " + logCount, - this.width/2, this.height/2);
+		if (villageType!=null) {
+			font.draw(batch, "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount, - this.width/2, this.height/2);
+		} else {
+			font.draw(batch, "Click on a region to do an action", - this.width/2, this.height/2);
+		}
 		batch.end();
 	}
-	public void tileClicked(Region r) {
-//		if (t.getPlayer()!=null && t.getPlayer() == currentPlayer) {
-			logCount=999;
-//		}
+	public void tileClicked(Tile t) {
+		if (t.getPlayer()!=null && t.getPlayer().getUsername().equals(currentPlayer.getUsername())) {
+			Village v = t.getVillage();
+			goldCount = v.getGold();
+			logCount=v.getWood();
+			villageType = v.getType().toString();
+		} else {
+			villageType = null;
+		}
 	}
 	
 	private int getNumberOfLogs(){

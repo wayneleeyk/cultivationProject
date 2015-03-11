@@ -16,6 +16,7 @@ public class Village implements Comparable<Village>, Serializable {
 		this.owner = owner;
 		this.myRegion = region;
 		this.myTile = tile;
+		this.myType = VillageType.Hovel;
 	}
 	
 	public VillageType getType(){

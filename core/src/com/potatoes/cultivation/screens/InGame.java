@@ -84,6 +84,7 @@ public class InGame extends ScreenAdapter{
 		// for each tile create an Image actor 
 		Image[][] tiles = new Image[width][height];
 		
+		gameMap.PrintPlayersStuff(game.player);
 		for (int y=0; y<width; y++) {
 			for (int x=0;x<height;x++) {
 				//Draw village on top of tile 
@@ -116,12 +117,13 @@ public class InGame extends ScreenAdapter{
 				tile.setPosition(x*tile.getWidth()*0.75f, x*tile.getHeight()/2.0f + (y*tile.getHeight()));
 				tile.setPosition(x*308*0.75f, x*88/2.0f + (y*88));
 				tile.setOrigin(originX, originY);
-//				tile.addListener(new ClickListener() {
-//					@Override
-//					public void clicked(InputEvent event, float x, float y) {
-//						hud.tileClicked(map[x][y].getRegion());
-//					}
-//				});
+				final Tile clickedTile = map[x][y];
+				tile.addListener(new ClickListener() {
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						hud.tileClicked(clickedTile);
+					}
+				});
 //				tile.addListener(new EventListener() {
 //					@Override
 //					public boolean handle(Event event) {
