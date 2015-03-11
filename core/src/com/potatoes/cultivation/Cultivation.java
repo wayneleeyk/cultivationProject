@@ -25,7 +25,7 @@ public class Cultivation extends Game {
 	public Skin skin;
 	
 	// Connection related 
-	public Client client = new Client(this, "localhost", 7470);
+	public Client client = new Client(this, "142.157.110.200", 7470);
 	
 	// Game related things
 	public Player player = null;

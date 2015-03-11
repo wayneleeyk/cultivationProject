@@ -59,7 +59,6 @@ final class ClientAcceptor implements Runnable {
 									} catch (IOException io) {
 										io.printStackTrace();
 									}
-									e.printStackTrace();
 									return;
 								}
 							}
@@ -72,7 +71,7 @@ final class ClientAcceptor implements Runnable {
 				}
 			}
 			catch (IOException |ClassNotFoundException e) {
-				e.printStackTrace();
+				System.err.println("ClientAcceptor problem :(");
 			}
 		}
 	}
