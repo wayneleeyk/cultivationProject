@@ -116,3 +116,10 @@ tile_tree
   orig: 308, 99
   offset: 0, 0
   index: -1
+village-hovel
+  rotate: false
+  xy: 926, 360
+  size: 93, 85
+  orig: 93, 85
+  offset: 0, 0
+  index: -1
