@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class Client{
 	int port;
 	private Socket socket;
 	BlockingQueue<Protocol> incomingQueue = new LinkedBlockingQueue<>();
-	List<ProtocolHandler> handlers = new LinkedList<>();
+	List<ProtocolHandler<?>> handlers = Collections.synchronizedList(new LinkedList<ProtocolHandler<?>>());
 	
 	Cultivation game;
 	ObjectOutputStream out;
@@ -72,7 +73,6 @@ public class Client{
 	
 	public void startGame(CultivationGame game){
 		try {
-			
 			out.writeObject(new GameDataProtocol(this.game.player, game));
 		} catch (IOException e) {
 			e.printStackTrace();

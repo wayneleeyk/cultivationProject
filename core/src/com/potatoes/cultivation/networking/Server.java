@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +23,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import com.badlogic.gdx.utils.IntMap.Entry;
 import com.potatoes.cultivation.logic.Player;
+import com.potatoes.cultivation.screens.GameRoom;
 
 public class Server implements Runnable{
 
@@ -68,14 +71,16 @@ public class Server implements Runnable{
 	////////////////////Functions for server//////////////////////////
 	
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
-		for (Player p : GamesManager.opponentsOf(sender)) {
+		for (Player p : opponentsOf(sender)) {
 			User user = usernameToUser.get(p.getUsername());
 			queue.add(new ServerTask(user.oos ,actionBlock));
 		}
 	}
 	
 	void propagate(Player sender, GameDataProtocol game){
-		for(Player p: GamesManager.opponentsOf(sender)){
+		System.out.println("Propagating game");
+		for(Player p: opponentsOf(sender)){
+			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>"+sender +" has opponent "+p);
 			User user = usernameToUser.get(p.getUsername());
 			System.out.println(user);
 			queue.add(new ServerTask(user.oos,game));
@@ -122,7 +127,29 @@ public class Server implements Runnable{
 		}
 		return Player.nullPlayer;
 	}
+	
+	public Collection<Player> opponentsOf(Player p){
+		Collection<Player> players = playersInRoom(whereIs(p));
+		players.remove(p);
+		return players;
+	}
 
+	public int whereIs(Player p){
+		int i = 0;
+		for (Set<Player> gameGroup : this.gameRooms) {
+			if(gameGroup.contains(p)) return i;
+			i++;
+		}
+		return -1;
+	}
+	
+	public Collection<Player> playersInRoom(int roomNumber){
+		if(roomNumber>=0){
+			return gameRooms.get(roomNumber);
+		}
+		return new HashSet<>();
+	}
+	
 	private void readAccounts(File accounts) {
 		try(InputStream in = Files.newInputStream(accounts.toPath())){
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
@@ -237,6 +264,12 @@ public class Server implements Runnable{
 		if(gameRooms.get(i) == null) return false;
 		else {
 			gameRooms.get(i).add(p);
+			for(Player player : gameRooms.get(i)) {
+				User user = usernameToUser.get(player.getUsername());
+				GetARoomProtocol gp = new GetARoomProtocol(i);
+				gp.setList(gameRooms.get(i));
+				queue.add(new ServerTask(user.oos, gp));
+			}
 			return true;
 		}
 	}

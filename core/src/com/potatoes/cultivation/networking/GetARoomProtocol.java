@@ -22,4 +22,8 @@ public class GetARoomProtocol implements Protocol {
 	public Set<Player> getList() {
 		return playerList;
 	}
+	
+	public void setList(Set<Player> list) {
+		playerList = list;
+	}
 }

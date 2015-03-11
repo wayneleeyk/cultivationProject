@@ -13,4 +13,7 @@ public abstract class ProtocolHandler <T> {
 		}
 		return result;
 	}
+	public boolean isAvailable() {
+		return result != null;
+	}
 }
