@@ -14,7 +14,7 @@ public class CultivationGame implements Serializable {
 	private Player turnOf;
 	private List<Player> players;
 	private GameMap map;
-	private HUD hud;
+	public HUD hud;
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;

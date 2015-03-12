@@ -14,6 +14,7 @@ public class Tile implements Serializable{
 	public Player owner = null;
 	private int locationX;
 	private int locationY;
+	public Village village;
 	
 	public Tile(int x, int y) {
 		structure = StructureType.None;
