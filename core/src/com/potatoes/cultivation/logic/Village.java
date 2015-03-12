@@ -96,6 +96,5 @@ public class Village implements Comparable<Village>, Serializable {
 			c = (new Random().nextInt(2) * 2) - 1;
 		}
 		return c;
-	}
-	
+	}	
 }

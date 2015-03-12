@@ -1,13 +1,13 @@
 package com.potatoes.cultivation.networking;
 
-import com.potatoes.cultivation.logic.Action;
+import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.Player;
 
 public class ActionBlockProtocol implements Protocol {
 	private static final long serialVersionUID = 2474528820962037060L;
-	private Action[] actions;
+	private GameAction[] actions;
 	private Player sender;
-	public ActionBlockProtocol(Player sender, Action...actions) {
+	public ActionBlockProtocol(Player sender, GameAction...actions) {
 		this.sender = sender;
 		this.actions = actions;
 	}
@@ -16,7 +16,7 @@ public class ActionBlockProtocol implements Protocol {
 		server.propagate(sender, this);
 	}
 
-	public Action[] getActions(){
+	public GameAction[] getActions(){
 		return this.actions;
 	}
 
