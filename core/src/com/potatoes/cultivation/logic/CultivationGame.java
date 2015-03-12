@@ -178,7 +178,7 @@ public class CultivationGame implements Serializable {
 					foundVacantTile = true;
 					tile.setUnit(new Unit(tile));
 					//Subtract gold
-					village.removeGold(UnitType.Peasant.getSalary());
+					village.removeGold(10);
 				}
 			}
 		}

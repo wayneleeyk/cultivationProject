@@ -58,7 +58,8 @@ public class InGame extends ScreenAdapter {
 	GameMap gameMap;
 	Set<Tile> tiles = new HashSet<>();
 	List<Color> colorByIndex;
-	List<TileGroup> tileGroups;
+	TileGroup[][] tileGroups;
+	List<PotatoImage> unitImages;
 
 	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
@@ -83,13 +84,14 @@ public class InGame extends ScreenAdapter {
 		village_fort = atlas.findRegion("village-fort");
 		camera.lookAt(0, 0, 0);
 		
-		tileGroups = new ArrayList<TileGroup>();
-
-		Tile[][] map = gameMap.getMap();
-
-		// load map
 		int width = gameMap.getMap().length;
 		int height = gameMap.getMap()[0].length;
+		
+		tileGroups = new TileGroup[width][height];
+		unitImages = new ArrayList<PotatoImage>();
+
+		// load map
+		Tile[][] map = gameMap.getMap();
 
 		int originX = hex_grass.getRegionWidth() / 2, originY = hex_grass
 				.getRegionHeight() / 2;
@@ -120,13 +122,14 @@ public class InGame extends ScreenAdapter {
 					hexToDraw = hex_grass;
 				}
 				final TileGroup tileGroup = new TileGroup(map[x][y]);
-				tileGroups.add(tileGroup);
+				tileGroups[x][y] =tileGroup;
 				tileGroup.setOrigin(originX, originY);
 				tileGroup.setPosition(x * 308 * 0.75f + 150, x * 88 / 2.0f
 						+ (y * 88));
 				final Image tile = new Image(hexToDraw);
 				tileGroup.addActor(tile);
 				tileGroup.setTileImage(tile);
+				tileGroup.addClick(click);
 				if (map[x][y].containsVillage()) {
 					// Draw village on top of tile
 					final VillageImage village;
@@ -171,11 +174,11 @@ public class InGame extends ScreenAdapter {
 				// tile.setPosition(x*308*0.75f, x*88/2.0f + (y*88));
 				// tile.setOrigin(originX, originY);
 				final Tile clickedTile = map[x][y];
-				final int X = x, Y = y;
+				final int finalX = x, finalY = y;
 				tile.addListener(new ClickListener() {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
-						System.out.println("clicked on tile " + X + " " + Y);
+						System.out.println("clicked on tile " + finalX + " " + finalY);
 						hud.tileClicked(clickedTile);
 						if (click.isClicked()) {
 							boolean good = true;
@@ -208,6 +211,7 @@ public class InGame extends ScreenAdapter {
 								tile.setColor(colorByIndex.get(0));
 							}
 							if (good) {
+								tileGroups[finalX][finalY].setUnit(click.potato);
 								click.potato.potato
 										.updateTileLocation(clickedTile);
 								tile.getParent().addActor(click.potato);
@@ -217,7 +221,6 @@ public class InGame extends ScreenAdapter {
 
 					}
 				});
-
 				Unit potatosan = map[x][y].getUnit();
 				if (potatosan != null && playerNum != -1) {
 					String colour = PotatoColours.values()[playerNum].colourName;
@@ -231,9 +234,11 @@ public class InGame extends ScreenAdapter {
 					}
 					System.out.println("Potato name " + name);
 
-					Actor potatoImage = new PotatoImage(atlas.findRegion(name),
-							potatosan, click);
+					PotatoImage potatoImage = new PotatoImage(atlas.findRegion(name),
+							potatosan, click, colour.toLowerCase());
 					tileGroup.addActor(potatoImage);
+					tileGroups[x][y].setUnit(potatoImage);
+					unitImages.add(potatoImage);
 					potatoImage.setPosition(50, 40);
 				}
 				stackToDraw.push(tileGroup);
@@ -314,21 +319,32 @@ public class InGame extends ScreenAdapter {
 
 		hud.draw();
 		
-		for (TileGroup tg : tileGroups) {
-			tg.updateTileGroup();
+		for (int i=0; i<tileGroups.length; i++) {
+			for (int j=0; j<tileGroups[0].length; j++) {
+				tileGroups[i][j].updateTileGroup();
+			}
 		}
+
+//		for (PotatoImage i : unitImages) {
+//			i.UpdateImage();
+//		}
 	}
 	class TileGroup extends Group {
 		Tile tile;
+		PotatoImage potatoImage;
 		Image tileImage;
 		VillageImage villageImage;
 		LandType currentLandType;
 		VillageType currentVillageType;
+		Clicked click;
 		
 		public TileGroup(Tile tile) {
 			super();
 			this.tile = tile;
 			this.currentLandType = tile.getLandType();
+		}
+		public void addClick(Clicked click) {
+			this.click = click;
 		}
 		public void setVillageImage(VillageImage image) {
 			this.villageImage = image;
@@ -337,11 +353,14 @@ public class InGame extends ScreenAdapter {
 		public void setTileImage(Image image) {
 			this.tileImage = image;
 		}
-		//TODO add unit 
+		public void setUnit(PotatoImage image) {
+			this.potatoImage = image;
+		}
 		public void updateTileGroup() {
 			LandType latestLandType = tile.getLandType();
 			if (latestLandType != currentLandType) {
 				//Update tile image's texture to latest land type
+				currentLandType = latestLandType;
 				TextureRegionDrawable drawable; 
 				if (latestLandType==LandType.Grass) {
 					drawable = new TextureRegionDrawable(hex_grass);
@@ -356,6 +375,7 @@ public class InGame extends ScreenAdapter {
 				VillageType latestVillageType = villageImage.getVillage().getType();
 				if (latestVillageType!= currentVillageType) {
 					//Update village image's texture to latest village type
+					currentVillageType = latestVillageType;
 					TextureRegionDrawable drawable; 
 					if (latestVillageType == VillageType.Hovel) {
 						drawable = new TextureRegionDrawable(village_hovel);
@@ -366,6 +386,19 @@ public class InGame extends ScreenAdapter {
 					}
 					villageImage.setDrawable(drawable);
 				}
+			}
+			if (tile.getUnit()!=null && potatoImage!=null) {
+				potatoImage.UpdateImage();
+			} else if (tile.getUnit()!=null && potatoImage==null) {
+				int playerNum = game.GAMEMANAGER.getGame().getPlayers().indexOf(tile.getPlayer());
+				String colour = PotatoColours.values()[playerNum].colourName;
+				
+				TextureRegionDrawable drawable = new TextureRegionDrawable(atlas.findRegion("potato_"+colour));
+				PotatoImage poImg = new PotatoImage(atlas.findRegion("potato_"+colour), tile.getUnit(), click, colour);
+				setUnit(poImg);
+			} else if (tile.getUnit()==null) {
+				//remove reference to potato image, it has moved to another tile or got mashed potato
+				potatoImage = null;
 			}
 		}
 	}
@@ -398,13 +431,17 @@ public class InGame extends ScreenAdapter {
 		Unit potato;
 		Clicked click;
 		PotatoImage reference;
+		UnitType currentUnitType;
+		String colour;
 
 		public PotatoImage(AtlasRegion region, final Unit potato,
-				final Clicked click) {
+				final Clicked click, String colour) {
 			super(region);
 			this.potato = potato;
 			this.click = click;
 			this.reference = this;
+			this.currentUnitType = potato.getType();
+			this.colour = colour;
 			this.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
@@ -412,6 +449,25 @@ public class InGame extends ScreenAdapter {
 					click.clickedOn(reference);
 				}
 			});
+		}
+		public void UpdateImage() {
+			UnitType latestUnitType = potato.getType();
+			if (latestUnitType != currentUnitType) {
+				currentUnitType = latestUnitType;
+				TextureRegionDrawable drawable;
+				String name;
+				if (latestUnitType == UnitType.Peasant) {
+					name = "potato_"+colour;
+				} else if (latestUnitType == UnitType.Infantry) {
+					name = "potato_"+colour+"_infantry";
+				} else if (latestUnitType == UnitType.Soldier) {
+					name = "potato_"+colour+"_soldier";
+				} else {//(latestUnitType == UnitType.Knight) {
+					name = "potato_"+colour+"_knight";
+				}
+				drawable = new TextureRegionDrawable(atlas.findRegion(name));
+				reference.setDrawable(drawable);
+			}
 		}
 	}
 
