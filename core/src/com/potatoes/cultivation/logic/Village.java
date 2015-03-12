@@ -98,5 +98,36 @@ public class Village implements Comparable<Village>, Serializable {
 			c = (new Random().nextInt(2) * 2) - 1;
 		}
 		return c;
-	}	
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((myTile == null) ? 0 : myTile.hashCode());
+		result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Village other = (Village) obj;
+		if (myTile == null) {
+			if (other.myTile != null)
+				return false;
+		} else if (!myTile.equals(other.myTile))
+			return false;
+		if (owner == null) {
+			if (other.owner != null)
+				return false;
+		} else if (!owner.equals(other.owner))
+			return false;
+		return true;
+	}
 }

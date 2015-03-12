@@ -1,10 +1,11 @@
 package com.potatoes.cultivation.logic;
 
-import com.potatoes.cultivation.screens.HUD;
+import java.io.Serializable;
 
-public interface GameAction {
+public interface GameAction extends Serializable {
 	public void execute(CultivationGame game);
 	class HireVillagerAction implements GameAction {
+		private static final long serialVersionUID = 4271092470984585609L;
 		Village village;
 		
 		public HireVillagerAction(Village v) {
@@ -19,6 +20,10 @@ public interface GameAction {
 	}
 	
 	class MoveUnitAction implements GameAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -4038577797417726543L;
 		Unit unit;
 		Tile target;
 		
@@ -34,6 +39,10 @@ public interface GameAction {
 	}
 	
 	class UpgradeVillageAction implements GameAction {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3905309607177943084L;
 		Village v;
 		
 		public UpgradeVillageAction(Village v) {
@@ -44,6 +53,10 @@ public interface GameAction {
 		public void execute(CultivationGame game) {
 			game.upgradeVillage(v);
 			game.updateHUD(v);
+		}
+		
+		public Village getVillage() {
+			return v;
 		}
 		
 	}

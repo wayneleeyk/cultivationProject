@@ -20,6 +20,7 @@ import java.util.Set;
 
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
+import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameManager;
 //import com.potatoes.cultivation.logic.Command;
 import com.potatoes.cultivation.logic.Player;
@@ -50,7 +51,7 @@ public class Client{
 		}
 		
 		// heartbeat thread (ie tells server the connection is alive)
-		new Thread(new HeartBeat(this, game)).start();
+//		new Thread(new HeartBeat(this, game)).start();
 
 		// event listener
 		new Thread(new EventListener(this)).start();
@@ -199,6 +200,15 @@ public class Client{
 		}
 //		return null;
 	}
+	
+	public void sendActions(GameAction... actions) {
+		try {
+			out.writeObject(new ActionBlockProtocol(game.player, actions));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 //	
 //	class ClientThread implements Runnable {
 //		private Client client;

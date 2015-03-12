@@ -50,6 +50,7 @@ final class ClientAcceptor implements Runnable {
 //									System.out.println("Before reading...");
 									Protocol protocol = (Protocol) in.readObject();
 //									System.out.println("After reading...");
+//									System.out.println("Got protocol " + protocol);
 									ClientAcceptor.this.server.queue.put(new ServerTask(out, protocol));
 									Thread.sleep(100);
 								} 

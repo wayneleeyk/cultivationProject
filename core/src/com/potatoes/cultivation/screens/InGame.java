@@ -98,7 +98,7 @@ public class InGame extends ScreenAdapter {
 		// for each tile create an Image actor
 
 		final Clicked click = new Clicked();
-		final Region someRegion = gameMap.getRegions(game.player).iterator().next();
+		Region someRegion = gameMap.getRegions(game.player).iterator().next();
 
 		Tile occupying = someRegion.getTiles().iterator().next();
 		Unit u = new Unit(occupying);
@@ -176,7 +176,7 @@ public class InGame extends ScreenAdapter {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						System.out.println("clicked on tile " + X + " " + Y);
-						
+//						hud.tileClicked(clickedTile);
 						if (click.isClicked()) {
 							boolean good = true;
 							if (!gameMap.getNeighbouringTiles(
@@ -203,15 +203,8 @@ public class InGame extends ScreenAdapter {
 								tile.setDrawable(new TextureRegionDrawable(
 										hex_grass));
 							}
-<<<<<<< HEAD
-							if (good && clickedTile.owner == null) {
-								clickedTile.owner = click.potato.potato
-										.getVillage().getOwner();
-								someRegion.addTile(clickedTile);
-=======
 							if (good && clickedTile.getPlayer() == null) {
 								clickedTile.updateOwner(click.potato.potato.getVillage().getOwner());
->>>>>>> branch 'master' of https://github.com/wayneleeyk/cultivationProject
 								tile.setColor(colorByIndex.get(0));
 							}
 							if (good) {
@@ -236,6 +229,7 @@ public class InGame extends ScreenAdapter {
 						name = "potato_" + unitType.name().toLowerCase()
 								+ colour.toLowerCase();
 					}
+					System.out.println("Potato name " + name);
 
 					Actor potatoImage = new PotatoImage(atlas.findRegion(name),
 							potatosan, click);
