@@ -100,7 +100,7 @@ public class InGame extends ScreenAdapter {
 		// for each tile create an Image actor
 
 		final Clicked click = new Clicked();
-		Region someRegion = gameMap.getRegions(game.player).iterator().next();
+		final Region someRegion = gameMap.getRegions(game.player).iterator().next();
 
 		Tile occupying = someRegion.getTiles().iterator().next();
 		Unit u = new Unit(occupying);
@@ -209,9 +209,12 @@ public class InGame extends ScreenAdapter {
 							if (good && clickedTile.getPlayer() == null) {
 								clickedTile.updateOwner(click.potato.potato.getVillage().getOwner());
 								tile.setColor(colorByIndex.get(0));
+								someRegion.addTile(clickedTile);
+								clickedTile.updateOwner(someRegion.getOwner());
 							}
 							if (good) {
 								tileGroups[finalX][finalY].setUnit(click.potato);
+								click.potato.setPosition(0, 0);
 								click.potato.potato
 										.updateTileLocation(clickedTile);
 								tile.getParent().addActor(click.potato);
@@ -356,6 +359,8 @@ public class InGame extends ScreenAdapter {
 		}
 		public void setUnit(PotatoImage image) {
 			this.potatoImage = image;
+			this.addActor(image);
+			image.toFront();
 		}
 		public void updateTileGroup() {
 			LandType latestLandType = tile.getLandType();
@@ -390,10 +395,19 @@ public class InGame extends ScreenAdapter {
 			}
 			if (tile.getUnit()!=null && potatoImage!=null) {
 				potatoImage.UpdateImage();
+//				potatoImage.setPosition(this.getX()-5, this.getY()-5);
+//				potatoImage.setPosition(0,0);
+				potatoImage.toFront();
 			} else if (tile.getUnit()!=null && potatoImage==null) {
 				int playerNum = game.GAMEMANAGER.getGame().getPlayers().indexOf(tile.getPlayer());
 				String colour = PotatoColours.values()[playerNum].colourName;
 				PotatoImage poImg = new PotatoImage(atlas.findRegion("potato_"+colour), tile.getUnit(), click, colour);
+				this.addActor(poImg);
+				System.out.println("tile group position " + this.getX() + ","+this.getY());
+				Vector2 coord = this.getStage().stageToScreenCoordinates(new Vector2(this.getX(), this.getY()));
+				poImg.setPosition(this.getX(), this.getY());
+				System.out.println("GetX GetY:" + this.getX()+", " + this.getY());
+				System.out.println("Stage to screen coord: " + coord.x + "," + coord.y);
 				poImg.toFront();
 				setUnit(poImg);
 				gameStage.addActor(poImg);				
