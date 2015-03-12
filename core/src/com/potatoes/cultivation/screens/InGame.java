@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameMap;
@@ -57,6 +58,7 @@ public class InGame extends ScreenAdapter {
 	GameMap gameMap;
 	Set<Tile> tiles = new HashSet<>();
 	List<Color> colorByIndex;
+	List<TileGroup> tileGroups;
 
 	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
@@ -80,6 +82,8 @@ public class InGame extends ScreenAdapter {
 		village_town = atlas.findRegion("village-town");
 		village_fort = atlas.findRegion("village-fort");
 		camera.lookAt(0, 0, 0);
+		
+		tileGroups = new ArrayList<TileGroup>();
 
 		Tile[][] map = gameMap.getMap();
 
@@ -92,7 +96,6 @@ public class InGame extends ScreenAdapter {
 		Stack<Actor> stackToDraw = new Stack<Actor>();
 
 		// for each tile create an Image actor
-		Image[][] tiles = new Image[width][height];
 
 		final Clicked click = new Clicked();
 		Region someRegion = gameMap.getRegions(game.player).iterator().next();
@@ -116,12 +119,14 @@ public class InGame extends ScreenAdapter {
 				} else {
 					hexToDraw = hex_grass;
 				}
-				final Group tileGroup = new Group();
+				final TileGroup tileGroup = new TileGroup(map[x][y]);
+				tileGroups.add(tileGroup);
 				tileGroup.setOrigin(originX, originY);
 				tileGroup.setPosition(x * 308 * 0.75f + 150, x * 88 / 2.0f
 						+ (y * 88));
 				final Image tile = new Image(hexToDraw);
 				tileGroup.addActor(tile);
+				tileGroup.setTileImage(tile);
 				if (map[x][y].containsVillage()) {
 					// Draw village on top of tile
 					final VillageImage village;
@@ -135,8 +140,6 @@ public class InGame extends ScreenAdapter {
 					}
 					village.setPosition(200, 44, 0);
 					village.setOrigin(originX, originY);
-					final float screenX = x;
-					final float screenY = y;
 					village.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
@@ -150,6 +153,7 @@ public class InGame extends ScreenAdapter {
 						}
 					});
 					tileGroup.addActor(village);
+					tileGroup.setVillageImage(village);
 				}
 				// System.out.println("Number of players:"+aGameRound.getPlayers().size());
 
@@ -277,7 +281,7 @@ public class InGame extends ScreenAdapter {
 
 		});
 	}
-
+	
 	public enum PotatoColours {
 		PURPLE("purple"), RED("red"), YELLOW("yellow");
 		final public String colourName;
@@ -309,10 +313,64 @@ public class InGame extends ScreenAdapter {
 		batch.end();
 
 		hud.draw();
+		
+		for (TileGroup tg : tileGroups) {
+			tg.updateTileGroup();
+		}
 	}
-
+	class TileGroup extends Group {
+		Tile tile;
+		Image tileImage;
+		VillageImage villageImage;
+		LandType currentLandType;
+		VillageType currentVillageType;
+		
+		public TileGroup(Tile tile) {
+			super();
+			this.tile = tile;
+			this.currentLandType = tile.getLandType();
+		}
+		public void setVillageImage(VillageImage image) {
+			this.villageImage = image;
+			this.currentVillageType = image.getVillage().getType();
+		}
+		public void setTileImage(Image image) {
+			this.tileImage = image;
+		}
+		//TODO add unit 
+		public void updateTileGroup() {
+			LandType latestLandType = tile.getLandType();
+			if (latestLandType != currentLandType) {
+				//Update tile image's texture to latest land type
+				TextureRegionDrawable drawable; 
+				if (latestLandType==LandType.Grass) {
+					drawable = new TextureRegionDrawable(hex_grass);
+				} else if (latestLandType==LandType.Meadow) {
+					drawable = new TextureRegionDrawable(hex_meadow);
+				} else {// (latestLandType==LandType.Tree) 
+					drawable = new TextureRegionDrawable(hex_tree);
+				}
+				tileImage.setDrawable(drawable);
+			}
+			if (villageImage!=null) {
+				VillageType latestVillageType = villageImage.getVillage().getType();
+				if (latestVillageType!= currentVillageType) {
+					//Update village image's texture to latest village type
+					TextureRegionDrawable drawable; 
+					if (latestVillageType == VillageType.Hovel) {
+						drawable = new TextureRegionDrawable(village_hovel);
+					} else if (latestVillageType == VillageType.Town) {
+						drawable = new TextureRegionDrawable(village_town);
+					} else { //(latestVillageType == VillageType.Fort)
+						drawable = new TextureRegionDrawable(village_fort);
+					}
+					villageImage.setDrawable(drawable);
+				}
+			}
+		}
+	}
 	class VillageImage extends Image {
-		public Village village;
+		private Village village;
 
 		public VillageImage(AtlasRegion region, Village village) {
 			super(region);
@@ -322,7 +380,7 @@ public class InGame extends ScreenAdapter {
 		public Village getVillage() {
 			return village;
 		}
-
+		//Below method is not used anymore
 		public void updateVillageSprite() {
 			TextureRegionDrawable drawable;
 			if (village.getType() == VillageType.Hovel) {
