@@ -32,16 +32,14 @@ public interface GameAction {
 	
 	class UpgradeVillageAction implements GameAction {
 		Village v;
-		VillageType type;
 		
-		public UpgradeVillageAction(Village v, VillageType type) {
+		public UpgradeVillageAction(Village v) {
 			this.v = v;
-			this.type = type;
 		}
 		
 		@Override
 		public void execute(CultivationGame game) {
-			game.upgradeVillage(v, type);
+			game.upgradeVillage(v);
 		}
 		
 	}

@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.potatoes.cultivation.Cultivation;
@@ -122,15 +123,14 @@ public class InGame extends ScreenAdapter{
 				tileGroup.addActor(tile);
 				if (map[x][y].containsVillage()) {
 					//Draw village on top of tile 
-					System.out.println("Found village");
-					final Image village;
+					final VillageImage village;
 					Village v = map[x][y].getVillage();
 					if (v.getType() == VillageType.Hovel) {
-						village= new Image(village_hovel);
+						village= new VillageImage(village_hovel, v);
 					} else if (v.getType() == VillageType.Town) {
-						village= new Image(village_town);
+						village= new VillageImage(village_town, v);
 					} else {
-						village= new Image(village_fort);
+						village= new VillageImage(village_fort, v);
 					}
 					village.setPosition(200,44,0);
 					village.setOrigin(originX, originY);
@@ -140,7 +140,7 @@ public class InGame extends ScreenAdapter{
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
 							Vector2 screenCoord = village.getStage().stageToScreenCoordinates(village.localToStageCoordinates(new Vector2(x,y)));
-							hud.villageClicked(screenCoord.x, screenCoord.y);
+							hud.villageClicked(village, screenCoord.x, screenCoord.y);
 						}
 					});
 					tileGroup.addActor(village);
@@ -257,6 +257,28 @@ public class InGame extends ScreenAdapter{
 		batch.end();
 		
 		hud.draw();
+	}
+	
+	class VillageImage extends Image {
+		public Village village;
+		public VillageImage(AtlasRegion region, Village village) {
+			super(region);
+			this.village = village;
+		}
+		public Village getVillage() {
+			return village;
+		}
+		public void updateVillageSprite() {
+			TextureRegionDrawable drawable;
+			if (village.getType() == VillageType.Hovel) {
+				drawable = new TextureRegionDrawable(village_hovel);
+			} else if (village.getType() == VillageType.Town) {
+				drawable = new TextureRegionDrawable(village_town);
+			} else {
+				drawable = new TextureRegionDrawable(village_fort);
+			}
+			this.setDrawable(drawable);
+		}
 	}
 	
 	class PotatoImage extends Image{

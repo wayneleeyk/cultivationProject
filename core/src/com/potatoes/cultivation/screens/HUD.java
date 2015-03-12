@@ -14,11 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Region;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.Village;
+import com.potatoes.cultivation.screens.InGame.VillageImage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class HUD extends Stage{
@@ -80,7 +82,7 @@ public class HUD extends Stage{
 		return sum;
 	}
 
-	public void villageClicked(float x, float y) {
+	public void villageClicked(final VillageImage villageImage, float x, float y) {
 		System.out.println("CLICKED VILLAGE");
 		final Group villageMenuGroup = new Group();
 		this.addActor(villageMenuGroup);
@@ -92,14 +94,17 @@ public class HUD extends Stage{
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("Button pressed");
+				GameAction.UpgradeVillageAction gameAction = new GameAction.UpgradeVillageAction(villageImage.getVillage());
+				gameAction.execute(game.GAMEMANAGER.getGame());
+				villageImage.updateVillageSprite();
 				return true;
-				
 			}
 		});
 		
 		villageMenuGroup.addActor(upgradeVillage);
 	
 		villageMenuGroup.getStage().addListener(new ClickListener() {
+			//Listener that destroys village menu buttons when clicked anywhere except buttons
 			@Override
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("HUD clicked at " + x + "," + y);
