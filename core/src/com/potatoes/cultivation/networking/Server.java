@@ -72,6 +72,7 @@ public class Server implements Runnable{
 	////////////////////Functions for server//////////////////////////
 	
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
+		System.out.println("Propagating actions");
 		actionBlock.clearSender();
 		for (Player p : opponentsOf(sender)) {
 			User user = usernameToUser.get(p.getUsername());

@@ -117,6 +117,7 @@ public class HUD extends Stage{
 				System.out.println("upgradeVillage clicked");
 				GameAction.UpgradeVillageAction gameAction = new GameAction.UpgradeVillageAction(villageImage.getVillage());
 				gameAction.execute(game.GAMEMANAGER.getGame());
+//				game.client.sendActions(gameAction);
 			}
 		});
 		
@@ -127,6 +128,7 @@ public class HUD extends Stage{
 				System.out.println("hireVillager clicked");
 				GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(villageImage.getVillage());
 				hireAction.execute(game.GAMEMANAGER.getGame());
+//				game.client.sendActions(hireAction);
 			}
 		});
 		

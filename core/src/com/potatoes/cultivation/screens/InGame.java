@@ -30,6 +30,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
+import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.Region;
@@ -38,6 +39,9 @@ import com.potatoes.cultivation.logic.Unit;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
 import com.potatoes.cultivation.logic.VillageType;
+import com.potatoes.cultivation.networking.ActionBlockProtocol;
+import com.potatoes.cultivation.networking.Protocol;
+import com.potatoes.cultivation.networking.ProtocolHandler;
 
 public class InGame extends ScreenAdapter {
 
@@ -61,6 +65,8 @@ public class InGame extends ScreenAdapter {
 	TileGroup[][] tileGroups;
 	List<PotatoImage> unitImages;
 
+	ProtocolHandler<GameAction[]> updates;
+	
 	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
 		this.batch = game.batch;
@@ -214,7 +220,7 @@ public class InGame extends ScreenAdapter {
 							}
 							if (good) {
 								tileGroups[finalX][finalY].setUnit(click.potato);
-								click.potato.setPosition(0, 0);
+								click.potato.setPosition(50, 40);
 								click.potato.potato
 										.updateTileLocation(clickedTile);
 								tile.getParent().addActor(click.potato);
@@ -288,6 +294,24 @@ public class InGame extends ScreenAdapter {
 			}
 
 		});
+		
+		
+		////////////////////////////////////////////
+		/// Handlers
+		updates = new ProtocolHandler<GameAction[]>(){
+
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof ActionBlockProtocol) {
+					result = ((ActionBlockProtocol) p).getActions();
+				}
+			}
+			
+		};
+		game.client.insertHandler(updates);
+		
+		
+		/////////////////////////////////////////////
 	}
 	
 	public enum PotatoColours {
@@ -317,6 +341,9 @@ public class InGame extends ScreenAdapter {
 		}
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// check for updates
+		checkUpdates();
+		
 		// update camera
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
@@ -333,6 +360,17 @@ public class InGame extends ScreenAdapter {
 //			i.UpdateImage();
 //		}
 	}
+	
+	private void checkUpdates() {
+		if(updates.isAvailable()) {
+			System.out.println("new updates!");
+			for(GameAction ga : updates.getResult()) {
+				ga.execute(game.GAMEMANAGER.getGame());
+			}
+			updates.reset();
+		}
+	}
+	
 	class TileGroup extends Group {
 		Tile tile;
 		PotatoImage potatoImage;
@@ -410,7 +448,7 @@ public class InGame extends ScreenAdapter {
 				System.out.println("Stage to screen coord: " + coord.x + "," + coord.y);
 				poImg.toFront();
 				setUnit(poImg);
-				gameStage.addActor(poImg);				
+				poImg.setPosition(50, 40);
 			} else if (tile.getUnit()==null) {
 				//remove reference to potato image, it has moved to another tile or got mashed potato
 				potatoImage = null;

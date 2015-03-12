@@ -16,4 +16,7 @@ public abstract class ProtocolHandler <T> {
 	public boolean isAvailable() {
 		return result != null;
 	}
+	public void reset() {
+		result = null;
+	}
 }
