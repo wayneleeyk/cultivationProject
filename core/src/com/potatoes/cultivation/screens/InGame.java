@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -59,7 +61,7 @@ public class InGame extends ScreenAdapter{
 	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
 		this.batch = game.batch;
-		this.hud = new HUD(this.batch, this.gameMap, this.game.player);
+		this.hud = new HUD(this.game, this.batch, this.gameMap, this.game.player);
 		this.atlas = game.manager.get("ingame.atlas", TextureAtlas.class);
 		this.gameMap = aGameRound.getGameMap();
 		
@@ -93,23 +95,6 @@ public class InGame extends ScreenAdapter{
 		gameMap.PrintPlayersStuff(game.player);
 		for (int y=0; y<width; y++) {
 			for (int x=0;x<height;x++) {
-				//Draw village on top of tile 
-				if (map[x][y].containsVillage()) {
-					System.out.println("Found village");
-					final Image village;
-					Village v = map[x][y].getVillage();
-					if (v.getType() == VillageType.Hovel) {
-						village= new Image(village_hovel);
-					} else if (v.getType() == VillageType.Town) {
-						village= new Image(village_town);
-					} else {
-						village= new Image(village_fort);
-					}
-					village.setPosition(x*308*0.75f+150, x*88/2.0f + (y*88));
-					village.setOrigin(originX, originY);
-					stackToDraw.push(village);
-				}
-				
 				
 				AtlasRegion hexToDraw;
 				if (map[x][y].getLandType() == LandType.Sea) {
@@ -122,13 +107,34 @@ public class InGame extends ScreenAdapter{
 					hexToDraw = hex_grass;
 				}
 				final Group tileGroup = new Group();
+				tileGroup.setOrigin(originX, originY);
+				tileGroup.setPosition(x*308*0.75f+150, x*88/2.0f + (y*88));
 				final Image tile = new Image(hexToDraw);
 				tileGroup.addActor(tile);
-				if(map[x][y].containsVillage()) {
-					Image village = new Image(village_hovel);
+				if (map[x][y].containsVillage()) {
+					//Draw village on top of tile 
+					System.out.println("Found village");
+					final Image village;
+					Village v = map[x][y].getVillage();
+					if (v.getType() == VillageType.Hovel) {
+						village= new Image(village_hovel);
+					} else if (v.getType() == VillageType.Town) {
+						village= new Image(village_town);
+					} else {
+						village= new Image(village_fort);
+					}
+					village.setPosition(200,44,0);
+					village.setOrigin(originX, originY);
+					final float screenX = x;
+					final float screenY = y;
+					village.addListener(new ClickListener() {
+						@Override
+						public void clicked(InputEvent event, float x, float y) {
+							Vector2 screenCoord = village.getStage().stageToScreenCoordinates(village.localToStageCoordinates(new Vector2(x,y)));
+							hud.villageClicked(screenCoord.x, screenCoord.y);
+						}
+					});
 					tileGroup.addActor(village);
-					village.toFront();
-					village.setPosition(150, 44);
 				}
 //				System.out.println("Number of players:"+aGameRound.getPlayers().size());
 				int playerNum = aGameRound.getPlayers().indexOf(map[x][y].getPlayer());
@@ -162,7 +168,8 @@ public class InGame extends ScreenAdapter{
 			gameStage.addActor(stackToDraw.pop());
 		}
 		// Stage
-		Gdx.input.setInputProcessor(gameStage);
+		InputMultiplexer inputs = new InputMultiplexer(hud,gameStage);
+		Gdx.input.setInputProcessor(inputs);
 		gameStage.addListener(new DragListener(){
 			float prevX , prevY;
 			@Override
