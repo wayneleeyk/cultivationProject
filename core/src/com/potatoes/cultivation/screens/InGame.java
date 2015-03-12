@@ -100,10 +100,9 @@ public class InGame extends ScreenAdapter {
 		Tile occupying = someRegion.getTiles().iterator().next();
 		Unit u = new Unit(occupying);
 		occupying.occupant = u;
-		occupying.owner = game.player;
+		occupying.updateOwner(game.player);
 		u.myVillage = someRegion.getVillage();
 		u.myType = UnitType.Peasant;
-
 		gameMap.PrintPlayersStuff(game.player);
 		for (int y = 0; y < width; y++) {
 			for (int x = 0; x < height; x++) {
@@ -200,9 +199,8 @@ public class InGame extends ScreenAdapter {
 								tile.setDrawable(new TextureRegionDrawable(
 										hex_grass));
 							}
-							if (good && clickedTile.owner == null) {
-								clickedTile.owner = click.potato.potato
-										.getVillage().getOwner();
+							if (good && clickedTile.getPlayer() == null) {
+								clickedTile.updateOwner(click.potato.potato.getVillage().getOwner());
 								tile.setColor(colorByIndex.get(0));
 							}
 							if (good) {

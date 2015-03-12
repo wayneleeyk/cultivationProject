@@ -12,7 +12,7 @@ public class Tile implements Serializable{
 	private LandType myType = LandType.Grass;
 	private StructureType structure = StructureType.None;
 	public Unit occupant = null;
-	public Player owner = null;
+	private Player owner = null;
 	
 	public Tile() {
 		structure = StructureType.None;

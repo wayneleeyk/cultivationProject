@@ -82,8 +82,9 @@ public class HUD extends Stage{
 		batch.end();
 	}
 	public void tileClicked(Tile t) {
-		if (t.getPlayer()!=null && t.getPlayer().getUsername().equals(currentPlayer.getUsername()) && t.getVillage() != null) {
+		if (t.getPlayer()!=null && !t.getPlayer().equals(Player.nullPlayer) && t.getPlayer().getUsername().equals(currentPlayer.getUsername())) {
 			Village v = t.getVillage();
+			if(v == null) return;
 			goldCount = v.getGold();
 			logCount=v.getWood();
 			villageType = v.getType().toString();
