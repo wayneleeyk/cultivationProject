@@ -22,5 +22,8 @@ public class GameDataProtocol implements Protocol {
 	public CultivationGame getGame(){
 		return this.game;
 	}
-
+	
+	public void clearSender() {
+		sender = null;
+	}
 }

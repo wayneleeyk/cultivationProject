@@ -5,22 +5,52 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.potatoes.cultivation.Cultivation;
-import com.potatoes.cultivation.screens.InGame;
 
 public class Tile implements Serializable{
 	private static final long serialVersionUID = -6410265910809526066L;
 	private LandType myType = LandType.Grass;
 	private StructureType structure = StructureType.None;
 	public Unit occupant = null;
-	private Player owner = null;
+	public Player owner = null;
+	private int locationX;
+	private int locationY;
+	public Village village;
 	
-	public Tile() {
+	public Tile(int x, int y) {
 		structure = StructureType.None;
+		locationX = x;
+		locationY = y;
 	}
 	
 	public void setUnit(Unit u) {
 		this.occupant = u;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + locationX;
+		result = prime * result + locationY;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tile other = (Tile) obj;
+		if (locationX != other.locationX)
+			return false;
+		if (locationY != other.locationY)
+			return false;
+		return true;
+	}
+
 	public void addStructure(StructureType structure){
 		this.structure = structure;
 	}

@@ -30,7 +30,7 @@ public class HexMap {
 		map = new Tile[width][height];
 		for (int x=0; x<width; x++) {
 			for (int y=0; y<height; y++) {
-				map[x][y] = new Tile();
+				map[x][y] = new Tile(x,y);
 			}
 		}
 	}
