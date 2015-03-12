@@ -307,6 +307,11 @@ public class InGame extends ScreenAdapter {
 
 	@Override
 	public void render(float delta) {
+		for (int i=0; i<tileGroups.length; i++) {
+			for (int j=0; j<tileGroups[0].length; j++) {
+				tileGroups[i][j].updateTileGroup();
+			}
+		}
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// update camera
@@ -319,11 +324,7 @@ public class InGame extends ScreenAdapter {
 
 		hud.draw();
 		
-		for (int i=0; i<tileGroups.length; i++) {
-			for (int j=0; j<tileGroups[0].length; j++) {
-				tileGroups[i][j].updateTileGroup();
-			}
-		}
+
 
 //		for (PotatoImage i : unitImages) {
 //			i.UpdateImage();
@@ -392,10 +393,10 @@ public class InGame extends ScreenAdapter {
 			} else if (tile.getUnit()!=null && potatoImage==null) {
 				int playerNum = game.GAMEMANAGER.getGame().getPlayers().indexOf(tile.getPlayer());
 				String colour = PotatoColours.values()[playerNum].colourName;
-				
-				TextureRegionDrawable drawable = new TextureRegionDrawable(atlas.findRegion("potato_"+colour));
 				PotatoImage poImg = new PotatoImage(atlas.findRegion("potato_"+colour), tile.getUnit(), click, colour);
+				poImg.toFront();
 				setUnit(poImg);
+				gameStage.addActor(poImg);				
 			} else if (tile.getUnit()==null) {
 				//remove reference to potato image, it has moved to another tile or got mashed potato
 				potatoImage = null;
