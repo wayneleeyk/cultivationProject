@@ -37,6 +37,8 @@ import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.Unit;
 import com.potatoes.cultivation.logic.UnitType;
+import com.potatoes.cultivation.logic.Village;
+import com.potatoes.cultivation.logic.VillageType;
 
 public class InGame extends ScreenAdapter{
 
@@ -48,6 +50,8 @@ public class InGame extends ScreenAdapter{
 	AtlasRegion hex_meadow;
 	AtlasRegion hex_tree;
 	AtlasRegion village_hovel;
+	AtlasRegion village_town;
+	AtlasRegion village_fort;
 	float cameraWidth=800, cameraHeight=600;
 	Camera camera = new OrthographicCamera(cameraWidth,cameraHeight);
 	Stage gameStage = new Stage();
@@ -69,13 +73,13 @@ public class InGame extends ScreenAdapter{
 		colorByIndex.add(new Color(0,1,1,0.7f));
 		colorByIndex.add(new Color(1,1,1,0.99f));
 		
-		
-		
 		hex_grass = atlas.findRegion("grass");
 		hex_sea = atlas.findRegion("tile_sea");
 		hex_meadow = atlas.findRegion("tile_meadow");
 		hex_tree = atlas.findRegion("tile_tree");
 		village_hovel = atlas.findRegion("village-hovel");
+		village_town = atlas.findRegion("village-town");
+		village_fort = atlas.findRegion("village-fort");
 		camera.lookAt(0, 0, 0);
 
 		Tile[][] map = gameMap.getMap();
@@ -99,15 +103,23 @@ public class InGame extends ScreenAdapter{
 		gameMap.PrintPlayersStuff(game.player);
 		for (int y=0; y<width; y++) {
 			for (int x=0;x<height;x++) {
-//				//Draw village on top of tile 
-//				if (map[x][y].containsVillage()) {
-//					System.out.println("Found village");
-//					final Image village = new Image(village_hovel);
-//					village.setPosition(x*308*0.75f+150, x*88/2.0f + (y*88));
-//					village.setOrigin(originX, originY);
-//					stackToDraw.push(village);
-//				}
-	
+				//Draw village on top of tile 
+				if (map[x][y].containsVillage()) {
+					System.out.println("Found village");
+					final Image village;
+					Village v = map[x][y].getVillage();
+					if (v.getType() == VillageType.Hovel) {
+						village= new Image(village_hovel);
+					} else if (v.getType() == VillageType.Town) {
+						village= new Image(village_town);
+					} else {
+						village= new Image(village_fort);
+					}
+					village.setPosition(x*308*0.75f+150, x*88/2.0f + (y*88));
+					village.setOrigin(originX, originY);
+					stackToDraw.push(village);
+				}
+
 				AtlasRegion hexToDraw;
 				if (map[x][y].getLandType() == LandType.Sea) {
 					hexToDraw = hex_sea;
