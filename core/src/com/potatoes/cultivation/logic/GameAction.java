@@ -15,7 +15,7 @@ public interface GameAction {
 		public void execute(CultivationGame game) {
 			game.hireVillager(village);
 			game.updateHUD(village);
-		}		
+		}
 	}
 	
 	class MoveUnitAction implements GameAction {

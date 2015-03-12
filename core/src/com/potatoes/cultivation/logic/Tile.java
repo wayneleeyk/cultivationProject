@@ -5,19 +5,21 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.potatoes.cultivation.Cultivation;
-import com.potatoes.cultivation.screens.InGame;
 
 public class Tile implements Serializable{
 	private static final long serialVersionUID = -6410265910809526066L;
 	private LandType myType = LandType.Grass;
 	private StructureType structure = StructureType.None;
 	public Unit occupant = null;
-	public Player owner = null;
+	private Player owner = null;
 	
 	public Tile() {
 		structure = StructureType.None;
 	}
 	
+	public void setUnit(Unit u) {
+		this.occupant = u;
+	}
 	public void addStructure(StructureType structure){
 		this.structure = structure;
 	}
