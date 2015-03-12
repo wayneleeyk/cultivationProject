@@ -6,15 +6,14 @@ import com.potatoes.cultivation.Cultivation;
 
 public class Unit implements Serializable{
 	private static final long serialVersionUID = -4822623392988569568L;
-	private UnitType myType;
-	private ActionType currentAction;
-	private Tile myTile;
-	private Village myVillage;
-	
-	public Unit(int x, int y) {
+	public UnitType myType;
+	public ActionType currentAction;
+	public Tile myTile;
+	public Village myVillage;
+	public Unit(Tile t) {
 		this.myType = UnitType.Peasant;
 		this.currentAction = ActionType.ReadyForOrders;
-		this.myTile = Cultivation.GAMEMANAGER.getGameMap().getTile(x, y);
+		this.myTile = t;
 		this.myVillage = myTile.getRegion().getVillage();
 	}
 	
@@ -49,6 +48,7 @@ public class Unit implements Serializable{
 
 	public void updateTileLocation(Tile t){
 		myTile = t;
+		t.occupant = this;
 	}
 
 	@Override
