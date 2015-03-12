@@ -2,13 +2,21 @@ package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
 
-//Author: Shivani Sharma
+import com.potatoes.cultivation.Cultivation;
+
 public class Unit implements Serializable{
 	private static final long serialVersionUID = -4822623392988569568L;
 	private UnitType myType;
 	private ActionType currentAction;
 	private Tile myTile;
 	private Village myVillage;
+	
+	public Unit(int x, int y) {
+		this.myType = UnitType.Peasant;
+		this.currentAction = ActionType.ReadyForOrders;
+		this.myTile = Cultivation.GAMEMANAGER.getGameMap().getTile(x, y);
+		this.myVillage = myTile.getRegion().getVillage();
+	}
 	
 	public ActionType getCurrentAction(){
 		return currentAction;
@@ -38,7 +46,7 @@ public class Unit implements Serializable{
 	public boolean tryInvadeTile(Tile t){
 		return false;
 	}
-	//a little unsure about this, but I'm assuming we set the Unit's tile as the tile passed as a parameter.
+
 	public void updateTileLocation(Tile t){
 		myTile = t;
 	}

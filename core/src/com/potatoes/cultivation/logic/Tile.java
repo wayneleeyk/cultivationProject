@@ -11,8 +11,8 @@ public class Tile implements Serializable{
 	private static final long serialVersionUID = -6410265910809526066L;
 	private LandType myType;
 	private StructureType structure;
-	private Unit occupant;
-	private Player owner;
+	public Unit occupant;
+	public Player owner;
 	
 	public Tile() {
 		structure = StructureType.None;

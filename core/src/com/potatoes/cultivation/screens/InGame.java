@@ -3,6 +3,7 @@ package com.potatoes.cultivation.screens;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 
@@ -32,7 +33,10 @@ import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.LandType;
+import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
+import com.potatoes.cultivation.logic.Unit;
+import com.potatoes.cultivation.logic.UnitType;
 
 public class InGame extends ScreenAdapter{
 
@@ -86,6 +90,12 @@ public class InGame extends ScreenAdapter{
 		// for each tile create an Image actor 
 		Image[][] tiles = new Image[width][height];
 		
+		Unit u = new Unit(1, 1);
+		Unit u2 = new Unit(3, 3);
+		map[1][1].occupant = u;
+		map[3][3].occupant = u2;
+		map[1][1].owner = game.player;
+		map[3][3].owner = game.player;
 		gameMap.PrintPlayersStuff(game.player);
 		for (int y=0; y<width; y++) {
 			for (int x=0;x<height;x++) {
@@ -97,8 +107,7 @@ public class InGame extends ScreenAdapter{
 //					village.setOrigin(originX, originY);
 //					stackToDraw.push(village);
 //				}
-				
-				
+	
 				AtlasRegion hexToDraw;
 				if (map[x][y].getLandType() == LandType.Sea) {
 					hexToDraw = hex_sea;
@@ -119,7 +128,8 @@ public class InGame extends ScreenAdapter{
 					village.setPosition(150, 44);
 				}
 //				System.out.println("Number of players:"+aGameRound.getPlayers().size());
-				int playerNum = aGameRound.getPlayers().indexOf(map[x][y].getPlayer());
+
+				int playerNum = aGameRound.getPlayers().indexOf(map[x][y].getPlayer());			
 				if (playerNum != -1) {
 					//If tile is owned by a player, tint it the corresponding colour
 					tile.setColor(colorByIndex.get(playerNum));
@@ -135,6 +145,30 @@ public class InGame extends ScreenAdapter{
 						hud.tileClicked(clickedTile);
 					}
 				});
+				
+				Unit potatosan = map[x][y].getUnit();
+//				Image potatoImage = null;
+				if(potatosan!=null && playerNum != -1){
+					String colour = PotatoColours.values()[playerNum].colourName;
+					UnitType unitType = potatosan.getType();
+					String name = "";
+					if(unitType.equals(UnitType.Peasant)){
+						name = "potato_"+colour.toLowerCase();
+					}
+					else{
+						name = "potato_"+unitType.name().toLowerCase()+colour.toLowerCase();
+					}
+					System.out.println("Potato name " +name);
+					
+					Actor potatoImage = new PotatoImage(atlas.findRegion(name));
+					tileGroup.addActor(potatoImage );
+					potatoImage.setPosition(50,40);
+//					potatoImage.setPosition(x*tile.getWidth()*0.75f, x*tile.getHeight()/2.0f + (y*tile.getHeight()));
+//					potatoImage.setPosition(x*308*0.75f, x*88/2.0f + (y*88));
+					
+//					potatoImage.setOrigin(originX, originY);
+				}
+//				if(potatoImage != null) tileGroup.addActor(potatoImage);
 //				tile.addListener(new EventListener() {
 //					@Override
 //					public boolean handle(Event event) {
@@ -173,6 +207,13 @@ public class InGame extends ScreenAdapter{
 		});
 	}
 	
+	public enum PotatoColours{
+		PURPLE("purple"), RED("red"), YELLOW("yellow");
+		final public String colourName;
+		private PotatoColours(String colourName) {
+			this.colourName = colourName;
+		}
+	}
 	
 	
 	@Override
@@ -197,5 +238,17 @@ public class InGame extends ScreenAdapter{
 		batch.end();
 		
 		hud.draw();
+	}
+	
+	class PotatoImage extends Image{
+		public PotatoImage(AtlasRegion region) {
+			super(region);
+			this.addListener(new ClickListener(){
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					System.out.println("potatoman is tickled");
+				}
+			});
+		}
 	}
 }
