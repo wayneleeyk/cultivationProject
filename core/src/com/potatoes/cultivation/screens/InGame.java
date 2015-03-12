@@ -105,23 +105,6 @@ public class InGame extends ScreenAdapter{
 		gameMap.PrintPlayersStuff(game.player);
 		for (int y=0; y<width; y++) {
 			for (int x=0;x<height;x++) {
-				//Draw village on top of tile 
-				if (map[x][y].containsVillage()) {
-					System.out.println("Found village");
-					final Image village;
-					Village v = map[x][y].getVillage();
-					if (v.getType() == VillageType.Hovel) {
-						village= new Image(village_hovel);
-					} else if (v.getType() == VillageType.Town) {
-						village= new Image(village_town);
-					} else {
-						village= new Image(village_fort);
-					}
-					village.setPosition(x*308*0.75f+150, x*88/2.0f + (y*88));
-					village.setOrigin(originX, originY);
-					stackToDraw.push(village);
-				}
-
 				AtlasRegion hexToDraw;
 				if (map[x][y].getLandType() == LandType.Sea) {
 					hexToDraw = hex_sea;
