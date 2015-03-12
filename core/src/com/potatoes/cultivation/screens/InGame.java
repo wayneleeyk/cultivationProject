@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.screens;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
+import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.Region;
@@ -38,6 +40,9 @@ import com.potatoes.cultivation.logic.Unit;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
 import com.potatoes.cultivation.logic.VillageType;
+import com.potatoes.cultivation.networking.ActionBlockProtocol;
+import com.potatoes.cultivation.networking.Protocol;
+import com.potatoes.cultivation.networking.ProtocolHandler;
 
 public class InGame extends ScreenAdapter {
 
@@ -59,6 +64,9 @@ public class InGame extends ScreenAdapter {
 	Set<Tile> tiles = new HashSet<>();
 	List<Color> colorByIndex;
 	List<TileGroup> tileGroups;
+	
+	HashMap<Object, Actor> objectToActor = new HashMap<Object, Actor>();
+	ProtocolHandler<GameAction[]> updateHandler;
 
 	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
@@ -87,6 +95,22 @@ public class InGame extends ScreenAdapter {
 
 		Tile[][] map = gameMap.getMap();
 
+		//////////////////////////////////////
+		// Handlers
+		updateHandler = new ProtocolHandler<GameAction[]>(){
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof ActionBlockProtocol) {
+					result = ((ActionBlockProtocol) p).getActions();
+				}
+			}
+		};
+		game.client.insertHandler(updateHandler);
+		//////////////////////////////////////
+		
+		
+		
+		
 		// load map
 		int width = gameMap.getMap().length;
 		int height = gameMap.getMap()[0].length;
@@ -138,6 +162,9 @@ public class InGame extends ScreenAdapter {
 					} else {
 						village = new VillageImage(village_fort, v);
 					}
+					
+					objectToActor.put(v, village);
+					
 					village.setPosition(200, 44, 0);
 					village.setOrigin(originX, originY);
 					village.addListener(new ClickListener() {
@@ -306,6 +333,7 @@ public class InGame extends ScreenAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		// update camera
 		camera.update();
+		checkUpdates();
 		batch.setProjectionMatrix(camera.combined);
 
 		batch.begin();
@@ -369,6 +397,28 @@ public class InGame extends ScreenAdapter {
 			}
 		}
 	}
+
+	private void checkUpdates() {
+		if(updateHandler.isAvailable()) {
+			GameAction[] updates = updateHandler.getResult();
+			System.out.println("Received updates...\n" + updates);
+			for(GameAction action : updates) {
+				if(action instanceof GameAction.UpgradeVillageAction) {
+					action.execute(game.GAMEMANAGER.getGame());
+					Village v = ((GameAction.UpgradeVillageAction) action).getVillage();
+					((VillageImage) objectToActor.get(v)).updateVillageSprite();
+				}
+				else if(action instanceof GameAction.HireVillagerAction) {
+					
+				}
+				else if(action instanceof GameAction.MoveUnitAction) {
+					
+				}
+			}
+			updateHandler.reset();
+		}
+	}
+	
 	class VillageImage extends Image {
 		private Village village;
 

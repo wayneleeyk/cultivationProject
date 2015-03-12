@@ -19,5 +19,8 @@ public class ActionBlockProtocol implements Protocol {
 	public GameAction[] getActions(){
 		return this.actions;
 	}
+	public void clearSender() {
+		sender = null;
+	}
 
 }
