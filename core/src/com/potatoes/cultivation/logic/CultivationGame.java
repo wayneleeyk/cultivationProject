@@ -155,4 +155,8 @@ public class CultivationGame implements Serializable{
 		this.turnOf(player);
 	}
 
+	public void hireVillager(Village village) {
+		
+	}
+
 }
