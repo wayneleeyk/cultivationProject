@@ -126,9 +126,10 @@ public class HUD extends Stage{
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("hireVillager clicked");
-				GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(villageImage.getVillage());
-				hireAction.execute(game.GAMEMANAGER.getGame());
-//				game.client.sendActions(hireAction);
+				Tile t = game.GAMEMANAGER.getGame().hireVillager(villageImage.getVillage());
+				GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(t);
+//				hireAction.execute(game.GAMEMANAGER.getGame());
+				game.client.sendActions(hireAction);
 			}
 		});
 		

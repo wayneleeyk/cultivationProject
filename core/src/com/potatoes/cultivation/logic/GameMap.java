@@ -13,11 +13,14 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.badlogic.gdx.utils.Predicate;
+import com.potatoes.cultivation.screens.InGame;
 
 public class GameMap implements Serializable {
 	private static final long serialVersionUID = 1777608645753451446L;
 	private Tile[][] map;
 	private HashMap<Player, Set<Region>> regions = new HashMap<>();
+	private InGame.TileGroup[][] TGmap;
+	
 	
 	public void PrintPlayersStuff(Player p) {
 	
@@ -53,6 +56,14 @@ public class GameMap implements Serializable {
 
 	public Tile[][] getMap() {
 		return this.map;
+	}
+	
+	public InGame.TileGroup[][] getTGMap() {
+		return this.TGmap;
+	}
+	
+	public void setTGMap(InGame.TileGroup[][] map) {
+		this.TGmap = map;
 	}
 
 	public Tile getTile(int x, int y) {

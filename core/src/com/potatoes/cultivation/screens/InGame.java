@@ -98,6 +98,7 @@ public class InGame extends ScreenAdapter {
 
 		// load map
 		Tile[][] map = gameMap.getMap();
+		game.GAMEMANAGER.getGameMap().setTGMap(tileGroups);
 
 		int originX = hex_grass.getRegionWidth() / 2, originY = hex_grass
 				.getRegionHeight() / 2;
@@ -109,11 +110,11 @@ public class InGame extends ScreenAdapter {
 		final Region someRegion = gameMap.getRegions(game.player).iterator().next();
 
 		Tile occupying = someRegion.getTiles().iterator().next();
-		Unit u = new Unit(occupying);
-		occupying.occupant = u;
-		occupying.updateOwner(game.player);
-		u.myVillage = someRegion.getVillage();
-		u.myType = UnitType.Peasant;
+//		Unit u = new Unit(occupying);
+//		occupying.occupant = u;
+//		occupying.updateOwner(game.player);
+//		u.myVillage = someRegion.getVillage();
+//		u.myType = UnitType.Peasant;
 		gameMap.PrintPlayersStuff(game.player);
 		for (int y = 0; y < width; y++) {
 			for (int x = 0; x < height; x++) {
@@ -221,9 +222,11 @@ public class InGame extends ScreenAdapter {
 							if (good) {
 								tileGroups[finalX][finalY].setUnit(click.potato);
 								click.potato.setPosition(50, 40);
+								Tile start = click.potato.potato.getTile();
 								click.potato.potato
 										.updateTileLocation(clickedTile);
 								tile.getParent().addActor(click.potato);
+								game.client.sendActions(new GameAction.MoveUnitAction(start, clickedTile));
 							}
 							click.reset();
 						}
@@ -371,7 +374,7 @@ public class InGame extends ScreenAdapter {
 		}
 	}
 	
-	class TileGroup extends Group {
+	public class TileGroup extends Group {
 		Tile tile;
 		PotatoImage potatoImage;
 		Image tileImage;
@@ -395,10 +398,16 @@ public class InGame extends ScreenAdapter {
 		public void setTileImage(Image image) {
 			this.tileImage = image;
 		}
+		public Image getTileImage() {
+			return this.tileImage;
+		}
 		public void setUnit(PotatoImage image) {
 			this.potatoImage = image;
 			this.addActor(image);
 			image.toFront();
+		}
+		public PotatoImage getUnit() {
+			return this.potatoImage;
 		}
 		public void updateTileGroup() {
 			LandType latestLandType = tile.getLandType();
