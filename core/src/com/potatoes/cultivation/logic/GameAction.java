@@ -13,7 +13,7 @@ public interface GameAction {
 		@Override
 		public void execute(CultivationGame game) {
 			game.hireVillager(village);
-		}		
+		}
 	}
 	
 	class MoveUnitAction implements GameAction {

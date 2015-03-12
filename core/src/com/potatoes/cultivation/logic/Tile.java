@@ -18,6 +18,9 @@ public class Tile implements Serializable{
 		structure = StructureType.None;
 	}
 	
+	public void setUnit(Unit u) {
+		this.occupant = u;
+	}
 	public void addStructure(StructureType structure){
 		this.structure = structure;
 	}

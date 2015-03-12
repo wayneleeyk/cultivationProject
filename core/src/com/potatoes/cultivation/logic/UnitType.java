@@ -53,7 +53,7 @@ public enum UnitType {
 	 * Knight =   54g
 	 * Returns -1 upon some sort of failure.
 	 */
-	public int getSalary(UnitType type){
+	public int getSalary(){
 		if (this.ordinal() == 0){
 			return 2;
 		}
