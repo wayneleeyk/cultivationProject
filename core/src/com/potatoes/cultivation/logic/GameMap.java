@@ -122,7 +122,7 @@ public class GameMap implements Serializable {
 		return r;
 	}
 
-	enum MapDirections {
+	public enum MapDirections {
 		Up(0, 1), Down(0, -1), LeftUp(-1, 1), LeftDown(-1, 0), RightUp(1, 0), RightDown(
 				1, -1);
 		int iShift, jShift;

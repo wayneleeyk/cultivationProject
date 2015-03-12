@@ -15,7 +15,7 @@ class EventListener implements Runnable {
 		while(true){
 			try {
 				Protocol p = this.client.incomingQueue.take();
-				System.out.println("Protocol has arrived " + p.getClass().toString());
+//				System.out.println("Protocol has arrived " + p.getClass().toString());
 				for (ProtocolHandler<?> protocolHandler : this.client.handlers) {
 					protocolHandler.handle(p);
 				}

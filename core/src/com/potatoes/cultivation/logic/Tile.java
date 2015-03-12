@@ -9,10 +9,10 @@ import com.potatoes.cultivation.screens.InGame;
 
 public class Tile implements Serializable{
 	private static final long serialVersionUID = -6410265910809526066L;
-	private LandType myType;
-	private StructureType structure;
-	public Unit occupant;
-	public Player owner;
+	private LandType myType = LandType.Grass;
+	private StructureType structure = StructureType.None;
+	public Unit occupant = null;
+	public Player owner = null;
 	
 	public Tile() {
 		structure = StructureType.None;
@@ -95,12 +95,14 @@ public class Tile implements Serializable{
 				//If invader is knight, he cannot invade tile that contains tomb stone nor tree
 				invadable = false;
 			}
+			System.out.println("Tile is invadable ");
 			if (invadable && myType!= LandType.Sea && (owner == tileOfUnit.getPlayer() || this.canInvade(u))) {
 				//Enter here if unit can be moved onto this tile
 				moved = true;
 				u.updateTileLocation(this);
 				//If there is already an occupant on this tile, destroy it
 				if (occupant!=null) {
+					System.out.println("There is not occupant at destination");
 					Region victimsRegion = this.occupant.getTile().getRegion();
 					//Remove this tile from victim's region since it got invaded
 					victimsRegion.removeTile(this);
@@ -118,6 +120,7 @@ public class Tile implements Serializable{
 				}
 				//If there is a tree on this tile, cut it down
 				if (myType == LandType.Tree) {
+					System.out.println("There is a tree at destination");
 					//Change landtype to grass
 					myType = LandType.Grass;
 					//Update wood stats of village
