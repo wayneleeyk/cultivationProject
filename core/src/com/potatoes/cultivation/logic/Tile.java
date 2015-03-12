@@ -13,9 +13,14 @@ public class Tile implements Serializable{
 	private StructureType structure = StructureType.None;
 	public Unit occupant = null;
 	private Player owner = null;
+	public final int x;
+	public final int y;
 	
-	public Tile() {
+	
+	public Tile(int x, int y) {
 		structure = StructureType.None;
+		this.x = x;
+		this.y = y;
 	}
 	
 	public void setUnit(Unit u) {

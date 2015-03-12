@@ -116,8 +116,8 @@ public class HUD extends Stage{
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("upgradeVillage clicked");
 				GameAction.UpgradeVillageAction gameAction = new GameAction.UpgradeVillageAction(villageImage.getVillage());
-				gameAction.execute(game.GAMEMANAGER.getGame());
-//				game.client.sendActions(gameAction);
+//				gameAction.execute(game.GAMEMANAGER.getGame());
+				game.client.sendActions(gameAction);
 			}
 		});
 		

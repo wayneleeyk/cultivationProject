@@ -46,14 +46,17 @@ public interface GameAction extends Serializable {
 		 */
 		private static final long serialVersionUID = -3332608300692384612L;
 		Village v;
+		Tile t;
 		
 		public UpgradeVillageAction(Village v) {
 			this.v = v;
+			t = v.getTile();
 		}
 		
 		@Override
 		public void execute(CultivationGame game) {
-			game.upgradeVillage(v);
+			Village toUpgrade = game.getGameMap().getMap()[t.x][t.y].getVillage();
+			game.upgradeVillage(toUpgrade);
 		}
 		
 	}
