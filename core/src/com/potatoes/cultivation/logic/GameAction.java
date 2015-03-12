@@ -1,8 +1,9 @@
 package com.potatoes.cultivation.logic;
 
+import com.potatoes.cultivation.screens.HUD;
+
 public interface GameAction {
 	public void execute(CultivationGame game);
-	
 	class HireVillagerAction implements GameAction {
 		Village village;
 		
@@ -13,6 +14,7 @@ public interface GameAction {
 		@Override
 		public void execute(CultivationGame game) {
 			game.hireVillager(village);
+			game.updateHUD(village);
 		}		
 	}
 	
@@ -27,6 +29,7 @@ public interface GameAction {
 		@Override
 		public void execute(CultivationGame game) {
 			game.moveUnit(unit, target);
+			game.updateHUD(target);
 		}
 	}
 	
@@ -40,6 +43,7 @@ public interface GameAction {
 		@Override
 		public void execute(CultivationGame game) {
 			game.upgradeVillage(v);
+			game.updateHUD(v);
 		}
 		
 	}

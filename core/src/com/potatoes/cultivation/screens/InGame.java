@@ -95,7 +95,7 @@ public class InGame extends ScreenAdapter {
 		Image[][] tiles = new Image[width][height];
 
 		final Clicked click = new Clicked();
-		Region someRegion = gameMap.getRegions(game.player).iterator().next();
+		final Region someRegion = gameMap.getRegions(game.player).iterator().next();
 
 		Tile occupying = someRegion.getTiles().iterator().next();
 		Unit u = new Unit(occupying);
@@ -136,8 +136,6 @@ public class InGame extends ScreenAdapter {
 					}
 					village.setPosition(200, 44, 0);
 					village.setOrigin(originX, originY);
-					final float screenX = x;
-					final float screenY = y;
 					village.addListener(new ClickListener() {
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
@@ -173,7 +171,7 @@ public class InGame extends ScreenAdapter {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						System.out.println("clicked on tile " + X + " " + Y);
-						hud.tileClicked(clickedTile);
+						
 						if (click.isClicked()) {
 							boolean good = true;
 							if (!gameMap.getNeighbouringTiles(
@@ -203,6 +201,7 @@ public class InGame extends ScreenAdapter {
 							if (good && clickedTile.owner == null) {
 								clickedTile.owner = click.potato.potato
 										.getVillage().getOwner();
+								someRegion.addTile(clickedTile);
 								tile.setColor(colorByIndex.get(0));
 							}
 							if (good) {
@@ -212,7 +211,7 @@ public class InGame extends ScreenAdapter {
 							}
 							click.reset();
 						}
-
+						hud.update(clickedTile);
 					}
 				});
 
@@ -227,7 +226,6 @@ public class InGame extends ScreenAdapter {
 						name = "potato_" + unitType.name().toLowerCase()
 								+ colour.toLowerCase();
 					}
-					System.out.println("Potato name " + name);
 
 					Actor potatoImage = new PotatoImage(atlas.findRegion(name),
 							potatosan, click);

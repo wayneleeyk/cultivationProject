@@ -5,12 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.potatoes.cultivation.screens.HUD;
+
 public class CultivationGame implements Serializable {
 	private static final long serialVersionUID = 5863425364436347495L;
 	private int roundsPlayed;
 	private Player turnOf;
 	private List<Player> players;
 	private GameMap map;
+	private HUD hud;
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
@@ -166,6 +169,14 @@ public class CultivationGame implements Serializable {
 
 	public void hireVillager(Village village) {
 
+	}
+
+	public void updateHUD(Village v) {
+		this.hud.update(v);
+	}
+
+	public void updateHUD(Tile target) {
+		this.hud.update(target);
 	}
 
 }
