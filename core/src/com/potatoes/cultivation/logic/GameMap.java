@@ -222,6 +222,62 @@ public class GameMap implements Serializable {
 	}
 
 	public void takeOverTile(Tile t) {
+		Region enemyRegion = t.getRegion();
+		Player enemy = t.getPlayer();
+		Unit myUnit = t.getUnit();
+		Village myVillage = myUnit.getVillage();
+		Player owner = myVillage.getOwner();
+		Region myRegion = myVillage.getRegion();
+		t.updateOwner(owner);
+		enemyRegion.removeTile(t);
+		myRegion.addTile(t);
+		Set<Village> villages = getVillages(enemy);
+		
+		for(Village v: villages){
+			Tile v_tile = v.getTile();
+			
+			if(t == v_tile){
+				int gold = v.getGold();
+				myVillage.addGold(gold);
+				int wood = v.getWood();
+				myVillage.addWood(wood);				
+			}
+			
+			Set<Region> regions = breakUpRegion(enemyRegion,t);
+			
+			for(Region r: regions){
+				Player regionOwner = r.getOwner();
+				int regionSize = r.size();
+				Set<Tile> regionTiles = r.getTiles();
+				
+				if(regionSize < 3){
+					for(Tile tile: regionTiles){
+						tile.destroyStructure();
+						tile.updateOwner(null);
+						Unit u = tile.getUnit();
+						
+						if(u != null){
+							r.killUnit(u);
+						}	
+					}
+					deleteRegion(r);	
+				}
+					else{
+						Village r_village = r.getVillage();
+						if(r_village == null){
+							Set<Tile> newTiles = r.getTiles();
+							
+							
+					}
+				
+				
+				
+					
+					
+				}
+			}
+			
+		}
 		
 	}
 
