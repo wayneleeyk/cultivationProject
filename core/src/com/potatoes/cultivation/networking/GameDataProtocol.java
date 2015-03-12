@@ -23,4 +23,8 @@ public class GameDataProtocol implements Protocol {
 		return this.game;
 	}
 
+	public void clearSender() {
+		sender = null;
+	}
+
 }

@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -71,6 +72,7 @@ public class Server implements Runnable{
 	////////////////////Functions for server//////////////////////////
 	
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
+		actionBlock.clearSender();
 		for (Player p : opponentsOf(sender)) {
 			User user = usernameToUser.get(p.getUsername());
 			queue.add(new ServerTask(user.oos ,actionBlock));
@@ -79,6 +81,7 @@ public class Server implements Runnable{
 	
 	void propagate(Player sender, GameDataProtocol game){
 		System.out.println("Propagating game");
+		game.clearSender();
 		for(Player p: opponentsOf(sender)){
 			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>"+sender +" has opponent "+p);
 			User user = usernameToUser.get(p.getUsername());
@@ -129,9 +132,11 @@ public class Server implements Runnable{
 	}
 	
 	public Collection<Player> opponentsOf(Player p){
-		Collection<Player> players = playersInRoom(whereIs(p));
-		players.remove(p);
-		return players;
+		if(p == null) return new LinkedList<>();
+		List<Player> lst = new LinkedList<>();
+		lst.addAll(playersInRoom(whereIs(p)));
+		lst.remove(p);
+		return lst;
 	}
 
 	public int whereIs(Player p){
