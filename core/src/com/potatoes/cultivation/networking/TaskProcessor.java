@@ -17,7 +17,7 @@ final class TaskProcessor implements Runnable {
 				task.protocol.execute(server);
 //				System.out.println("Writing object to client");
 				task.oos.writeObject(task.protocol);
-//				System.out.println("Wrote object to client");
+//				System.out.println("Wrote object to client " + task.protocol);
 				task.oos.flush();
 			} catch (InterruptedException e) {
 				e.printStackTrace();

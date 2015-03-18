@@ -72,11 +72,9 @@ public class Server implements Runnable{
 	////////////////////Functions for server//////////////////////////
 	
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
-		System.out.println("Starting propagate moves" + opponentsOf(sender));
-		System.out.println(gameRooms.get(0));
+		System.out.println("Propagating actions");
 		actionBlock.clearSender();
 		for (Player p : opponentsOf(sender)) {
-			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>"+sender +" has opponent "+p);
 			User user = usernameToUser.get(p.getUsername());
 			queue.add(new ServerTask(user.oos ,actionBlock));
 		}
@@ -258,6 +256,7 @@ public class Server implements Runnable{
 //		}
 //		
 //		return gameRooms.get(i);
+		
 		return new HashSet<>( gameRooms.get(i) );
 	}
 	

@@ -2,20 +2,25 @@ package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.graphics.Color;
+import com.potatoes.cultivation.screens.InGame.TileGroup;
+
 public interface GameAction extends Serializable {
 	public void execute(CultivationGame game);
+	
 	class HireVillagerAction implements GameAction {
+		/**
+		 * 
+		 */
 		private static final long serialVersionUID = 4271092470984585609L;
-		Village village;
-		
-		public HireVillagerAction(Village v) {
-			village = v;
+		Tile t;
+		public HireVillagerAction(Tile t) {
+			this.t = t;
 		}
 		
 		@Override
 		public void execute(CultivationGame game) {
-			game.hireVillager(village);
-			game.updateHUD(village);
+			game.hireVillager(game.getGameMap().getMap()[t.x][t.y]);
 		}
 	}
 	
@@ -24,17 +29,33 @@ public interface GameAction extends Serializable {
 		 * 
 		 */
 		private static final long serialVersionUID = -4038577797417726543L;
-		Unit unit;
+		Tile unitTile;
 		Tile target;
 		
-		public MoveUnitAction(Unit u, Tile t) {
-			unit = u;
-			target = t;
+		public MoveUnitAction(Tile unitTile, Tile destTile) {
+			this.unitTile = unitTile;
+			target = destTile;
 		}
 		@Override
 		public void execute(CultivationGame game) {
-			game.moveUnit(unit, target);
-			game.updateHUD(target);
+//			game.moveUnit(unit, target);
+			Tile unit = game.getGameMap().getMap()[unitTile.x][unitTile.y];
+			Tile dest = game.getGameMap().getMap()[target.x][target.y];
+			
+			if(unit == null || dest == null || unit.getUnit() == null) return;
+			
+			unit.getUnit().myTile = dest;
+			dest.setUnit(unit.getUnit());
+			
+			if(dest.getLandType() == LandType.Tree) {
+				dest.updateLandType(LandType.Grass);
+				unit.occupant.getVillage().addWood(1);
+			}
+			
+			// Graphics part
+			TileGroup[][] tgmap = game.getGameMap().getTGMap();
+			tgmap[dest.x][dest.y].setUnit(tgmap[unit.x][unit.y].getUnit());
+			tgmap[dest.x][dest.y].getTileImage().setColor(new Color(1, 0, 0, 0.99f));
 		}
 	}
 	
@@ -42,21 +63,19 @@ public interface GameAction extends Serializable {
 		/**
 		 * 
 		 */
-		private static final long serialVersionUID = 3905309607177943084L;
+		private static final long serialVersionUID = -3332608300692384612L;
 		Village v;
+		Tile t;
 		
 		public UpgradeVillageAction(Village v) {
 			this.v = v;
+			t = v.getTile();
 		}
 		
 		@Override
 		public void execute(CultivationGame game) {
-			game.upgradeVillage(v);
-			game.updateHUD(v);
-		}
-		
-		public Village getVillage() {
-			return v;
+			Village toUpgrade = game.getGameMap().getMap()[t.x][t.y].getVillage();
+			game.upgradeVillage(toUpgrade);
 		}
 		
 	}

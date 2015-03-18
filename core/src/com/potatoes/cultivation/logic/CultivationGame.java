@@ -6,15 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.potatoes.cultivation.screens.HUD;
-
 public class CultivationGame implements Serializable {
 	private static final long serialVersionUID = 5863425364436347495L;
 	private int roundsPlayed;
 	private Player turnOf;
 	private List<Player> players;
 	private GameMap map;
-	public HUD hud;
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
@@ -168,8 +165,9 @@ public class CultivationGame implements Serializable {
 		this.turnOf(player);
 	}
 
-	public boolean hireVillager(Village village) {
+	public Tile hireVillager(Village village) {
 		boolean foundVacantTile = false;
+		Tile spawnOn = null;
 		//Check if village has enough gold to hire new villager
 		if (village.getGold() >= UnitType.Peasant.getSalary()) {
 			Set<Tile> tiles = village.getRegion().getTiles();
@@ -179,21 +177,21 @@ public class CultivationGame implements Serializable {
 				if (tile.getUnit() == null) {
 					//Place villager on this tile
 					foundVacantTile = true;
-					tile.setUnit(new Unit(tile));
+//					tile.setUnit(new Unit(tile));
 					//Subtract gold
-					village.removeGold(10);
+//					village.removeGold(10);
+					spawnOn = tile;
 				}
 			}
 		}
-		return foundVacantTile;
+		return spawnOn;
 	}
-
-	public void updateHUD(Village v) {
-		this.hud.update(v);
+	
+	//
+	public void hireVillager(Tile t) {
+		if(t == null) return;
+		t.setUnit(new Unit(t));
+		//Subtract gold
+		t.getVillage().removeGold(10);		
 	}
-
-	public void updateHUD(Tile target) {
-		this.hud.update(target);
-	}
-
 }

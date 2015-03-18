@@ -29,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
+import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.Region;
@@ -37,6 +38,9 @@ import com.potatoes.cultivation.logic.Unit;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
 import com.potatoes.cultivation.logic.VillageType;
+import com.potatoes.cultivation.networking.ActionBlockProtocol;
+import com.potatoes.cultivation.networking.Protocol;
+import com.potatoes.cultivation.networking.ProtocolHandler;
 
 public class InGame extends ScreenAdapter {
 
@@ -60,6 +64,8 @@ public class InGame extends ScreenAdapter {
 	TileGroup[][] tileGroups;
 	List<PotatoImage> unitImages;
 
+	ProtocolHandler<GameAction[]> updates;
+	
 	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
 		this.batch = game.batch;
@@ -92,6 +98,7 @@ public class InGame extends ScreenAdapter {
 
 		// load map
 		Tile[][] map = gameMap.getMap();
+		game.GAMEMANAGER.getGameMap().setTGMap(tileGroups);
 
 		int originX = hex_grass.getRegionWidth() / 2, originY = hex_grass
 				.getRegionHeight() / 2;
@@ -103,11 +110,11 @@ public class InGame extends ScreenAdapter {
 		final Region someRegion = gameMap.getRegions(game.player).iterator().next();
 
 		Tile occupying = someRegion.getTiles().iterator().next();
-		Unit u = new Unit(occupying);
-		occupying.occupant = u;
-		occupying.updateOwner(game.player);
-		u.myVillage = someRegion.getVillage();
-		u.myType = UnitType.Peasant;
+//		Unit u = new Unit(occupying);
+//		occupying.occupant = u;
+//		occupying.updateOwner(game.player);
+//		u.myVillage = someRegion.getVillage();
+//		u.myType = UnitType.Peasant;
 		gameMap.PrintPlayersStuff(game.player);
 		for (int y = 0; y < width; y++) {
 			for (int x = 0; x < height; x++) {
@@ -210,12 +217,17 @@ public class InGame extends ScreenAdapter {
 								clickedTile.village = someRegion.getVillage();
 								someRegion.addTile(clickedTile);
 								tile.setColor(colorByIndex.get(0));
+								someRegion.addTile(clickedTile);
+								clickedTile.updateOwner(someRegion.getOwner());
 							}
 							if (good) {
 								tileGroups[finalX][finalY].setUnit(click.potato);
+								click.potato.setPosition(50, 40);
+								Tile start = click.potato.potato.getTile();
 								click.potato.potato
 										.updateTileLocation(clickedTile);
 								tile.getParent().addActor(click.potato);
+								game.client.sendActions(new GameAction.MoveUnitAction(start, clickedTile));
 							}
 							click.reset();
 						}
@@ -286,6 +298,24 @@ public class InGame extends ScreenAdapter {
 			}
 
 		});
+		
+		
+		////////////////////////////////////////////
+		/// Handlers
+		updates = new ProtocolHandler<GameAction[]>(){
+
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof ActionBlockProtocol) {
+					result = ((ActionBlockProtocol) p).getActions();
+				}
+			}
+			
+		};
+		game.client.insertHandler(updates);
+		
+		
+		/////////////////////////////////////////////
 	}
 	
 	public enum PotatoColours {
@@ -308,8 +338,16 @@ public class InGame extends ScreenAdapter {
 
 	@Override
 	public void render(float delta) {
+		for (int i=0; i<tileGroups.length; i++) {
+			for (int j=0; j<tileGroups[0].length; j++) {
+				tileGroups[i][j].updateTileGroup();
+			}
+		}
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// check for updates
+		checkUpdates();
+		
 		// update camera
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
@@ -320,17 +358,24 @@ public class InGame extends ScreenAdapter {
 
 		hud.draw();
 		
-		for (int i=0; i<tileGroups.length; i++) {
-			for (int j=0; j<tileGroups[0].length; j++) {
-				tileGroups[i][j].updateTileGroup();
-			}
-		}
+
 
 //		for (PotatoImage i : unitImages) {
 //			i.UpdateImage();
 //		}
 	}
-	class TileGroup extends Group {
+	
+	private void checkUpdates() {
+		if(updates.isAvailable()) {
+			System.out.println("new updates!");
+			for(GameAction ga : updates.getResult()) {
+				ga.execute(game.GAMEMANAGER.getGame());
+			}
+			updates.reset();
+		}
+	}
+	
+	public class TileGroup extends Group {
 		Tile tile;
 		PotatoImage potatoImage;
 		Image tileImage;
@@ -354,8 +399,16 @@ public class InGame extends ScreenAdapter {
 		public void setTileImage(Image image) {
 			this.tileImage = image;
 		}
+		public Image getTileImage() {
+			return this.tileImage;
+		}
 		public void setUnit(PotatoImage image) {
 			this.potatoImage = image;
+			this.addActor(image);
+			image.toFront();
+		}
+		public PotatoImage getUnit() {
+			return this.potatoImage;
 		}
 		public void updateTileGroup() {
 			LandType latestLandType = tile.getLandType();
@@ -390,13 +443,22 @@ public class InGame extends ScreenAdapter {
 			}
 			if (tile.getUnit()!=null && potatoImage!=null) {
 				potatoImage.UpdateImage();
+//				potatoImage.setPosition(this.getX()-5, this.getY()-5);
+//				potatoImage.setPosition(0,0);
+				potatoImage.toFront();
 			} else if (tile.getUnit()!=null && potatoImage==null) {
 				int playerNum = game.GAMEMANAGER.getGame().getPlayers().indexOf(tile.getPlayer());
 				String colour = PotatoColours.values()[playerNum].colourName;
-				
-				TextureRegionDrawable drawable = new TextureRegionDrawable(atlas.findRegion("potato_"+colour));
 				PotatoImage poImg = new PotatoImage(atlas.findRegion("potato_"+colour), tile.getUnit(), click, colour);
+				this.addActor(poImg);
+				System.out.println("tile group position " + this.getX() + ","+this.getY());
+				Vector2 coord = this.getStage().stageToScreenCoordinates(new Vector2(this.getX(), this.getY()));
+				poImg.setPosition(this.getX(), this.getY());
+				System.out.println("GetX GetY:" + this.getX()+", " + this.getY());
+				System.out.println("Stage to screen coord: " + coord.x + "," + coord.y);
+				poImg.toFront();
 				setUnit(poImg);
+				poImg.setPosition(50, 40);
 			} else if (tile.getUnit()==null) {
 				//remove reference to potato image, it has moved to another tile or got mashed potato
 				potatoImage = null;
