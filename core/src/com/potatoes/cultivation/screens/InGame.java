@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
@@ -73,7 +74,6 @@ public class InGame extends ScreenAdapter {
 				this.game.player);
 		this.atlas = game.manager.get("ingame.atlas", TextureAtlas.class);
 		this.gameMap = aGameRound.getGameMap();
-		aGameRound.hud = hud;
 		// Assigns a unique color to each player to colour the tiles that they
 		// own
 		colorByIndex = new ArrayList<Color>();
@@ -186,6 +186,7 @@ public class InGame extends ScreenAdapter {
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
 						System.out.println("clicked on tile " + finalX + " " + finalY);
+						hud.tileClicked(clickedTile);
 						if (click.isClicked()) {
 							boolean good = true;
 							if (!gameMap.getNeighbouringTiles(
@@ -214,8 +215,6 @@ public class InGame extends ScreenAdapter {
 							}
 							if (good && clickedTile.getPlayer() == null) {
 								clickedTile.updateOwner(click.potato.potato.getVillage().getOwner());
-								clickedTile.village = someRegion.getVillage();
-								someRegion.addTile(clickedTile);
 								tile.setColor(colorByIndex.get(0));
 								someRegion.addTile(clickedTile);
 								clickedTile.updateOwner(someRegion.getOwner());
@@ -231,7 +230,7 @@ public class InGame extends ScreenAdapter {
 							}
 							click.reset();
 						}
-						hud.update(clickedTile);
+
 					}
 				});
 				Unit potatosan = map[x][y].getUnit();
