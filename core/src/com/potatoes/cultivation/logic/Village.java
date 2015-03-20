@@ -12,6 +12,8 @@ public class Village implements Comparable<Village>, Serializable {
 	private Tile myTile;
 	private Player owner;
 	
+	private int HP;
+	
 	public Village(Player owner, Region region, Tile tile) {
 		this.owner = owner;
 		this.myRegion = region;
@@ -19,6 +21,14 @@ public class Village implements Comparable<Village>, Serializable {
 		this.myType = VillageType.Hovel;
 		this.gold = 99;
 		this.wood = 99;
+		this.HP = myType.maxHP();
+	}
+	
+	/**
+	 * @return		The village is destroyed
+	 */
+	public boolean shoot(){
+		return --this.HP < 0;
 	}
 	
 	public VillageType getType(){
@@ -58,9 +68,7 @@ public class Village implements Comparable<Village>, Serializable {
 			this.gold = this.gold - goldToRemove;
 			return true;		
 		}
-		else{
-			return false;
-		}	
+		return false;	
 	}
 	
 	public void addWood(int woodToAdd){

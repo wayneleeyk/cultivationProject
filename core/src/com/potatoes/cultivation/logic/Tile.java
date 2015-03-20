@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.Stack;
 
 import com.potatoes.cultivation.Cultivation;
-import com.potatoes.cultivation.screens.InGame;
 
 public class Tile implements Serializable{
 	private static final long serialVersionUID = -6410265910809526066L;
@@ -98,13 +97,14 @@ public class Tile implements Serializable{
 		Tile tileOfUnit = u.getTile();
 		Set<Tile> neighbouringTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(tileOfUnit);
 		if (neighbouringTiles.contains(this)) { //We only enter this if Unit u is one tile away from this tile
-			boolean invadable = true;
-			if (u.getType()==UnitType.Knight && (structure==StructureType.Tombstone || myType == LandType.Tree)) {
+			if (UnitType.Knight.equals(u) && (structure==StructureType.Tombstone || myType == LandType.Tree)) {
 				//If invader is knight, he cannot invade tile that contains tomb stone nor tree
-				invadable = false;
 			}
-			System.out.println("Tile is invadable ");
-			if (invadable && myType!= LandType.Sea && (owner == tileOfUnit.getPlayer() || this.canInvade(u))) {
+			else if(UnitType.Cannon.equals(u) && owner == tileOfUnit.getPlayer()){
+				moved = true;
+				u.updateTileLocation(this);
+			}
+			else if (myType!= LandType.Sea && (owner == tileOfUnit.getPlayer() || this.canInvade(u))) {
 				//Enter here if unit can be moved onto this tile
 				moved = true;
 				u.updateTileLocation(this);

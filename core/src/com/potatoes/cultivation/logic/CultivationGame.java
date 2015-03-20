@@ -129,8 +129,7 @@ public class CultivationGame implements Serializable {
 	// this will show error in tryInvade in Tile isn't changed to return a
 	// boolean
 	public boolean moveUnit(Unit u, Tile t) {
-		boolean moved = t.tryInvade(u);
-		return moved;
+		return t.tryInvade(u);
 	}
 
 	// return true on success

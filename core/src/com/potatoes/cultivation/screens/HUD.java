@@ -110,6 +110,10 @@ public class HUD extends Stage{
 		System.out.println("clicked (" + x + ", " + y + ")");		
 		final TextButton upgradeVillage = new TextButton("Upgrade Village", skin, "default");
 		final TextButton hireVillager = new TextButton("Hire Villager", skin, "default");
+		final TextButton hireCannon = new TextButton("Hire PowPow", skin, "default");
+		
+		final int xOffset = 48;
+		final int yOffset = -50;
 		
 		upgradeVillage.setPosition(x, Gdx.graphics.getHeight() - y);
 		upgradeVillage.addListener(new ChangeListener() {
@@ -121,7 +125,7 @@ public class HUD extends Stage{
 			}
 		});
 		
-		hireVillager.setPosition(x + 48, Gdx.graphics.getHeight() - y - 50);
+		hireVillager.setPosition(x + xOffset, Gdx.graphics.getHeight() - y - yOffset);
 		hireVillager.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
@@ -133,6 +137,14 @@ public class HUD extends Stage{
 			}
 		});
 		
+		hireCannon.setPosition(x + xOffset *2, Gdx.graphics.getHeight() - y - 2 * yOffset);
+		hireCannon.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		
 		villageMenuGroup.addActor(upgradeVillage);
 		villageMenuGroup.addActor(hireVillager);
