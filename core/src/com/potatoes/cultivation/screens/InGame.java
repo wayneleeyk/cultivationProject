@@ -158,8 +158,7 @@ public class InGame extends ScreenAdapter {
 									.stageToScreenCoordinates(
 											village.localToStageCoordinates(new Vector2(
 													x, y)));
-							hud.villageClicked(village, screenCoord.x,
-									screenCoord.y);
+							hud.villageClicked(village, screenCoord.x, screenCoord.y);
 						}
 					});
 					tileGroup.addActor(village);
@@ -509,6 +508,7 @@ public class InGame extends ScreenAdapter {
 				public void clicked(InputEvent event, float x, float y) {
 					System.out.println("Tickled on potato " + potato.getTile());
 					click.clickedOn(reference);
+					
 				}
 			});
 		}

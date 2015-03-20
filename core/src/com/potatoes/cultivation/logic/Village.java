@@ -107,4 +107,8 @@ public class Village implements Comparable<Village>, Serializable {
 		}
 		return c;
 	}	
+	
+	public boolean higherThan(VillageType v){
+		return this.myType.ordinal() > v.ordinal();
+	}
 }
