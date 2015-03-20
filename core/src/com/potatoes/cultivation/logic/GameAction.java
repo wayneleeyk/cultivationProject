@@ -9,9 +9,6 @@ public interface GameAction extends Serializable {
 	public void execute(CultivationGame game);
 	
 	class HireVillagerAction implements GameAction {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 4271092470984585609L;
 		Tile t;
 		public HireVillagerAction(Tile t) {
@@ -24,10 +21,19 @@ public interface GameAction extends Serializable {
 		}
 	}
 	
+	class HireCannonAction implements GameAction {
+		private static final long serialVersionUID = -8273993652190448494L;
+		Tile t;
+		public HireCannonAction(Tile t) {
+			this.t = t;
+		}
+		@Override
+		public void execute(CultivationGame game) {
+			game.hireCannon(game.getGameMap().getMap()[t.x][t.y]);
+		}
+	}
+	
 	class MoveUnitAction implements GameAction {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -4038577797417726543L;
 		Tile unitTile;
 		Tile target;
@@ -60,9 +66,6 @@ public interface GameAction extends Serializable {
 	}
 	
 	class UpgradeVillageAction implements GameAction {
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = -3332608300692384612L;
 		Village v;
 		Tile t;
@@ -79,4 +82,5 @@ public interface GameAction extends Serializable {
 		}
 		
 	}
+	
 }

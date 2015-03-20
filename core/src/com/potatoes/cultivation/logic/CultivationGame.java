@@ -164,11 +164,11 @@ public class CultivationGame implements Serializable {
 		this.turnOf(player);
 	}
 
-	public Tile hireVillager(Village village) {
+	public Tile getVillageSpawnPoint(Village village) {
 		boolean foundVacantTile = false;
 		Tile spawnOn = null;
 		//Check if village has enough gold to hire new villager
-		if (village.getGold() >= UnitType.Peasant.getSalary()) {
+		if (village.getGold() >= UnitType.Peasant.getCost()) {
 			Set<Tile> tiles = village.getRegion().getTiles();
 			Iterator<Tile> it = tiles.iterator();
 			while (it.hasNext() && foundVacantTile == false) {
@@ -186,9 +186,29 @@ public class CultivationGame implements Serializable {
 		return spawnOn;
 	}
 	
+	public Tile getCannonSpawnPoint(Village village){
+		Tile spawnPoint = null;
+		if(village.getGold() >= UnitType.Cannon.getCost()){
+			for (Tile tile : this.map.getNeighbouringTiles(village.getTile())) {
+				if(tile.getUnit() == null && tile.getPlayer() != null && tile.getPlayer().equals(village.getOwner())){
+					spawnPoint = tile;
+					break;
+				}
+			}
+		}
+		return spawnPoint;
+	}
+	
+	public void hireCannon(Tile t){
+		Unit cannon = new Unit(t);
+		cannon.myType = UnitType.Cannon;
+		t.setUnit(cannon);
+		System.out.println("t " +t+" "+t.getVillage());
+		t.getVillage().removeGold(UnitType.Cannon.getCost());
+	}
+	
 	//
 	public void hireVillager(Tile t) {
-		if(t == null) return;
 		t.setUnit(new Unit(t));
 		//Subtract gold
 		t.getVillage().removeGold(10);		

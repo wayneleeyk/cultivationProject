@@ -12,17 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.Player;
-import com.potatoes.cultivation.logic.Region;
 import com.potatoes.cultivation.logic.Tile;
+import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
 import com.potatoes.cultivation.screens.InGame.VillageImage;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 
 public class HUD extends Stage{
 	
@@ -112,7 +111,6 @@ public class HUD extends Stage{
 		final TextButton hireVillager = new TextButton("Hire Villager", skin, "default");
 		final TextButton hireCannon = new TextButton("Hire PowPow", skin, "default");
 		
-		final int xOffset = 48;
 		final int yOffset = -50;
 		
 		upgradeVillage.setPosition(x, Gdx.graphics.getHeight() - y);
@@ -125,29 +123,42 @@ public class HUD extends Stage{
 			}
 		});
 		
-		hireVillager.setPosition(x + xOffset, Gdx.graphics.getHeight() - y - yOffset);
+		hireVillager.setPosition(x + 48, Gdx.graphics.getHeight() - y - yOffset);
 		hireVillager.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("hireVillager clicked");
-				Tile t = game.GAMEMANAGER.getGame().hireVillager(villageImage.getVillage());
-				GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(t);
-//				hireAction.execute(game.GAMEMANAGER.getGame());
-				game.client.sendActions(hireAction);
+				Tile t = game.GAMEMANAGER.getGame().getVillageSpawnPoint(villageImage.getVillage());
+				if(t!=null){
+					GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(t);
+//					hireAction.execute(game.GAMEMANAGER.getGame());
+					game.client.sendActions(hireAction);	
+				}
 			}
 		});
 		
-		hireCannon.setPosition(x + xOffset *2, Gdx.graphics.getHeight() - y - 2 * yOffset);
-		hireCannon.addListener(new ChangeListener() {
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+		hireCannon.setPosition(x + 52, Gdx.graphics.getHeight() - y - 2 * yOffset);
+		if(villageImage.getVillage().getGold() >= UnitType.Cannon.getCost()){
+			hireCannon.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("Who let the powpow out");
+					Tile t =  game.GAMEMANAGER.getGame().getCannonSpawnPoint(villageImage.getVillage());
+					if(t!=null){
+						GameAction.HireCannonAction hireAction = new GameAction.HireCannonAction(t);
+						game.client.sendActions(hireAction);
+					}
+				}
+			});
+		}
+		else{
+			hireCannon.setColor(Color.GRAY);
+		}
+		
 		
 		villageMenuGroup.addActor(upgradeVillage);
 		villageMenuGroup.addActor(hireVillager);
+		villageMenuGroup.addActor(hireCannon);
 		
 		villageMenuGroup.addListener(new ChangeListener(){
 			@Override

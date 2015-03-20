@@ -7,6 +7,10 @@ public enum UnitType {
 		this.cost = cost;
 	}
 
+	public int getCost(){
+		return this.cost;
+	}
+	
 	/**
 	 * @param type		Type to evolve from
 	 * @return			The cost in gold nuggets
