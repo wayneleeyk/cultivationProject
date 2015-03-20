@@ -1,14 +1,12 @@
 package com.potatoes.cultivation.networking;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 final class ClientAcceptor implements Runnable {
-	/**
-	 * 
-	 */
 	private final Server server;
 
 	ClientAcceptor(Server server) {
@@ -54,6 +52,9 @@ final class ClientAcceptor implements Runnable {
 									ClientAcceptor.this.server.queue.put(new ServerTask(out, protocol));
 									Thread.sleep(100);
 								} 
+								catch(EOFException e){
+									return;
+								}
 								catch (ClassNotFoundException| IOException | InterruptedException e) {
 									try {
 										ClientAcceptor.this.server.usernameToUser.get(username).closeConnection();

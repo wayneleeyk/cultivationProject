@@ -367,8 +367,8 @@ public class InGame extends ScreenAdapter {
 	private void checkUpdates() {
 		if(updates.isAvailable()) {
 			System.out.println("new updates!");
-			for(GameAction ga : updates.getResult()) {
-				ga.execute(game.GAMEMANAGER.getGame());
+			for(GameAction gameAction : updates.getResult()) {
+				gameAction.execute(game.GAMEMANAGER.getGame());
 			}
 			updates.reset();
 		}

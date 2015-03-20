@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.networking;
 
 import java.io.IOException;
+import java.net.SocketException;
 
 final class TaskProcessor implements Runnable {
 	private final Server server;
@@ -19,7 +20,11 @@ final class TaskProcessor implements Runnable {
 				task.oos.writeObject(task.protocol);
 //				System.out.println("Wrote object to client " + task.protocol);
 				task.oos.flush();
-			} catch (InterruptedException e) {
+			} 
+			catch (SocketException e){
+				System.out.println("Socket has been closed");
+			}
+			catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
