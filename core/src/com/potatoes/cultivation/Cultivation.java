@@ -18,6 +18,7 @@ import com.potatoes.cultivation.screens.GameRoom;
 import com.potatoes.cultivation.screens.InGame;
 import com.potatoes.cultivation.screens.Login;
 import com.potatoes.cultivation.screens.Splash;
+import com.potatoes.cultivation.screens.TestScreen;
 
 public class Cultivation extends Game {
 	public SpriteBatch batch;
@@ -45,8 +46,9 @@ public class Cultivation extends Game {
 		loadFiles();
 		manager.finishLoading();
 		skin = manager.get("gui.json", Skin.class);
-		this.setScreen(new Login(this));
+//		this.setScreen(new Login(this));
 //		this.setScreen(new GameRoom(this, 0));
+		this.setScreen(new TestScreen(this));
 	}
 
 	@Override
