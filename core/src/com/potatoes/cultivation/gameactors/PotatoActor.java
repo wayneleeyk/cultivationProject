@@ -6,9 +6,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.potatoes.cultivation.logic.Unit;
 
 public class PotatoActor extends Actor {
@@ -80,29 +83,42 @@ public class PotatoActor extends Actor {
 			this.addAction(to);
 		}
 		
-		public void testMove2(TileActor t) {
+		public void testMove2(final TileActor t) {
 			MoveToAction to = new MoveToAction();
 			
-			// No checks yet (like whether the goto is left or right
-			// just testing here
 			ScaleToAction flip = new ScaleToAction();
-			if(t.getX() > this.getParent().getX()) flip.setScale(-1, 1);
-			this.addAction(flip);
+			if(t.getX() > this.getParent().getX()) {
+				flip.setScale(-1, 1);
+			}
+			else {
+				flip.setScale(1, 1);
+			}
 			
+			Vector2 oldPos = this.getParent().localToStageCoordinates(new Vector2(80, 30));
+			Vector2 newPos = t.localToStageCoordinates(new Vector2(80, 30));
 			
-			TileActor old = (TileActor) this.getParent();
-			Vector2 oldpos = old.localToStageCoordinates(new Vector2(getX(), getY()));
-			old.removeActor(this);
-			
-			t.addActor(this);
-			oldpos = t.stageToLocalCoordinates(oldpos);
-			this.setPosition(oldpos.x, oldpos.y);
+			Stage s = this.getParent().getStage();
+			this.remove();
+			s.addActor(this);
+			this.toFront();
+			this.setPosition(oldPos.x, oldPos.y);
 			
 			to.setDuration(3);
+			to.setPosition(newPos.x, newPos.y);
+			to.setInterpolation(Interpolation.pow2Out);
 			
-			to.setPosition(80, 30);
-			to.setInterpolation(Interpolation.pow3Out);
+			Action endMoveAction = new Action(){
+				@Override
+				public boolean act(float delta) {
+					PotatoActor me = PotatoActor.this;
+					me.remove();
+					t.addActor(me);
+					me.setPosition(80, 30);
+					return true;
+				}
+			};
 			
-			this.addAction(to);
+			SequenceAction moveSequence = new SequenceAction(flip, to, endMoveAction);
+			this.addAction(moveSequence);
 		}
 	}

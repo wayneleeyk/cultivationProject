@@ -16,11 +16,18 @@ public class TileActor extends Group {
 	
 	ActorAssets myAssets;
 	
-	public TileActor(Tile tile, ActorAssets a) {
+	/**
+	 * 
+	 * @param t - The actual game tile
+	 * @param a - The ActorAssets
+	 * @param c - The overlay color of the tile (if null, then default to white)
+	 */
+	public TileActor(Tile t, ActorAssets a, Color c) {
 		myAssets = a;
-		myTile = tile;
+		myTile = t;
 //		myLandtype = tile.getLandType();
 //		myStructure = tile.getStructure();
+		overlay = (c != null)? c : Color.WHITE;
 	}
 
 	@Override
