@@ -16,6 +16,12 @@ public class Unit implements Serializable{
 		this.myTile = t;
 		this.myVillage = myTile.getRegion().getVillage();
 	}
+	/***
+	 * To be deleted (only here for testing)
+	 */
+	public Unit() {
+		
+	}
 	
 	public ActionType getCurrentAction(){
 		return currentAction;
