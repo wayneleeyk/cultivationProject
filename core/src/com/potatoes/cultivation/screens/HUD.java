@@ -4,18 +4,22 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.GameAction;
+import com.potatoes.cultivation.logic.GameAction.EndTurnAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
@@ -26,7 +30,7 @@ import com.potatoes.cultivation.screens.InGame.VillageImage;
 
 public class HUD extends Stage{
 	
-	SpriteBatch batch;
+	Batch batch;
 	BitmapFont font;
 	int width, height;
 	GameMap map;
@@ -37,8 +41,10 @@ public class HUD extends Stage{
 	Cultivation game;
 	Skin skin;
 	ArrayList<Actor> destroyableMenus = new ArrayList<Actor>();
+	final TextButton endTurn;
+	Label stats;
 	
-	public HUD(Cultivation game, SpriteBatch batch, GameMap map, Player currentPlayer) {
+	public HUD(final Cultivation game, Batch batch, GameMap map, Player currentPlayer) {
 		
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
@@ -67,19 +73,54 @@ public class HUD extends Stage{
 			}
 		});
 		
+		stats = new Label("HELLOW", skin, "white"){
+
+			@Override
+			public void act(float delta) {
+				super.act(delta);
+				if (villageType!=null) {
+					this.setText("Turn :"+game.GAMEMANAGER.getGame().turnOf().getUsername() + "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount);
+				} else {
+					this.setText("Turn :"+game.GAMEMANAGER.getGame().turnOf().getUsername());
+					
+				}
+			}
+			
+		};
+		stats.setPosition(5, height-30); //Hardcode FTW
+		this.addActor(stats);
+		endTurn = new TextButton("End Turn", skin, "red");
+		endTurn.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				System.out.println("clicked");
+				
+			}
+		});
+		this.addActor(endTurn);
+	}
+	
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+		stats.act(delta);
 	}
 
 	@Override
 	public void draw() {
 		super.draw();
-		
-		batch.begin();
-		if (villageType!=null) {
-			font.draw(batch, "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount+ " \t Turn of : "+game.GAMEMANAGER.getGame().turnOf(), - this.width/2, this.height/2);
-		} else {
-			font.draw(batch, "Click on a region to do an action", - this.width/2, this.height/2);
-		}
-		batch.end();
+//		this.getBatch().begin();
+//		font.draw(this.getBatch(), "Turn :"+this.game.GAMEMANAGER.getGame().turnOf().getUsername() + "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount+ " \t Turn of : "+game.GAMEMANAGER.getGame().turnOf(), - this.width/2, this.height/2);
+//		this.getBatch().end();
+//		batch.begin();
+//		if (villageType!=null) {
+//			System.out.println("DRAWING when villageType != null");
+//			font.draw(batch, "Turn :"+this.game.GAMEMANAGER.getGame().turnOf().getUsername() + "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount+ " \t Turn of : "+game.GAMEMANAGER.getGame().turnOf(), - this.width/2, this.height/2);
+//		} else {
+//			System.out.println("Drawing else");
+//			font.draw(batch, "Click on a region to do an action", - this.width/2, this.height/2);
+//		}
+//		batch.end();
 	}
 	public void tileClicked(Tile t) {
 		if (t.getPlayer()!=null && !t.getPlayer().equals(Player.nullPlayer) && t.getPlayer().getUsername().equals(currentPlayer.getUsername())) {

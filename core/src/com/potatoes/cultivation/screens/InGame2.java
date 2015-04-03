@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -17,6 +18,7 @@ public class InGame2 extends ScreenAdapter {
 	Cultivation aGame;
 	CultivationGame aRound;
 	GameWorld world;
+	HUD hud;
 	
 	public InGame2(final Cultivation pGame, CultivationGame pGameRound) {
 		aGame = pGame;
@@ -26,6 +28,7 @@ public class InGame2 extends ScreenAdapter {
 		world = new GameWorld(aRound.getGameMap(), assets);
 		
 		addDragControls();
+		hud = new HUD(pGame, world.getBatch(), pGameRound.getGameMap(), pGame.player);
 	}
 	
 	@Override
@@ -35,11 +38,14 @@ public class InGame2 extends ScreenAdapter {
 		
 		world.act(delta);
 		world.draw();
+		hud.act(delta);
+		hud.draw();
 	}
 	
 	@Override
 	public void show() {
-		Gdx.input.setInputProcessor(world);
+		InputMultiplexer inputs = new InputMultiplexer(hud, world);
+		Gdx.input.setInputProcessor(inputs);
 	}
 
 	private void addDragControls() {

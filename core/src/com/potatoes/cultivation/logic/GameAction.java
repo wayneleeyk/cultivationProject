@@ -8,6 +8,16 @@ import com.potatoes.cultivation.screens.InGame.TileGroup;
 public interface GameAction extends Serializable {
 	public void execute(CultivationGame game);
 	
+	class EndTurnAction implements GameAction {
+		private static final long serialVersionUID = -5840823525714838533L;
+		
+		@Override
+		public void execute(CultivationGame game) {
+			game.increaseRoundCount();
+			game.beginTurn(game.turnOf());
+		}
+	}
+	
 	class HireVillagerAction implements GameAction {
 		private static final long serialVersionUID = 4271092470984585609L;
 		Tile t;
