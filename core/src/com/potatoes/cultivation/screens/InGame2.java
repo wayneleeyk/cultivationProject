@@ -12,6 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.gameactors.ActorAssets;
 import com.potatoes.cultivation.logic.CultivationGame;
+import com.potatoes.cultivation.logic.GameAction;
+import com.potatoes.cultivation.networking.ActionBlockProtocol;
+import com.potatoes.cultivation.networking.Protocol;
+import com.potatoes.cultivation.networking.ProtocolHandler;
 import com.potatoes.cultivation.stages.GameWorld;
 
 public class InGame2 extends ScreenAdapter {
@@ -19,6 +23,7 @@ public class InGame2 extends ScreenAdapter {
 	CultivationGame aRound;
 	GameWorld world;
 	HUD hud;
+	ProtocolHandler<GameAction[]> updates;
 	
 	public InGame2(final Cultivation pGame, CultivationGame pGameRound) {
 		aGame = pGame;
@@ -26,15 +31,17 @@ public class InGame2 extends ScreenAdapter {
 		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class));
 		
 		world = new GameWorld(aRound, assets);
-		
-		addDragControls();
 		hud = new HUD(pGame, world.getBatch(), pGameRound.getGameMap(), pGame.player);
+		addDragControls();
+		addHandlers();
 	}
-	
+
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		gameUpdate();
 		
 		world.act(delta);
 		world.draw();
@@ -81,5 +88,29 @@ public class InGame2 extends ScreenAdapter {
 				super.dragStop(event, x, y, pointer);
 			}
 		});
+	}
+	
+	private void addHandlers() {
+		updates = new ProtocolHandler<GameAction[]>(){
+
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof ActionBlockProtocol) {
+					result = ((ActionBlockProtocol) p).getActions();
+				}
+			}
+			
+		};
+		aGame.client.insertHandler(updates);
+	}
+	
+	private void gameUpdate() {
+		if(updates.isAvailable()) {
+			System.out.println("new updates!");
+			for(GameAction gameAction : updates.getResult()) {
+				gameAction.execute(aRound);
+			}
+			updates.reset();
+		}
 	}
 }

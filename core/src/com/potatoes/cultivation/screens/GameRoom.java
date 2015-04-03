@@ -154,7 +154,7 @@ public class GameRoom extends ScreenAdapter {
 	
 	private void receivedGame() {
 		if(receivingGame.isAvailable()) {
-			game.setScreen(new InGame(game, game.GAMEMANAGER.getGame()));
+			game.setScreen(new InGame2(game, game.GAMEMANAGER.getGame()));
 		}
 	}
 	

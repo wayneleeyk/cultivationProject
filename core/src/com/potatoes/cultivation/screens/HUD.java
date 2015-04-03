@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameAction.EndTurnAction;
 import com.potatoes.cultivation.logic.GameMap;
@@ -38,24 +39,26 @@ public class HUD extends Stage{
 	int logCount;
 	int goldCount;
 	String villageType;
-	Cultivation game;
+	Cultivation gameApp;
 	Skin skin;
 	ArrayList<Actor> destroyableMenus = new ArrayList<Actor>();
 	final TextButton endTurn;
 	Label stats;
+	CultivationGame game;
 	
-	public HUD(final Cultivation game, Batch batch, GameMap map, Player currentPlayer) {
+	public HUD(final Cultivation pGame, Batch batch, GameMap map, final Player currentPlayer) {
 		
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
-		this.game = game;
+		this.gameApp = pGame;
+		this.game = pGame.GAMEMANAGER.getGame();
 		this.batch = batch;
 		this.width = Gdx.graphics.getWidth();
 		this.height = Gdx.graphics.getHeight();
 		this.currentPlayer = currentPlayer;
 		this.logCount = 0;
 		this.goldCount = 0;
-		this.skin = game.skin;
+		this.skin = pGame.skin;
 		System.out.println(this.width/2 + " " + this.height/2);
 		
 		
@@ -79,9 +82,9 @@ public class HUD extends Stage{
 			public void act(float delta) {
 				super.act(delta);
 				if (villageType!=null) {
-					this.setText("Turn :"+game.GAMEMANAGER.getGame().turnOf().getUsername() + "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount);
+					this.setText("Turn :"+game.turnOf().getUsername() + "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount);
 				} else {
-					this.setText("Turn :"+game.GAMEMANAGER.getGame().turnOf().getUsername());
+					this.setText("Turn :"+game.turnOf().getUsername());
 					
 				}
 			}
@@ -93,8 +96,11 @@ public class HUD extends Stage{
 		endTurn.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
-				System.out.println("clicked");
-				
+				GameAction.EndTurnAction endTurnAction = new GameAction.EndTurnAction();
+				gameApp.client.sendActions(endTurnAction);
+				System.out.println("current player: " + currentPlayer.getUsername());
+				System.out.println("turn of: " + game.turnOf());
+//				endTurnAction.execute(game);
 			}
 		});
 		this.addActor(endTurn);
@@ -104,6 +110,11 @@ public class HUD extends Stage{
 	public void act(float delta) {
 		super.act(delta);
 		stats.act(delta);
+		if (!game.isMyTurn(currentPlayer)) {
+			endTurn.setVisible(false);
+		} else {
+			endTurn.setVisible(true);
+		}
 	}
 
 	@Override
@@ -161,7 +172,7 @@ public class HUD extends Stage{
 				System.out.println("upgradeVillage clicked");
 				GameAction.UpgradeVillageAction gameAction = new GameAction.UpgradeVillageAction(villageImage.getVillage());
 //				gameAction.execute(game.GAMEMANAGER.getGame());
-				game.client.sendActions(gameAction);
+				gameApp.client.sendActions(gameAction);
 			}
 		});
 		
@@ -170,11 +181,11 @@ public class HUD extends Stage{
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("hireVillager clicked");
-				Tile t = game.GAMEMANAGER.getGame().getVillageSpawnPoint(villageImage.getVillage());
+				Tile t = gameApp.GAMEMANAGER.getGame().getVillageSpawnPoint(villageImage.getVillage());
 				if(t!=null){
 					GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(t);
 //					hireAction.execute(game.GAMEMANAGER.getGame());
-					game.client.sendActions(hireAction);	
+					gameApp.client.sendActions(hireAction);	
 				}
 			}
 		});
@@ -185,10 +196,10 @@ public class HUD extends Stage{
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
 					System.out.println("Who let the powpow out");
-					Tile t =  game.GAMEMANAGER.getGame().getCannonSpawnPoint(villageImage.getVillage());
+					Tile t =  gameApp.GAMEMANAGER.getGame().getCannonSpawnPoint(villageImage.getVillage());
 					if(t!=null){
 						GameAction.HireCannonAction hireAction = new GameAction.HireCannonAction(t);
-						game.client.sendActions(hireAction);
+						gameApp.client.sendActions(hireAction);
 					}
 				}
 			});

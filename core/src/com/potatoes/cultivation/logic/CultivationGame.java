@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.Color;
 public class CultivationGame implements Serializable {
 	private static final long serialVersionUID = -4015259598754971722L;
 	private int roundsPlayed;
-	private Player turnOf;
 	private List<Player> players;
 	private List<ColorEnum> colors;
 	private GameMap map;
@@ -22,7 +21,6 @@ public class CultivationGame implements Serializable {
 		map = new GameMap(10, 10, participants);
 		System.out.println("Made new game map");
 		this.roundsPlayed = 0;
-		turnOf = participants.get(0);
 		
 		// Making new colors for each player
 		colors = new ArrayList<ColorEnum>(3);
@@ -45,9 +43,9 @@ public class CultivationGame implements Serializable {
 		int i = players.indexOf(p);
 		if(i != -1) {
 			ColorEnum color = colors.get(i);
-			if(color.equals(ColorEnum.RED)) return Color.GREEN;
+			if(color.equals(ColorEnum.RED)) return Color.RED;
 			if(color.equals(ColorEnum.BLUE)) return Color.BLUE;
-			if(color.equals(ColorEnum.YELLOW)) return Color.MAGENTA;
+			if(color.equals(ColorEnum.YELLOW)) return Color.GRAY;
 		}
 		return Color.WHITE;
 	}
@@ -75,7 +73,6 @@ public class CultivationGame implements Serializable {
 		map.produceMeadows(p);
 		map.produceRoads(p);
 		updateGoldEconomy(p);
-		increaseRoundCount();
 
 	}
 
@@ -200,7 +197,7 @@ public class CultivationGame implements Serializable {
 	}
 
 	public Player turnOf() {
-		return this.turnOf;
+		return this.players.get(roundsPlayed%this.players.size());
 	}
 
 	public void turnOf(Player player) {
@@ -266,5 +263,8 @@ public class CultivationGame implements Serializable {
 			tile.getRegion().killUnit(tile.getUnit());
 			tile.addStructure(StructureType.Tombstone);
 		}
+	}
+	public boolean isMyTurn(Player me) {
+		return turnOf().equals(me);
 	}
 }
