@@ -1,16 +1,20 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import com.badlogic.gdx.graphics.Color;
+
 public class CultivationGame implements Serializable {
-	private static final long serialVersionUID = 5863425364436347495L;
+	private static final long serialVersionUID = -4015259598754971722L;
 	private int roundsPlayed;
 	private Player turnOf;
 	private List<Player> players;
+	private List<ColorEnum> colors;
 	private GameMap map;
 
 	public CultivationGame(List<Player> participants) {
@@ -19,11 +23,50 @@ public class CultivationGame implements Serializable {
 		System.out.println("Made new game map");
 		this.roundsPlayed = 0;
 		turnOf = participants.get(0);
+		
+		// Making new colors for each player
+		colors = new ArrayList<ColorEnum>(3);
+		colors.add(ColorEnum.RED);
+		colors.add(ColorEnum.BLUE);
+		colors.add(ColorEnum.YELLOW);
 	}
 
 	public List<Player> getPlayers() {
 		List<Player> players = new LinkedList<Player>(this.players);
 		return players;
+	}
+	
+	enum ColorEnum { RED, BLUE, YELLOW };
+	
+	/*
+	 * Get a color from a player
+	 */
+	public Color playerToColor(Player p) {
+		int i = players.indexOf(p);
+		if(i != -1) {
+			ColorEnum color = colors.get(i);
+			if(color.equals(ColorEnum.RED)) return Color.GREEN;
+			if(color.equals(ColorEnum.BLUE)) return Color.BLUE;
+			if(color.equals(ColorEnum.YELLOW)) return Color.MAGENTA;
+		}
+		return Color.WHITE;
+	}
+	
+	/*
+	 * Get a potato color from a player
+	 */
+	public String playerToPotatoColor(Player p) {
+		int i = players.indexOf(p);
+		if(i == 0) {
+			return "red";
+		}
+		if(i == 1) {
+			return "purple";
+		}
+		if(i == 2) {
+			return "yellow";
+		}
+		return "red";
 	}
 
 	// Mang0-Tang0
