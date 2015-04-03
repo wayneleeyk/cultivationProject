@@ -43,6 +43,7 @@ public class GameRoom extends ScreenAdapter {
 	private float timer = 0;
 	
 	ProtocolHandler<Set<Player>> getRoomHandler;
+	ProtocolHandler<CultivationGame> receivingGame;
 	
 	public GameRoom(final Cultivation pGame, int room) {
 		roomNumber = room;
@@ -96,7 +97,7 @@ public class GameRoom extends ScreenAdapter {
 		table.setDebug(true);
 		
 		stage.addActor(table);
-		game.client.insertHandler(new ProtocolHandler<CultivationGame>() {
+		receivingGame = new ProtocolHandler<CultivationGame>() {
 			@Override
 			public void handle(Protocol p) {
 				if(p instanceof GameDataProtocol){
@@ -105,10 +106,12 @@ public class GameRoom extends ScreenAdapter {
 					game.GAMEMANAGER.setGame(result);
 					System.out.println(game.GAMEMANAGER.getGame().getGameMap());
 					game.client.clearAllHandlers();
-					game.setScreen(new InGame(game, game.GAMEMANAGER.getGame()));
+//					game.setScreen(new InGame(game, game.GAMEMANAGER.getGame()));
 				}
 			}
-		});
+		};
+		
+		game.client.insertHandler(receivingGame);
 	}
 
 	@Override
@@ -116,6 +119,7 @@ public class GameRoom extends ScreenAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		updateRoomInfo();
+		receivedGame();
 		stage.act(delta);
 		stage.draw();
 	}
@@ -145,6 +149,12 @@ public class GameRoom extends ScreenAdapter {
 		if(getRoomHandler.isAvailable()) {
 			playersInRoom = getRoomHandler.getResult();
 			listOfPlayers.setText(getPlayerNames());
+		}
+	}
+	
+	private void receivedGame() {
+		if(receivingGame.isAvailable()) {
+			game.setScreen(new InGame(game, game.GAMEMANAGER.getGame()));
 		}
 	}
 	
