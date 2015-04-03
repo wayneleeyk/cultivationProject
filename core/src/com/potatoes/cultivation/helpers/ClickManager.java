@@ -38,6 +38,10 @@ public class ClickManager {
 		return null;
 	}
 	
+	public VillageActor lastClickedVillageActor(){
+		return villageToActor(lastClickedVillage());
+	}
+	
 	public Village lastClickedVillage(){
 		if(first instanceof PotatoActor){
 			return ((PotatoActor) first).getUnit().myVillage;
