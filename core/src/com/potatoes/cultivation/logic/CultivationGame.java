@@ -187,6 +187,9 @@ public class CultivationGame implements Serializable {
 	}
 	
 	public Tile getCannonSpawnPoint(Village village){
+		if(village.getType().compareTo(VillageType.Fort) <0) {
+			return null;
+		}
 		Tile spawnPoint = null;
 		if(village.getGold() >= UnitType.Cannon.getCost()){
 			for (Tile tile : this.map.getNeighbouringTiles(village.getTile())) {
@@ -212,5 +215,13 @@ public class CultivationGame implements Serializable {
 		t.setUnit(new Unit(t));
 		//Subtract gold
 		t.getVillage().removeGold(10);		
+	}
+
+	
+	public void fireAt(Tile tile) {
+		if(tile.getUnit()!=null){
+			tile.getRegion().killUnit(tile.getUnit());
+			tile.addStructure(StructureType.Tombstone);
+		}
 	}
 }

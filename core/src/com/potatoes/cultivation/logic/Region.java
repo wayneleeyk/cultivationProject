@@ -54,6 +54,7 @@ public class Region implements Serializable{
 	
 	public void killUnit(Unit u){
 		myUnits.remove(u);
+		u.myTile.setUnit(null);
 	}
 	
 	public int size(){

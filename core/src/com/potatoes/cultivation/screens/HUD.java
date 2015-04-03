@@ -21,6 +21,7 @@ import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
+import com.potatoes.cultivation.logic.VillageType;
 import com.potatoes.cultivation.screens.InGame.VillageImage;
 
 public class HUD extends Stage{
@@ -74,7 +75,7 @@ public class HUD extends Stage{
 		
 		batch.begin();
 		if (villageType!=null) {
-			font.draw(batch, "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount, - this.width/2, this.height/2);
+			font.draw(batch, "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount+ " \t Turn of : "+game.GAMEMANAGER.getGame().turnOf(), - this.width/2, this.height/2);
 		} else {
 			font.draw(batch, "Click on a region to do an action", - this.width/2, this.height/2);
 		}
@@ -138,7 +139,7 @@ public class HUD extends Stage{
 		});
 		
 		hireCannon.setPosition(x + 52, Gdx.graphics.getHeight() - y - 2 * yOffset);
-		if(villageImage.getVillage().getGold() >= UnitType.Cannon.getCost()){
+		if(villageImage.getVillage().getGold() >= UnitType.Cannon.getCost() && villageImage.getVillage().higherThan(VillageType.Town)){
 			hireCannon.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
@@ -154,7 +155,6 @@ public class HUD extends Stage{
 		else{
 			hireCannon.setColor(Color.GRAY);
 		}
-		
 		
 		villageMenuGroup.addActor(upgradeVillage);
 		villageMenuGroup.addActor(hireVillager);
