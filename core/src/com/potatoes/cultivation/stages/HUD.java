@@ -1,4 +1,4 @@
-package com.potatoes.cultivation.screens;
+package com.potatoes.cultivation.stages;
 
 import java.util.ArrayList;
 
@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameAction.EndTurnAction;
@@ -27,6 +28,7 @@ import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
 import com.potatoes.cultivation.logic.VillageType;
+import com.potatoes.cultivation.screens.InGame;
 import com.potatoes.cultivation.screens.InGame.VillageImage;
 
 public class HUD extends Stage{
@@ -45,8 +47,9 @@ public class HUD extends Stage{
 	final TextButton endTurn;
 	Label stats;
 	CultivationGame game;
+	ClickManager cm;
 	
-	public HUD(final Cultivation pGame, Batch batch, GameMap map, final Player currentPlayer) {
+	public HUD(final Cultivation pGame, Batch batch, GameMap map, final Player currentPlayer, ClickManager cm) {
 		
 		font = new BitmapFont();
 		font.setColor(Color.WHITE);
@@ -59,6 +62,7 @@ public class HUD extends Stage{
 		this.logCount = 0;
 		this.goldCount = 0;
 		this.skin = pGame.skin;
+		this.cm = cm;
 		System.out.println(this.width/2 + " " + this.height/2);
 		
 		
@@ -76,7 +80,7 @@ public class HUD extends Stage{
 			}
 		});
 		
-		stats = new Label("HELLOW", skin, "white"){
+		stats = new Label("", skin, "white"){
 
 			@Override
 			public void act(float delta) {

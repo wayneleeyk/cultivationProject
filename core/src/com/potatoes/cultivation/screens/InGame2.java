@@ -11,12 +11,14 @@ import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.gameactors.ActorAssets;
+import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.networking.ActionBlockProtocol;
 import com.potatoes.cultivation.networking.Protocol;
 import com.potatoes.cultivation.networking.ProtocolHandler;
 import com.potatoes.cultivation.stages.GameWorld;
+import com.potatoes.cultivation.stages.HUD;
 
 public class InGame2 extends ScreenAdapter {
 	Cultivation aGame;
@@ -29,9 +31,10 @@ public class InGame2 extends ScreenAdapter {
 		aGame = pGame;
 		aRound = pGameRound;
 		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class));
+		ClickManager cm = new ClickManager();
 		
-		world = new GameWorld(aRound, assets);
-		hud = new HUD(pGame, world.getBatch(), pGameRound.getGameMap(), pGame.player);
+		hud = new HUD(pGame, null, pGameRound.getGameMap(), pGame.player, cm);
+		world = new GameWorld(aRound, assets, cm);
 		addDragControls();
 		addHandlers();
 	}

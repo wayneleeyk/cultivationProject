@@ -1,9 +1,12 @@
 package com.potatoes.cultivation.stages;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.potatoes.cultivation.gameactors.ActorAssets;
 import com.potatoes.cultivation.gameactors.TileActor;
 import com.potatoes.cultivation.gameactors.VillageActor;
+import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.Tile;
@@ -11,9 +14,11 @@ import com.potatoes.cultivation.logic.Tile;
 public class GameWorld extends Stage {
 	TileActor[][] tiles;
 	CultivationGame gameRound;
+	ClickManager cm;
 	
-	public GameWorld(CultivationGame aRound, ActorAssets assets) {
+	public GameWorld(CultivationGame aRound, ActorAssets assets, ClickManager aCM) {
 		gameRound = aRound;
+		cm = aCM;
 		GameMap map = aRound.getGameMap();
 		Tile[][] gameMap = map.getMap();
 		int mapWidth = gameMap.length;
@@ -26,16 +31,33 @@ public class GameWorld extends Stage {
 		for(int i = 0; i < mapWidth; i++) {
 			for(int j = 0; j < mapHeight; j++) {
 				Tile t = gameMap[i][j];
-				TileActor newTile = new TileActor(t, assets, gameRound.playerToColor(t.getPlayer()));
+				final TileActor newTile = new TileActor(t, assets, gameRound.playerToColor(t.getPlayer()));
 				newTile.setPosition(i * tileWidth * 0.75f + 150, i * tileHeight/2 + (j * tileHeight));
 				
 				// TODO Add village actor and listeners
 				if(gameMap[i][j].containsVillage()) {
-					VillageActor village = new VillageActor(t.getVillage(), assets);
+					final VillageActor village = new VillageActor(t.getVillage(), assets);
 					newTile.addActor(village);
 					village.setPosition(150, 30);
+					village.addListener(new ChangeListener(){
+
+						@Override
+						public void changed(ChangeEvent event, Actor actor) {
+							cm.addClickedActor(village);
+						}
+						
+					});
 				}
 				
+				// Add listener to Tiles
+				newTile.addListener(new ChangeListener() {
+
+					@Override
+					public void changed(ChangeEvent event, Actor actor) {
+						cm.addClickedActor(newTile);
+					}
+					
+				});
 				tiles[i][j] = newTile;
 			}
 		}

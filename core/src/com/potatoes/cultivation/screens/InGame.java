@@ -42,6 +42,7 @@ import com.potatoes.cultivation.logic.VillageType;
 import com.potatoes.cultivation.networking.ActionBlockProtocol;
 import com.potatoes.cultivation.networking.Protocol;
 import com.potatoes.cultivation.networking.ProtocolHandler;
+import com.potatoes.cultivation.stages.HUD;
 
 public class InGame extends ScreenAdapter {
 
@@ -70,8 +71,8 @@ public class InGame extends ScreenAdapter {
 	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
 		this.batch = game.batch;
-		this.hud = new HUD(this.game, this.batch, this.gameMap,
-				this.game.player);
+//		this.hud = new HUD(this.game, this.batch, this.gameMap,
+//				this.game.player);
 		this.atlas = game.manager.get("ingame.atlas", TextureAtlas.class);
 		this.gameMap = aGameRound.getGameMap();
 		// Assigns a unique color to each player to colour the tiles that they
@@ -463,7 +464,7 @@ public class InGame extends ScreenAdapter {
 			}
 		}
 	}
-	class VillageImage extends Image {
+	public class VillageImage extends Image {
 		private Village village;
 
 		public VillageImage(AtlasRegion region, Village village) {
