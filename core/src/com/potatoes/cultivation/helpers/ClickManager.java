@@ -5,11 +5,20 @@ import com.potatoes.cultivation.gameactors.PotatoActor;
 import com.potatoes.cultivation.gameactors.TileActor;
 import com.potatoes.cultivation.gameactors.VillageActor;
 import com.potatoes.cultivation.logic.Village;
+import com.potatoes.cultivation.screens.InGame2;
+import com.potatoes.cultivation.stages.GameWorld;
 
 public class ClickManager {
 	
 	Actor first = null;
 	Actor second = null;
+
+	InGame2 game;
+	
+	
+	public ClickManager(InGame2 game) {
+		this.game = game;
+	}
 
 	public void addClickedActor(Actor actor) {
 		if(first instanceof PotatoActor && !(actor instanceof PotatoActor)){
@@ -18,6 +27,15 @@ public class ClickManager {
 		else{
 			first = actor;
 		}
+	}
+	
+	public VillageActor villageToActor(Village village){
+		int x = village.getTile().x;
+		int y = village.getTile().y;
+		for (Actor actor : this.game.getGameWorld().tiles[x][y].getChildren()) {
+			if(actor instanceof VillageActor) return (VillageActor) actor;
+		}
+		return null;
 	}
 	
 	public Village lastClickedVillage(){

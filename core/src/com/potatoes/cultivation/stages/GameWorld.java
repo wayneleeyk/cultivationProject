@@ -12,7 +12,7 @@ import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.Tile;
 
 public class GameWorld extends Stage {
-	TileActor[][] tiles;
+	public TileActor[][] tiles;
 	CultivationGame gameRound;
 	ClickManager cm;
 	
@@ -40,10 +40,10 @@ public class GameWorld extends Stage {
 					newTile.addActor(village);
 					village.setPosition(150, 30);
 					village.addListener(new ChangeListener(){
-
 						@Override
 						public void changed(ChangeEvent event, Actor actor) {
-							cm.addClickedActor(village);
+							System.out.println("Village is being bullied");
+							cm.addClickedActor(newTile);							
 						}
 						
 					});

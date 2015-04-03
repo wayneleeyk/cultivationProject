@@ -31,7 +31,7 @@ public class InGame2 extends ScreenAdapter {
 		aGame = pGame;
 		aRound = pGameRound;
 		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class));
-		ClickManager cm = new ClickManager();
+		ClickManager cm = new ClickManager(this);
 		
 		hud = new HUD(pGame, null, pGameRound.getGameMap(), pGame.player, cm);
 		world = new GameWorld(aRound, assets, cm);
@@ -39,6 +39,10 @@ public class InGame2 extends ScreenAdapter {
 		addHandlers();
 	}
 
+	public GameWorld getGameWorld(){
+		return this.world;
+	}
+	
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
