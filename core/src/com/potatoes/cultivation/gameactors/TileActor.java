@@ -70,4 +70,8 @@ public class TileActor extends Group {
 		myLandtype = myTile.getLandType();
 		myStructure = myTile.getStructure();
 	}
+	
+	public Tile getTile(){
+		return this.myTile;
+	}
 }

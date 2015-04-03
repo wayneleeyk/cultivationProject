@@ -25,5 +25,8 @@ public class VillageActor extends Actor {
 		super.draw(batch, parentAlpha);
 	}
 	
+	public Village getVillage(){
+		return this.myVillage;
+	}
 	
 }
