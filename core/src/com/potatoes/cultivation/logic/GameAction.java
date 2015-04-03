@@ -65,6 +65,17 @@ public interface GameAction extends Serializable {
 		}
 	}
 	
+	class FireCannonAction implements GameAction {
+		private static final long serialVersionUID = -5958942837914004532L;
+		Tile target;
+		public FireCannonAction(Tile target) {
+			this.target = target;
+		}
+		public void execute(CultivationGame game) {
+			game.fireAt(game.getGameMap().getMap()[target.x][target.y]);
+		}
+	}
+	
 	class UpgradeVillageAction implements GameAction {
 		private static final long serialVersionUID = -3332608300692384612L;
 		Village v;

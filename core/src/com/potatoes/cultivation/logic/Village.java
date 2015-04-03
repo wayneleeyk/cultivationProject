@@ -137,5 +137,9 @@ public class Village implements Comparable<Village>, Serializable {
 		} else if (!owner.equals(other.owner))
 			return false;
 		return true;
+	}	
+	
+	public boolean higherThan(VillageType v){
+		return this.myType.ordinal() > v.ordinal();
 	}
 }
