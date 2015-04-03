@@ -95,6 +95,13 @@ potato_yellow_soldier
   orig: 150, 80
   offset: 0, 0
   index: -1
+potatoe_yellow_cannon
+  rotate: false
+  xy: 306, 84
+  size: 90, 90
+  orig: 90, 90
+  offset: 0, 0
+  index: -1
 tile_meadow
   rotate: false
   xy: 312, 422
@@ -118,21 +125,21 @@ tile_tree
   index: -1
 village-fort
   rotate: false
-  xy: 926, 425
+  xy: 398, 89
   size: 93, 85
   orig: 93, 85
   offset: 0, 0
   index: -1
 village-hovel
   rotate: false
-  xy: 306, 89
+  xy: 398, 2
   size: 93, 85
   orig: 93, 85
   offset: 0, 0
   index: -1
 village-town
   rotate: false
-  xy: 306, 2
+  xy: 493, 89
   size: 93, 85
   orig: 93, 85
   offset: 0, 0

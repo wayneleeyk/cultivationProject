@@ -75,7 +75,7 @@ public class HUD extends Stage{
 		
 		batch.begin();
 		if (villageType!=null) {
-			font.draw(batch, "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount, - this.width/2, this.height/2);
+			font.draw(batch, "Village: " + villageType + ", Gold: " + goldCount + ", Logs " + logCount+ " \t Turn of : "+game.GAMEMANAGER.getGame().turnOf(), - this.width/2, this.height/2);
 		} else {
 			font.draw(batch, "Click on a region to do an action", - this.width/2, this.height/2);
 		}

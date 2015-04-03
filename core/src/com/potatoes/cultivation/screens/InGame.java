@@ -244,7 +244,7 @@ public class InGame extends ScreenAdapter {
 								+ colour.toLowerCase();
 					}
 					System.out.println("Potato name " + name);
-
+					name = "potatoe_yellow_cannon";
 					PotatoImage potatoImage = new PotatoImage(atlas.findRegion(name),
 							potatosan, click, colour.toLowerCase());
 					tileGroup.addActor(potatoImage);
