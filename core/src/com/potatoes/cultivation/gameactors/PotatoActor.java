@@ -23,7 +23,6 @@ public class PotatoActor extends Actor {
 		private ActorAssets myAssets;
 		
 		/**
-		 * 
 		 * @param u - Unit
 		 * @param a - ActorAssets
 		 * @param c, either "yellow", "purple" or "red", or defaults to "yellow"
@@ -60,7 +59,11 @@ public class PotatoActor extends Actor {
 			super.draw(batch, parentAlpha);
 		}
 		
-		public void changeAnimation(Animation a) {
+		/**
+		 * Directly set the animation to a. Use for debugging
+		 * @param a
+		 */
+		public void setAnimation(Animation a) {
 			potatoAnim = a;
 		}
 		
@@ -120,5 +123,9 @@ public class PotatoActor extends Actor {
 			
 			SequenceAction moveSequence = new SequenceAction(flip, to, endMoveAction);
 			this.addAction(moveSequence);
+		}
+		
+		public void testUpgrade() {
+			setAnimation(myAssets.potato_yellow_soldier);
 		}
 	}

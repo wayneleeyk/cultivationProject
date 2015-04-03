@@ -57,9 +57,9 @@ public class TestScreen extends ScreenAdapter {
 		
 		final PotatoActor p = new PotatoActor(one, actorAssets, "yellow");
 		
-		final TileActor start = new TileActor(null, actorAssets, null);
-		final TileActor destination = new TileActor(null, actorAssets, null);
-		final TileActor dest2 = new TileActor(null, actorAssets, null);
+		final TileActor start = new TileActor(actorAssets);
+		final TileActor destination = new TileActor(actorAssets);
+		final TileActor dest2 = new TileActor(actorAssets);
 		
 		start.updateTile(LandType.Meadow, null, Color.RED);
 		destination.updateTile(LandType.Tree, null, null);
@@ -81,6 +81,7 @@ public class TestScreen extends ScreenAdapter {
 			public boolean keyDown(InputEvent event, int keycode) {
 				if(keycode == Input.Keys.ENTER && p.getActions().size == 0) {
 					p.testMove2(destination);
+					p.testUpgrade();
 					return true;
 				}
 				if(keycode == Input.Keys.SPACE && p.getActions().size == 0) {
@@ -117,8 +118,8 @@ public class TestScreen extends ScreenAdapter {
 				gameStage.addAction(new TemporalAction(1, Interpolation.pow2Out) {
 					@Override
 					protected void update(float percent) {
-						float dirX = prevX - x;
-						float dirY = prevY - y;
+						float dirX = (prevX - x)/2;
+						float dirY = (prevY - y)/2;
 						float inversePercent = 1 - percent;
 						gameStage.getCamera().translate(inversePercent * dirX, inversePercent * dirY, 0);
 					}

@@ -25,9 +25,18 @@ public class TileActor extends Group {
 	public TileActor(Tile t, ActorAssets a, Color c) {
 		myAssets = a;
 		myTile = t;
-//		myLandtype = tile.getLandType();
-//		myStructure = tile.getStructure();
+		myLandtype = t.getLandType();
+		myStructure = t.getStructure();
 		overlay = (c != null)? c : Color.WHITE;
+	}
+	
+	/**
+	 * Only for debuggin, dont use this constructor
+	 * @param a - ActorAssets
+	 */
+	public TileActor(ActorAssets a) {
+		myAssets = a;
+		overlay = Color.WHITE;
 	}
 
 	@Override
@@ -43,7 +52,8 @@ public class TileActor extends Group {
 	}
 	
 	/**
-	 * This method will update the information of the TileActor
+	 * This method will explicitly change the information of the TileActor.
+	 * This may be useful for setting the color and debugging. 
 	 * @param newLand - Can be null to not change it
 	 * @param newStruct - Can be null to not change it
 	 * @param newColor - Can be null to not change it
@@ -52,5 +62,12 @@ public class TileActor extends Group {
 		if(newLand != null) myLandtype = newLand;
 		if(newStruct != null) myStructure = newStruct;
 		if(newColor != null) overlay = newColor;
+	}
+	/*
+	 * This method refreshes the tile's information
+	 */
+	public void refreshTile() {
+		myLandtype = myTile.getLandType();
+		myStructure = myTile.getStructure();
 	}
 }
