@@ -14,9 +14,8 @@ public class ClickManager {
 
 	GameWorld world;
 	
-	
-	public ClickManager(GameWorld world) {
-		this.world = world;
+	public void setWorld(GameWorld pWorld) {
+		world = pWorld;
 	}
 
 	public void addClickedActor(Actor actor) {
@@ -53,5 +52,4 @@ public class ClickManager {
 		}
 		return null;
 	}
-
 }

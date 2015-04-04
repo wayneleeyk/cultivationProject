@@ -37,43 +37,28 @@ public class GameWorld extends Stage {
 				final TileActor newTile = new TileActor(t, assets, gameRound.playerToColor(t.getPlayer()));
 				newTile.setPosition(i * tileWidth * 0.75f + 150, i * tileHeight/2 + (j * tileHeight));
 				
-				this.addListener(new InputListener(){
-					@Override
-					public boolean touchDown(InputEvent event, float x,
-							float y, int pointer, int button) {
-//						System.out.println("Game world is pressed");
-						return false;
-					}
-				});
-				// TODO Add village actor and listeners
 				if(gameMap[i][j].containsVillage()) {
 					final VillageActor village = new VillageActor(t.getVillage(), assets);
 					newTile.addActor(village);
 					village.setPosition(150, 30);
-					village.addListener(new ChangeListener(){
-						@Override
-						public void changed(ChangeEvent event, Actor actor) {
-							System.out.println("Village is being bullied");
-							cm.addClickedActor(newTile);							
-						}
-					});
-					
 					village.addListener(new ClickListener(){
 
 						@Override
 						public void clicked(InputEvent event, float x, float y) {
-							super.clicked(event, x, y);
-							System.out.println("clicked");
+							System.out.println("Village clicked at " + x + " " + y);
+							cm.addClickedActor(village);
+							event.stop();
 						}
-						
 					});
 				}
 				
 				// Add listener to Tiles
-				newTile.addListener(new ChangeListener() {
+				newTile.addListener(new ClickListener() {
 					@Override
-					public void changed(ChangeEvent event, Actor actor) {
+					public void clicked(InputEvent event, float x, float y) {
+						System.out.println("Tile clicked at " + x + " " + y);
 						cm.addClickedActor(newTile);
+						event.stop();
 					}
 				});
 				tiles[i][j] = newTile;
