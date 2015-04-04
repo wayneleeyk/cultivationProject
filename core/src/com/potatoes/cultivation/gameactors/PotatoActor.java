@@ -1,6 +1,5 @@
 package com.potatoes.cultivation.gameactors;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,10 +7,13 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.Unit;
 
 public class PotatoActor extends Actor {
@@ -27,7 +29,7 @@ public class PotatoActor extends Actor {
 		 * @param a - ActorAssets
 		 * @param c, either "yellow", "purple" or "red", or defaults to "yellow"
 		 */
-		public PotatoActor(Unit u, ActorAssets a, String c) {
+		public PotatoActor(Unit u, ActorAssets a, String c, final ClickManager cm) {
 			super();
 			gameUnit = u;
 			myAssets = a;
@@ -44,6 +46,16 @@ public class PotatoActor extends Actor {
 			this.setWidth(width);
 			this.setHeight(height);
 			this.setOriginX(width/2);
+			
+			// Add listener to forward to ClickManager
+			this.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					System.out.println("Tile clicked at " + x + " " + y);
+					cm.addClickedActor(PotatoActor.this);
+					event.stop();
+				}
+			});
 		}
 		
 		@Override

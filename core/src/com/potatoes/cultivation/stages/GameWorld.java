@@ -1,11 +1,14 @@
 package com.potatoes.cultivation.stages;
 
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.potatoes.cultivation.gameactors.ActorAssets;
 import com.potatoes.cultivation.gameactors.TileActor;
 import com.potatoes.cultivation.gameactors.VillageActor;
@@ -34,33 +37,14 @@ public class GameWorld extends Stage {
 		for(int i = 0; i < mapWidth; i++) {
 			for(int j = 0; j < mapHeight; j++) {
 				Tile t = gameMap[i][j];
-				final TileActor newTile = new TileActor(t, assets, gameRound.playerToColor(t.getPlayer()));
+				final TileActor newTile = new TileActor(t, assets, aRound, cm);
 				newTile.setPosition(i * tileWidth * 0.75f + 150, i * tileHeight/2 + (j * tileHeight));
 				
 				if(gameMap[i][j].containsVillage()) {
-					final VillageActor village = new VillageActor(t.getVillage(), assets);
+					final VillageActor village = new VillageActor(t.getVillage(), assets, cm);
 					newTile.addActor(village);
 					village.setPosition(150, 30);
-					village.addListener(new ClickListener(){
-
-						@Override
-						public void clicked(InputEvent event, float x, float y) {
-							System.out.println("Village clicked at " + x + " " + y);
-							cm.addClickedActor(village);
-							event.stop();
-						}
-					});
 				}
-				
-				// Add listener to Tiles
-				newTile.addListener(new ClickListener() {
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						System.out.println("Tile clicked at " + x + " " + y);
-						cm.addClickedActor(newTile);
-						event.stop();
-					}
-				});
 				tiles[i][j] = newTile;
 			}
 		}
@@ -71,5 +55,43 @@ public class GameWorld extends Stage {
 				this.addActor(tiles[i][j]);
 			}
 		}
+		
+		// Add dragcontrols
+		addDragControls();
+	}
+	
+	private void addDragControls() {
+		this.addListener(new DragListener() {
+			float prevX, prevY;
+
+			@Override
+			public void dragStart(InputEvent event, float x, float y,
+					int pointer) {
+				prevX = x;
+				prevY = y;
+				super.dragStart(event, x, y, pointer);
+			}
+
+			@Override
+			public void drag(InputEvent event, float x, float y, int pointer) {
+				GameWorld.this.getCamera().translate(prevX - x, prevY - y, 0);
+				super.drag(event, x, y, pointer);
+			}
+
+			@Override
+			public void dragStop(InputEvent event, final float x, final float y, int pointer) {
+				GameWorld.this.addAction(new TemporalAction(1, Interpolation.pow2Out) {
+					@Override
+					protected void update(float percent) {
+						float dirX = (prevX - x) * 0.5f;
+						float dirY = (prevY - y) * 0.5f;
+						float inversePercent = 1 - percent;
+						GameWorld.this.getCamera().translate(inversePercent * dirX, inversePercent * dirY, 0);
+					}
+					
+				});
+				super.dragStop(event, x, y, pointer);
+			}
+		});
 	}
 }

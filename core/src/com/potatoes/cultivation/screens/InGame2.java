@@ -37,7 +37,6 @@ public class InGame2 extends ScreenAdapter {
 		world = new GameWorld(aRound, assets, cm);
 		cm.setWorld(world);
 		
-		addDragControls();
 		addHandlers();
 	}
 	
@@ -58,41 +57,6 @@ public class InGame2 extends ScreenAdapter {
 	public void show() {
 		InputMultiplexer inputs = new InputMultiplexer(hud, world);
 		Gdx.input.setInputProcessor(inputs);
-	}
-
-	private void addDragControls() {
-		world.addListener(new DragListener() {
-			float prevX, prevY;
-
-			@Override
-			public void dragStart(InputEvent event, float x, float y,
-					int pointer) {
-				prevX = x;
-				prevY = y;
-				super.dragStart(event, x, y, pointer);
-			}
-
-			@Override
-			public void drag(InputEvent event, float x, float y, int pointer) {
-				world.getCamera().translate(prevX - x, prevY - y, 0);
-				super.drag(event, x, y, pointer);
-			}
-
-			@Override
-			public void dragStop(InputEvent event, final float x, final float y, int pointer) {
-				world.addAction(new TemporalAction(1, Interpolation.pow2Out) {
-					@Override
-					protected void update(float percent) {
-						float dirX = (prevX - x) * 0.5f;
-						float dirY = (prevY - y) * 0.5f;
-						float inversePercent = 1 - percent;
-						world.getCamera().translate(inversePercent * dirX, inversePercent * dirY, 0);
-					}
-					
-				});
-				super.dragStop(event, x, y, pointer);
-			}
-		});
 	}
 	
 	private void addHandlers() {
