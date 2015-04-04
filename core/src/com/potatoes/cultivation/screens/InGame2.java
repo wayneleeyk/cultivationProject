@@ -60,6 +60,7 @@ public class InGame2 extends ScreenAdapter {
 	@Override
 	public void show() {
 		InputMultiplexer inputs = new InputMultiplexer(hud, world);
+//		InputMultiplexer inputs = new InputMultiplexer( world);
 		Gdx.input.setInputProcessor(inputs);
 	}
 

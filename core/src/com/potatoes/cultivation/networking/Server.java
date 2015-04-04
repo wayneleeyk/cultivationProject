@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.nio.file.Files;
@@ -25,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.badlogic.gdx.utils.IntMap.Entry;
+import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.screens.GameRoom;
 
@@ -38,6 +40,8 @@ public class Server implements Runnable{
 	Map<String, WinsAndLosses> winsAndLoses = new ConcurrentHashMap<>();
 	
 	Map<String, User> usernameToUser = new ConcurrentHashMap<String, User>();
+	
+	Map<String, List<CultivationGame>> savedGames = new ConcurrentHashMap<String, List<CultivationGame>>();
 	
 	List<Set<Player>> gameRooms = Collections.synchronizedList(new ArrayList<Set<Player>>(10));
 	
@@ -70,6 +74,22 @@ public class Server implements Runnable{
 	}
 	
 	////////////////////Functions for server//////////////////////////
+	
+	void save(CultivationGame game){
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("./Accounts/SavedGames/"+game.hashCode())));
+			oos.writeObject(game);
+			for (Player p : game.getPlayers()) {
+				List<CultivationGame> listOfGames = this.savedGames.get(p.getUsername());
+				if(listOfGames==null) listOfGames = new LinkedList<>();
+				listOfGames.add(game);
+				this.savedGames.put(p.getUsername(), listOfGames);
+			}
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
 		System.out.println("Propagating actions");

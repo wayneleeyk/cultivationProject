@@ -43,6 +43,7 @@ public class HUD extends Stage{
 	Skin skin;
 	ArrayList<Actor> destroyableMenus = new ArrayList<Actor>();
 	final TextButton endTurn;
+	final TextButton save;
 	Label stats;
 	CultivationGame game;
 	ClickManager cm;
@@ -104,6 +105,17 @@ public class HUD extends Stage{
 			}
 		});
 		this.addActor(endTurn);
+		
+		save = new TextButton("Save Game", skin, "red");
+		save.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				gameApp.client.save(game);
+				System.out.println("saving game");
+			}
+		});
+		save.setPosition(50, 50);
+		this.addActor(save);
 	}
 	
 	@Override

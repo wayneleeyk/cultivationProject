@@ -3,6 +3,9 @@ package com.potatoes.cultivation.gameactors;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.StructureType;
 import com.potatoes.cultivation.logic.Tile;
@@ -28,6 +31,24 @@ public class TileActor extends Group {
 		myLandtype = t.getLandType();
 		myStructure = t.getStructure();
 		overlay = (c != null)? c : Color.WHITE;
+		this.addListener(new ClickListener(){
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				System.out.println("Tile at "+x+" "+y+" has been pressed");
+				return false;
+			}
+		});
+		this.addListener(new InputListener(){
+
+			@Override
+			public boolean touchDown(InputEvent event, float x, float y,
+					int pointer, int button) {
+				System.out.println("Tile is pressed");
+				return false;
+			}
+			
+		});
 	}
 	
 	/**

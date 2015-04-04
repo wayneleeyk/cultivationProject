@@ -181,6 +181,14 @@ public class Client{
 //		return null;
 	}
 	
+	public void save(CultivationGame game){
+		try {
+			out.writeObject(new SaveProtocol(game));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void register(String username, String password){
 		try{
 			out.writeObject(new RegisterProtocol(username, password));
