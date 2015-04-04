@@ -141,22 +141,33 @@ public class CultivationGame implements Serializable {
 	public void updateGoldEconomy(Player p) {
 		Set<Village> myVillages = map.getVillages(p);
 
+		//Loop through each village belonging to player p
 		for (Village v : myVillages) {
 			Region myRegion = v.getRegion();
 			Set<Tile> myTiles = myRegion.getTiles();
-
+			
+			//If village v is a castle, pay for upkeep
+			if (v.getType().equals(VillageType.Castle)) {
+				boolean success = v.removeGold(80);//80 gold? what a rip off!
+				if (!success) {
+					//If can't afford to pay for castle..
+					//TODO
+				}
+			}
+			//For each tile, generate gold depending on its landtype
 			for (Tile t : myTiles) {
 				LandType myLandType = t.getLandType();
 				int value = myLandType.getGoldValue(myLandType);
 				v.addGold(value);
 			}
+			
+			//Pay villagers their wage
 			Set<Unit> myUnits = myRegion.getUnits();
-
 			for (Unit u : myUnits) {
 				UnitType uType = u.getType();
 				int salary = uType.getSalary();
 				boolean success = v.removeGold(salary);
-
+				//If fail to pay villager, it dies and gets buried
 				if (success == false) {
 					Tile myTile = u.getTile();
 					myRegion.killUnit(u);
