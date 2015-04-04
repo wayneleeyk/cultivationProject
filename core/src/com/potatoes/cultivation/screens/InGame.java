@@ -159,7 +159,7 @@ public class InGame extends ScreenAdapter {
 									.stageToScreenCoordinates(
 											village.localToStageCoordinates(new Vector2(
 													x, y)));
-							hud.villageClicked(village, screenCoord.x, screenCoord.y);
+//							hud.villageClicked(village, screenCoord.x, screenCoord.y);
 						}
 					});
 					tileGroup.addActor(village);

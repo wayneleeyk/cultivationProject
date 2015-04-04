@@ -38,7 +38,7 @@ public class GameWorld extends Stage {
 				if(gameMap[i][j].containsVillage()) {
 					final VillageActor village = new VillageActor(t.getVillage(), assets);
 					newTile.addActor(village);
-					village.setPosition(150, 30);
+//					village.setPosition(150, 30);
 					village.addListener(new ChangeListener(){
 						@Override
 						public void changed(ChangeEvent event, Actor actor) {
