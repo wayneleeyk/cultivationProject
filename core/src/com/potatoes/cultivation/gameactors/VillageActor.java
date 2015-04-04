@@ -23,14 +23,7 @@ public class VillageActor extends Actor {
 		setHeight(region.getRegionHeight());
 		
 		// Listener for clicking
-		this.addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				System.out.println("Village clicked at " + x + " " + y);
-				cm.addClickedActor(VillageActor.this);
-				event.stop();
-			}
-		});
+		this.addListener(cm.new ClickToCMListener());
 	}
 	
 	public void refreshVillage() {

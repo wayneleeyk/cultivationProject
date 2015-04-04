@@ -19,12 +19,13 @@ import com.potatoes.cultivation.networking.Protocol;
 import com.potatoes.cultivation.networking.ProtocolHandler;
 import com.potatoes.cultivation.stages.GameWorld;
 import com.potatoes.cultivation.stages.HUD;
+import com.potatoes.cultivation.stages.HUD2;
 
 public class InGame2 extends ScreenAdapter {
 	Cultivation aGame;
 	CultivationGame aRound;
 	GameWorld world;
-	HUD hud;
+	HUD2 hud;
 	ProtocolHandler<GameAction[]> updates;
 	
 	public InGame2(final Cultivation pGame, CultivationGame pGameRound) {
@@ -33,7 +34,8 @@ public class InGame2 extends ScreenAdapter {
 		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class));
 		
 		ClickManager cm = new ClickManager();		
-		hud = new HUD(pGame, null, pGameRound.getGameMap(), pGame.player, cm);
+//		hud = new HUD(pGame, null, pGameRound.getGameMap(), pGame.player, cm);\
+		hud = new HUD2(pGame, cm);
 		world = new GameWorld(aRound, assets, cm);
 		cm.setWorld(world);
 		

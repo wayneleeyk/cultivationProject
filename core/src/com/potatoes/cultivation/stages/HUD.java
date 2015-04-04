@@ -130,7 +130,7 @@ public class HUD extends Stage{
 		Village lastClickedVillage = cm.lastClickedVillage();
 		if (lastClickedVillage != null && lastClickedVillage.getOwner().equals(currentPlayer)) {
 			currentVillage = lastClickedVillage;
-			villageClicked(cm.lastClickedVillageActor());
+//			villageClicked(cm.lastClickedVillageActor());
 		}
 		
 		stats.act(delta);

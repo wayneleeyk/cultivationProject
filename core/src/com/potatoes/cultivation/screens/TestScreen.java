@@ -55,7 +55,7 @@ public class TestScreen extends ScreenAdapter {
 		Unit two = new Unit();
 		two.myType = UnitType.Knight;
 		
-		final PotatoActor p = new PotatoActor(one, actorAssets, "yellow");
+		final PotatoActor p = new PotatoActor(one, actorAssets, "yellow", null);
 		
 		final TileActor start = new TileActor(actorAssets);
 		final TileActor destination = new TileActor(actorAssets);
