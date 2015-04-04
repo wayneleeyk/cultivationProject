@@ -89,7 +89,8 @@ public class Server implements Runnable{
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
 				CultivationGame game = (CultivationGame) ois.readObject();
 				for (Player player : game.getPlayers()) {
-					this.savedGames.get(player).add(game);
+					if(this.savedGames.get(player.getUsername()) == null) this.savedGames.put(player.getUsername(), new LinkedList<CultivationGame>());
+					this.savedGames.get(player.getUsername()).add(game);
 				}
 				ois.close();
 			} catch (IOException | ClassNotFoundException e) {
