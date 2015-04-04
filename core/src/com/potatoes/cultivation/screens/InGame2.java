@@ -31,7 +31,8 @@ public class InGame2 extends ScreenAdapter {
 		aGame = pGame;
 		aRound = pGameRound;
 		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class));
-		ClickManager cm = new ClickManager(this);
+		
+		ClickManager cm = new ClickManager(world);
 		
 		hud = new HUD(pGame, null, pGameRound.getGameMap(), pGame.player, cm);
 		world = new GameWorld(aRound, assets, cm);

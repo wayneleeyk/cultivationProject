@@ -5,7 +5,6 @@ import com.potatoes.cultivation.gameactors.PotatoActor;
 import com.potatoes.cultivation.gameactors.TileActor;
 import com.potatoes.cultivation.gameactors.VillageActor;
 import com.potatoes.cultivation.logic.Village;
-import com.potatoes.cultivation.screens.InGame2;
 import com.potatoes.cultivation.stages.GameWorld;
 
 public class ClickManager {
@@ -13,11 +12,11 @@ public class ClickManager {
 	Actor first = null;
 	Actor second = null;
 
-	InGame2 game;
+	GameWorld world;
 	
 	
-	public ClickManager(InGame2 game) {
-		this.game = game;
+	public ClickManager(GameWorld world) {
+		this.world = world;
 	}
 
 	public void addClickedActor(Actor actor) {
@@ -32,7 +31,7 @@ public class ClickManager {
 	public VillageActor villageToActor(Village village){
 		int x = village.getTile().x;
 		int y = village.getTile().y;
-		for (Actor actor : this.game.getGameWorld().tiles[x][y].getChildren()) {
+		for (Actor actor : world.tiles[x][y].getChildren()) {
 			if(actor instanceof VillageActor) return (VillageActor) actor;
 		}
 		return null;
