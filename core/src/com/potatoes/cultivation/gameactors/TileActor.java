@@ -2,9 +2,11 @@ package com.potatoes.cultivation.gameactors;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.StructureType;
@@ -31,24 +33,6 @@ public class TileActor extends Group {
 		myLandtype = t.getLandType();
 		myStructure = t.getStructure();
 		overlay = (c != null)? c : Color.WHITE;
-		this.addListener(new ClickListener(){
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				System.out.println("Tile at "+x+" "+y+" has been pressed");
-				return false;
-			}
-		});
-		this.addListener(new InputListener(){
-
-			@Override
-			public boolean touchDown(InputEvent event, float x, float y,
-					int pointer, int button) {
-				System.out.println("Tile is pressed");
-				return false;
-			}
-			
-		});
 	}
 	
 	/**
@@ -72,6 +56,21 @@ public class TileActor extends Group {
 		super.draw(batch, parentAlpha);
 	}
 	
+	@Override
+	public Actor hit(float x, float y, boolean touchable) {
+		Actor child = super.hit(x, y, touchable);
+		if(child != null) return child;
+		if (touchable && getTouchable() != Touchable.enabled) return null;
+		if(x >= 0 && x < 308 && y >= 0 && y < 88) {
+			if((y < 0.567f * x + 44 && y > 0.567f * x - 131) &&
+			(y > -0.567f * x + 44 && y < -0.567f * x + 219))
+			{
+				return this;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * This method will explicitly change the information of the TileActor.
 	 * This may be useful for setting the color and debugging. 

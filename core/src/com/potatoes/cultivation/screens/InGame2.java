@@ -32,16 +32,13 @@ public class InGame2 extends ScreenAdapter {
 		aRound = pGameRound;
 		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class));
 		
-		ClickManager cm = new ClickManager(world);
-		
+		ClickManager cm = new ClickManager();		
 		hud = new HUD(pGame, null, pGameRound.getGameMap(), pGame.player, cm);
 		world = new GameWorld(aRound, assets, cm);
+		cm.setWorld(world);
+		
 		addDragControls();
 		addHandlers();
-	}
-
-	public GameWorld getGameWorld(){
-		return this.world;
 	}
 	
 	@Override
@@ -60,7 +57,6 @@ public class InGame2 extends ScreenAdapter {
 	@Override
 	public void show() {
 		InputMultiplexer inputs = new InputMultiplexer(hud, world);
-//		InputMultiplexer inputs = new InputMultiplexer( world);
 		Gdx.input.setInputProcessor(inputs);
 	}
 
