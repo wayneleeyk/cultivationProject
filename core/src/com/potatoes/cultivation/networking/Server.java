@@ -2,15 +2,18 @@ package com.potatoes.cultivation.networking;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -33,6 +36,8 @@ import com.potatoes.cultivation.screens.GameRoom;
 public class Server implements Runnable{
 
 	final static File accounts = tryRead("./Accounts/accounts.dat");
+
+	private static final String savedGameFolder = "./Accounts/SavedGames/";
 	
 	ServerSocket socket;
 	BlockingQueue<ServerTask> queue = new LinkedBlockingQueue<ServerTask>();
@@ -54,6 +59,8 @@ public class Server implements Runnable{
 		
 		// Initialize game room 0 for testing purposes
 		gameRooms.add(0,new LinkedHashSet<Player>());
+		
+		loadGamesToMemory();
 	}
 
 	@Override
@@ -75,9 +82,36 @@ public class Server implements Runnable{
 	
 	////////////////////Functions for server//////////////////////////
 	
+	private void loadGamesToMemory(){
+		File loadDirectory = new File(savedGameFolder);
+		for (File file : loadDirectory.listFiles()) {
+			try {
+				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+				CultivationGame game = (CultivationGame) ois.readObject();
+				for (Player player : game.getPlayers()) {
+					this.savedGames.get(player).add(game);
+				}
+				ois.close();
+			} catch (IOException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		loadDirectory.listFiles();
+		
+	}
+	
+	public CultivationGame load(List<Player> players) {
+		if(players.size() <= 0) return null;
+		Player one = players.get(0);
+		for (CultivationGame game : this.savedGames.get(one)) {
+			if(game.getPlayers().containsAll(players)) return game;
+		}
+		return null;
+	}
+	
 	void save(CultivationGame game){
 		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File("./Accounts/SavedGames/"+game.hashCode())));
+			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(savedGameFolder+game.hashCode())));
 			oos.writeObject(game);
 			for (Player p : game.getPlayers()) {
 				List<CultivationGame> listOfGames = this.savedGames.get(p.getUsername());
@@ -299,4 +333,6 @@ public class Server implements Runnable{
 			return true;
 		}
 	}
+
+	
 }
