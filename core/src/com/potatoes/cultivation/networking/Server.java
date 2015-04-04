@@ -81,6 +81,7 @@ public class Server implements Runnable{
 	
 	private void loadGamesToMemory(){
 		File loadDirectory = new File(savedGameFolder);
+		if(!loadDirectory.exists()) loadDirectory.mkdirs();
 		for (File file : loadDirectory.listFiles()) {
 			try {
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
@@ -93,9 +94,7 @@ public class Server implements Runnable{
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-		}
-		loadDirectory.listFiles();
-		
+		}		
 	}
 	
 	public void load(List<Player> players) {
