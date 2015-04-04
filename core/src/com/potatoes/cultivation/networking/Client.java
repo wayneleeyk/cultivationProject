@@ -181,10 +181,29 @@ public class Client{
 //		return null;
 	}
 	
+	/**
+	 * @param game			The active game
+	 * 
+	 * Sends the game to the server to be saved
+	 */
 	public void save(CultivationGame game){
 		try {
 			out.writeObject(new SaveProtocol(game));
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * @param players		List of players for a specific game
+	 * 
+	 * Sends to server request to load game matching players in the list
+	 * If found the server will behave similarly to start game (GameDataProtocol needs to be handled)
+	 */
+	public void load(List<Player> players){
+		try{
+			out.writeObject(new LoadProtocol(players));
+		} catch(IOException e){
 			e.printStackTrace();
 		}
 	}

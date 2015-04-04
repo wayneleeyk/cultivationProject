@@ -13,7 +13,6 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,10 +27,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.badlogic.gdx.utils.IntMap.Entry;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.Player;
-import com.potatoes.cultivation.screens.GameRoom;
 
 public class Server implements Runnable{
 
@@ -101,13 +98,18 @@ public class Server implements Runnable{
 		
 	}
 	
-	public CultivationGame load(List<Player> players) {
-		if(players.size() <= 0) return null;
+	public void load(List<Player> players) {
+		if(players.size() <= 0) return ;
 		Player one = players.get(0);
 		for (CultivationGame game : this.savedGames.get(one)) {
-			if(game.getPlayers().containsAll(players)) return game;
+			if(game.getPlayers().containsAll(players)){
+				GameDataProtocol gameData = new GameDataProtocol(null, game);
+				for (Player player : players) {
+					User user = usernameToUser.get(player.getUsername());
+					queue.add(new ServerTask(user.oos, gameData));
+				}
+			}
 		}
-		return null;
 	}
 	
 	void save(CultivationGame game){

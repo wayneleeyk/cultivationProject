@@ -93,6 +93,8 @@ public class HUD extends Stage{
 		};
 		stats.setPosition(5, height-30); //Hardcode FTW
 		this.addActor(stats);
+		
+		// HUD
 		endTurn = new TextButton("End Turn", skin, "red");
 		endTurn.addListener(new ChangeListener() {
 			@Override
@@ -106,6 +108,7 @@ public class HUD extends Stage{
 		});
 		this.addActor(endTurn);
 		
+		// Save button
 		save = new TextButton("Save Game", skin, "red");
 		save.addListener(new ChangeListener() {
 			@Override
