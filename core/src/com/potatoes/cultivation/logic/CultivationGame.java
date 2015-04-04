@@ -86,6 +86,8 @@ public class CultivationGame implements Serializable {
 			type = VillageType.Town;
 		} else if (currentType == VillageType.Town) {
 			type = VillageType.Fort;
+		} else if (currentType == VillageType.Fort) {
+			type = VillageType.Castle;
 		} else {
 			return false;
 		}
