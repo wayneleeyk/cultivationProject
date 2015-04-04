@@ -46,14 +46,7 @@ public class TileActor extends Group {
 		}
 		
 		// Add listener to Tiles
-		this.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				System.out.println("Tile clicked at " + x + " " + y);
-				cm.addClickedActor(TileActor.this);
-				event.stop();
-			}
-		});
+		this.addListener(cm.new ClickToCMListener());
 	}
 	
 	/**

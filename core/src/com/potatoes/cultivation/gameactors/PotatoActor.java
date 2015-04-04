@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.helpers.ClickManager;
+import com.potatoes.cultivation.helpers.ClickManager.ClickToCMListener;
 import com.potatoes.cultivation.logic.Unit;
 
 public class PotatoActor extends Actor {
@@ -48,14 +49,7 @@ public class PotatoActor extends Actor {
 			this.setOriginX(width/2);
 			
 			// Add listener to forward to ClickManager
-			this.addListener(new ClickListener() {
-				@Override
-				public void clicked(InputEvent event, float x, float y) {
-					System.out.println("Tile clicked at " + x + " " + y);
-					cm.addClickedActor(PotatoActor.this);
-					event.stop();
-				}
-			});
+			this.addListener(cm.new ClickToCMListener());
 		}
 		
 		@Override
