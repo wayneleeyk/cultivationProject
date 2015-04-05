@@ -204,7 +204,7 @@ public class HUD extends Stage{
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("hireVillager clicked");
-				Tile t = Cultivation.GAMEMANAGER.getGame().getVillageSpawnPoint(villageActor.getVillage());
+				Tile t = Cultivation.GAMEMANAGER.getGame().getVillagerSpawnPoint(villageActor.getVillage());
 				if(t!=null){
 					GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(t);
 //					hireAction.execute(game.GAMEMANAGER.getGame());

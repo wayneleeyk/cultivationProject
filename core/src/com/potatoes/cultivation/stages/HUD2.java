@@ -12,12 +12,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.gameactors.PotatoActor;
 import com.potatoes.cultivation.gameactors.VillageActor;
 import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
+import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
 
 public class HUD2 extends Stage {
@@ -34,6 +36,7 @@ public class HUD2 extends Stage {
 	
 	TextButton endTurn;
 	VillageMenuGroup villageMenu;
+	PotatoMenuGroup potatoMenu;
 	
 	public HUD2(Cultivation app, ClickManager cm) {
 		this.gameApp = app;
@@ -64,11 +67,22 @@ public class HUD2 extends Stage {
 		// If the clicked villageActor is yours, open the menu
 		VillageActor targetVillageActor = cm.getVillageActor();
 		if(game.isMyTurn(currentPlayer) && targetVillageActor != null && targetVillageActor.getVillage().getOwner().equals(currentPlayer)) {
-			villageMenu.setVisible(true);
+			if(!villageMenu.isVisible()) villageMenu.setVisible(true);
 			villageMenu.setVillageActor(targetVillageActor);
 		}
 		else {
 			villageMenu.setVisible(false);
+		}
+		
+		// If the clicked potatoActor is yours, open the menu
+		PotatoActor targetPotatoActor = cm.getPotatoActor();
+		if(game.isMyTurn(currentPlayer) && targetPotatoActor != null && targetPotatoActor.getUnit().myVillage.getOwner().equals(currentPlayer)) {
+			if(!potatoMenu.isVisible()) potatoMenu.setVisible(true);
+			potatoMenu.setPotatoActor(targetPotatoActor);
+			potatoMenu.disableButtonsAccordingToTypeAndResources();
+		}
+		else {
+			potatoMenu.setVisible(false);
 		}
 		
 		//If it's your turn, display the "End Turn" button
@@ -129,8 +143,11 @@ public class HUD2 extends Stage {
 		
 		/******************** MenuGroups ************************/
 		villageMenu = new VillageMenuGroup();
+		potatoMenu = new PotatoMenuGroup();
 		this.addActor(villageMenu);
+		this.addActor(potatoMenu);
 		villageMenu.toBack();
+		potatoMenu.toBack();
 	}
 	
 	class VillageMenuGroup extends Group {
@@ -142,17 +159,14 @@ public class HUD2 extends Stage {
 		public VillageMenuGroup() {
 			TextButton upgradeVillage = new TextButton("Upgrade Village", skin, "default");
 			TextButton hireVillager = new TextButton("Hire Villager", skin, "default");
-			TextButton hireCannon = new TextButton("Hire PowPow", skin, "default");
 			
 			this.addActor(upgradeVillage);
 			this.addActor(hireVillager);
-			this.addActor(hireCannon);
 			
 			float buttonHeight = upgradeVillage.getHeight();
 			
 			// Stack the buttons on top of each other
-			upgradeVillage.setY(2*buttonHeight);
-			hireVillager.setY(buttonHeight);
+			upgradeVillage.setY(buttonHeight);
 			
 			// Add listeners to the buttons 
 			upgradeVillage.addListener(new ChangeListener() {
@@ -169,7 +183,7 @@ public class HUD2 extends Stage {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
 					System.out.println("hireVillager clicked");
-					Tile t = Cultivation.GAMEMANAGER.getGame().getVillageSpawnPoint(myVillageActor.getVillage());
+					Tile t = Cultivation.GAMEMANAGER.getGame().getVillagerSpawnPoint(myVillageActor.getVillage());
 					if(t!=null){
 						GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(t);
 //						hireAction.execute(game.GAMEMANAGER.getGame());
@@ -193,5 +207,157 @@ public class HUD2 extends Stage {
 			Vector2 menuCoord = this.getStage().screenToStageCoordinates(villageScreen);
 			this.setPosition(menuCoord.x - 100, menuCoord.y);	
 		}		
+	}
+	
+	class PotatoMenuGroup extends Group {
+		PotatoActor myPotato;
+		Group topLevel;
+		TextButton buildRoad;
+		TextButton upgradePotato;
+		Group upgrades;
+		TextButton infantry;
+		TextButton soldier;
+		TextButton knight;
+		TextButton cannoneer;
+		
+		public PotatoMenuGroup() {
+			/******* First level group **********/
+			topLevel = new Group();
+			
+			upgradePotato = new TextButton("Upgrade Potato", skin, "default");
+			buildRoad = new TextButton("Build Road", skin, "default");
+			
+			topLevel.addActor(upgradePotato);
+			topLevel.addActor(buildRoad);
+			
+			float buttonHeight = upgradePotato.getHeight();
+			
+			// Stack the buttons on top of each other
+			upgradePotato.setY(buttonHeight);
+			
+			// Add listeners to the buttons 
+			upgradePotato.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("upgradePotato clicked");
+					topLevel.setVisible(false);
+					upgrades.setVisible(true);
+				}
+			});
+			
+			buildRoad.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("buildRoad clicked");
+					cm.reset();
+				}
+			});
+			
+			/******* Second level group - Upgrade Group **********/
+			upgrades = new Group();
+			infantry = new TextButton("Infantry", skin, "default");
+			soldier = new TextButton("Solider", skin, "default");
+			knight = new TextButton("Knight", skin, "default");
+			cannoneer = new TextButton("Cannoneer", skin, "default");
+			
+			upgrades.addActor(infantry);
+			upgrades.addActor(soldier);
+			upgrades.addActor(knight);
+			upgrades.addActor(cannoneer);
+			
+			infantry.setY(3*buttonHeight);
+			soldier.setY(2*buttonHeight);
+			knight.setY(buttonHeight);
+			
+			infantry.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("infantry clicked");
+					GameAction.UpgradePotatoAction gameAction = new GameAction.UpgradePotatoAction(myPotato.getUnit(), UnitType.Infantry);
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
+			});
+			
+			infantry.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("infantry clicked");
+					GameAction.UpgradePotatoAction gameAction = new GameAction.UpgradePotatoAction(myPotato.getUnit(), UnitType.Infantry);
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
+			});
+			
+			soldier.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("soldier clicked");
+					GameAction.UpgradePotatoAction gameAction = new GameAction.UpgradePotatoAction(myPotato.getUnit(), UnitType.Soldier);
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
+			});
+			
+			knight.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("knight clicked");
+					GameAction.UpgradePotatoAction gameAction = new GameAction.UpgradePotatoAction(myPotato.getUnit(), UnitType.Knight);
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
+			});
+			
+			upgrades.setVisible(false);
+			
+			this.addActor(topLevel);
+			this.addActor(upgrades);
+			this.setVisible(false);
+		}
+		
+		@Override
+		public void setVisible(boolean visible) {
+			super.setVisible(visible);
+			if(visible) {
+				topLevel.setVisible(true);
+				upgrades.setVisible(false);
+			}
+		}
+
+		/**
+		 * Set the {@link PotatoActor} model to this menu. 
+		 * Also sets position of the menu.
+		 * @param p - The target PotatoActor
+		 */
+		public void setPotatoActor(PotatoActor p) {
+			myPotato = p;
+			Vector2 potatoStageCoord = p.localToStageCoordinates(new Vector2(p.getX(), p.getY()));
+			Vector2 potatoScreen = p.getStage().stageToScreenCoordinates(potatoStageCoord);
+			Vector2 menuCoord = this.getStage().screenToStageCoordinates(potatoScreen);
+			this.setPosition(menuCoord.x - 100, menuCoord.y);	
+		}
+		
+		public void disableButtonsAccordingToTypeAndResources() {
+			UnitType myType = myPotato.getUnit().myType;
+			if(myType.equals(UnitType.Cannon)) {
+				upgradePotato.setDisabled(true);
+			}
+			if(myType.equals(UnitType.Knight)) {
+				infantry.setDisabled(true);
+				soldier.setDisabled(true);
+				knight.setDisabled(true);
+			}
+			if(myType.equals(UnitType.Soldier)) {
+				infantry.setDisabled(true);
+				soldier.setDisabled(true);
+			}
+			if(myType.equals(UnitType.Infantry)) {
+				infantry.setDisabled(true);
+			}
+			
+			// According to resources...
+			// Something like village.canHire?
+		}
 	}
 }

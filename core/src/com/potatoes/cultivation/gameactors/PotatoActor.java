@@ -16,9 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.helpers.ClickManager.ClickToCMListener;
 import com.potatoes.cultivation.logic.Unit;
+import com.potatoes.cultivation.logic.UnitType;
 
 public class PotatoActor extends Actor {
 		Unit gameUnit;
+		String color;
 		
 		private float stateTime;
 		private Animation potatoAnim;
@@ -36,12 +38,12 @@ public class PotatoActor extends Actor {
 			myAssets = a;
 			
 			String type = u.myType.toString();
-			String color = c;
+			color = c;
 			if(!(color.equalsIgnoreCase("yellow") || color.equalsIgnoreCase("red") || color.equalsIgnoreCase("purple"))) {
 				color = "yellow";
 			}
 			
-			potatoAnim = a.stringToAnimation.get("potato" + "_" + color.toLowerCase() + "_" + type.toLowerCase());
+			potatoAnim = myAssets.stringToAnimation.get("potato" + "_" + color + "_" + type.toLowerCase());
 			int width = potatoAnim.getKeyFrame(0).getRegionWidth();
 			int height = potatoAnim.getKeyFrame(0).getRegionHeight();
 			this.setWidth(width);
@@ -50,6 +52,7 @@ public class PotatoActor extends Actor {
 			
 			// Add listener to forward to ClickManager
 			this.addListener(cm.new ClickToCMListener());
+			this.setName("PotatoActor");
 		}
 		
 		@Override
@@ -66,11 +69,16 @@ public class PotatoActor extends Actor {
 		}
 		
 		/**
-		 * Directly set the animation to a. Use for debugging
+		 * Directly set the animation to a.
 		 * @param a
 		 */
-		public void setAnimation(Animation a) {
-			potatoAnim = a;
+		public void upgradePotato(UnitType unitType) {
+			potatoAnim = myAssets.stringToAnimation.get("potato_" + color + "_" + unitType.toString().toLowerCase());
+			int width = potatoAnim.getKeyFrame(0).getRegionWidth();
+			int height = potatoAnim.getKeyFrame(0).getRegionHeight();
+			this.setWidth(width);
+			this.setHeight(height);
+			this.setOriginX(width/2);
 		}
 		
 		
@@ -129,10 +137,6 @@ public class PotatoActor extends Actor {
 			
 			SequenceAction moveSequence = new SequenceAction(flip, to, endMoveAction);
 			this.addAction(moveSequence);
-		}
-		
-		public void testUpgrade() {
-//			setAnimation(myAssets.potato_yellow_soldier);
 		}
 		
 		public Unit getUnit(){

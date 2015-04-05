@@ -35,17 +35,17 @@ public class ActorAssets {
 		
 		stringToAnimation.put("potato_yellow_peasant", potato_yellow);
 		stringToAnimation.put("potato_yellow_infantry", potato_yellow_infantry);
-		stringToAnimation.put("potato_yellow_solider", potato_yellow_soldier);
+		stringToAnimation.put("potato_yellow_soldier", potato_yellow_soldier);
 		stringToAnimation.put("potato_yellow_knight", potato_yellow_knight);
 		
 		stringToAnimation.put("potato_red_peasant", potato_red);
 		stringToAnimation.put("potato_red_infantry", potato_red_infantry);
-		stringToAnimation.put("potato_red_solider", potato_red_soldier);
+		stringToAnimation.put("potato_red_soldier", potato_red_soldier);
 		stringToAnimation.put("potato_red_knight", potato_red_knight);
 		
 		stringToAnimation.put("potato_purple_peasant", potato_purple);
 		stringToAnimation.put("potato_purple_infantry", potato_purple_infantry);
-		stringToAnimation.put("potato_purple_solider", potato_purple_soldier);
+		stringToAnimation.put("potato_purple_soldier", potato_purple_soldier);
 		stringToAnimation.put("potato_purple_knight", potato_purple_knight);
 		
 		AtlasRegion hex_grass = mySprites.findRegion("grass");

@@ -205,7 +205,7 @@ public class CultivationGame implements Serializable {
 		this.turnOf(player);
 	}
 
-	public Tile getVillageSpawnPoint(Village village) {
+	public Tile getVillagerSpawnPoint(Village village) {
 		boolean foundVacantTile = false;
 		Tile spawnOn = null;
 		//Check if village has enough gold to hire new villager

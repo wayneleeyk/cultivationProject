@@ -17,6 +17,7 @@ import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.Tile;
+import com.potatoes.cultivation.logic.UnitType;
 
 public class GameWorld extends Stage {
 	public TileActor[][] tiles;
@@ -104,5 +105,11 @@ public class GameWorld extends Stage {
 		PotatoActor p = new PotatoActor(t.getUnit(), assets, gameRound.playerToPotatoColor(t.getPlayer()), cm);
 		tile.addActor(p);
 		p.setPosition(80, 30);
+	}
+
+	public void upgradePotatoAt(int x, int y, UnitType uType) {
+		TileActor tile = tiles[x][y];
+		PotatoActor p = tile.findActor("PotatoActor");
+		p.upgradePotato(uType);
 	}
 }

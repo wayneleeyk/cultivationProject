@@ -23,8 +23,7 @@ public class ClickManager {
 	public void addClickedActor(Actor actor) {
 		// Resets after both are clicked
 		if(first != null && second != null) {
-			first = null;
-			second = null;
+			reset();
 		}
 		
 		if(first instanceof PotatoActor && !(actor instanceof PotatoActor)){
@@ -34,6 +33,11 @@ public class ClickManager {
 			first = actor;
 			second = null;
 		}
+	}
+	
+	public void reset() {
+		first = null;
+		second = null;
 	}
 	
 	/**

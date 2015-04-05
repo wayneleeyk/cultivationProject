@@ -81,7 +81,7 @@ public class TestScreen extends ScreenAdapter {
 			public boolean keyDown(InputEvent event, int keycode) {
 				if(keycode == Input.Keys.ENTER && p.getActions().size == 0) {
 					p.testMove2(destination);
-					p.testUpgrade();
+//					p.testUpgrade();
 					return true;
 				}
 				if(keycode == Input.Keys.SPACE && p.getActions().size == 0) {

@@ -103,4 +103,26 @@ public interface GameAction extends Serializable {
 		
 	}
 	
+	class UpgradePotatoAction implements GameAction {
+		private static final long serialVersionUID = -2366301428781363053L;
+		Tile t;
+		Unit u;
+		UnitType uType;
+		
+		public UpgradePotatoAction(Unit u, UnitType uType) {
+			this.u = u;
+			this.t = u.getTile();
+			this.uType = uType;
+		}
+		
+		@Override
+		public void execute(CultivationGame game) {
+			Unit toUpgrade = game.getGameMap().getMap()[t.x][t.y].getUnit();
+			if(game.upgradeUnit(toUpgrade, uType)) {
+				game.getWorld().upgradePotatoAt(t.x, t.y, uType);
+			}
+		}
+		
+	}
+	
 }
