@@ -61,9 +61,9 @@ public class TestScreen extends ScreenAdapter {
 		final TileActor destination = new TileActor(actorAssets);
 		final TileActor dest2 = new TileActor(actorAssets);
 		
-		start.updateTile(LandType.Meadow, null, Color.RED);
+		start.updateTile(LandType.Meadow, null, "red");
 		destination.updateTile(LandType.Tree, null, null);
-		dest2.updateTile(LandType.Meadow, null, Color.TEAL);
+		dest2.updateTile(LandType.Meadow, null, "purple");
 		
 		start.setPosition(100, 100);
 		start.addActor(p);

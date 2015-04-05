@@ -14,7 +14,6 @@ public class CultivationGame implements Serializable {
 	private static final long serialVersionUID = -4015259598754971722L;
 	private int roundsPlayed;
 	private List<Player> players;
-	private List<ColorEnum> colors;
 	private GameMap map;
 	private GameWorld world;
 
@@ -24,11 +23,6 @@ public class CultivationGame implements Serializable {
 		System.out.println("Made new game map");
 		this.roundsPlayed = 0;
 		
-		// Making new colors for each player
-		colors = new ArrayList<ColorEnum>(3);
-		colors.add(ColorEnum.RED);
-		colors.add(ColorEnum.BLUE);
-		colors.add(ColorEnum.YELLOW);
 	}
 
 	public void setWorld(GameWorld pWorld) {
@@ -42,22 +36,6 @@ public class CultivationGame implements Serializable {
 	public List<Player> getPlayers() {
 		List<Player> players = new LinkedList<Player>(this.players);
 		return players;
-	}
-	
-	enum ColorEnum { RED, BLUE, YELLOW };
-	
-	/*
-	 * Get a color from a player
-	 */
-	public Color playerToColor(Player p) {
-		int i = players.indexOf(p);
-		if(i != -1) {
-			ColorEnum color = colors.get(i);
-			if(color.equals(ColorEnum.RED)) return Color.RED;
-			if(color.equals(ColorEnum.BLUE)) return Color.BLUE;
-			if(color.equals(ColorEnum.YELLOW)) return Color.GRAY;
-		}
-		return Color.WHITE;
 	}
 	
 	/*
@@ -74,7 +52,7 @@ public class CultivationGame implements Serializable {
 		if(i == 2) {
 			return "yellow";
 		}
-		return "red";
+		return "yellow";
 	}
 
 	// Mang0-Tang0

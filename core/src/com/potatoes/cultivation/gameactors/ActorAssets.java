@@ -10,31 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class ActorAssets {
 	TextureAtlas mySprites;
 	
-	public Animation potato_yellow;
-	public Animation potato_yellow_infantry; 
-	public Animation potato_yellow_soldier;
-	public Animation potato_yellow_knight;
-	
-	public Animation potato_red;
-	public Animation potato_red_infantry; 
-	public Animation potato_red_soldier;
-	public Animation potato_red_knight;
-	
-	public Animation potato_purple;
-	public Animation potato_purple_infantry; 
-	public Animation potato_purple_soldier;
-	public Animation potato_purple_knight;
-	
-	public AtlasRegion hex_grass;
-	public AtlasRegion hex_sea;
-	public AtlasRegion hex_meadow;
-	public AtlasRegion hex_tree;
-	
-	public AtlasRegion village_hovel;
-	public AtlasRegion village_town;
-	public AtlasRegion village_fort;
-	public AtlasRegion village_castle;
-	
 	public HashMap<String, Animation> stringToAnimation;
 	public HashMap<String, AtlasRegion> stringToAtlasRegion;
 	
@@ -43,20 +18,20 @@ public class ActorAssets {
 		stringToAnimation = new HashMap<String, Animation>();
 		stringToAtlasRegion = new HashMap<String, AtlasRegion>();
 		
-		potato_yellow = newAnimation(mySprites.createSprite("potato_yellow"), 1, 2, 0.5f);
-		potato_yellow_infantry = newAnimation(mySprites.createSprite("potato_yellow_infantry"), 1, 2, 0.5f);
-		potato_yellow_soldier = newAnimation(mySprites.createSprite("potato_yellow_soldier"), 1, 2, 0.5f);
-		potato_yellow_knight = newAnimation(mySprites.createSprite("potato_yellow_knight"), 1, 2, 0.5f);
+		Animation potato_yellow = newAnimation(mySprites.createSprite("potato_yellow"), 1, 2, 0.5f);
+		Animation potato_yellow_infantry = newAnimation(mySprites.createSprite("potato_yellow_infantry"), 1, 2, 0.5f);
+		Animation potato_yellow_soldier = newAnimation(mySprites.createSprite("potato_yellow_soldier"), 1, 2, 0.5f);
+		Animation potato_yellow_knight = newAnimation(mySprites.createSprite("potato_yellow_knight"), 1, 2, 0.5f);
 		
-		potato_red = newAnimation(mySprites.createSprite("potato_red"), 1, 2, 0.5f);
-		potato_red_infantry = newAnimation(mySprites.createSprite("potato_red_infantry"), 1, 2, 0.5f);
-		potato_red_soldier = newAnimation(mySprites.createSprite("potato_red_soldier"), 1, 2, 0.5f);
-		potato_red_knight = newAnimation(mySprites.createSprite("potato_red_knight"), 1, 2, 0.5f);
+		Animation potato_red = newAnimation(mySprites.createSprite("potato_red"), 1, 2, 0.5f);
+		Animation potato_red_infantry = newAnimation(mySprites.createSprite("potato_red_infantry"), 1, 2, 0.5f);
+		Animation potato_red_soldier = newAnimation(mySprites.createSprite("potato_red_soldier"), 1, 2, 0.5f);
+		Animation potato_red_knight = newAnimation(mySprites.createSprite("potato_red_knight"), 1, 2, 0.5f);
 		
-		potato_purple = newAnimation(mySprites.createSprite("potato_purple"), 1, 2, 0.5f);
-		potato_purple_infantry = newAnimation(mySprites.createSprite("potato_purple_infantry"), 1, 2, 0.5f);
-		potato_purple_soldier = newAnimation(mySprites.createSprite("potato_purple_soldier"), 1, 2, 0.5f);
-		potato_purple_knight = newAnimation(mySprites.createSprite("potato_purple_knight"), 1, 2, 0.5f);
+		Animation potato_purple = newAnimation(mySprites.createSprite("potato_purple"), 1, 2, 0.5f);
+		Animation potato_purple_infantry = newAnimation(mySprites.createSprite("potato_purple_infantry"), 1, 2, 0.5f);
+		Animation potato_purple_soldier = newAnimation(mySprites.createSprite("potato_purple_soldier"), 1, 2, 0.5f);
+		Animation potato_purple_knight = newAnimation(mySprites.createSprite("potato_purple_knight"), 1, 2, 0.5f);
 		
 		stringToAnimation.put("potato_yellow_peasant", potato_yellow);
 		stringToAnimation.put("potato_yellow_infantry", potato_yellow_infantry);
@@ -73,20 +48,44 @@ public class ActorAssets {
 		stringToAnimation.put("potato_purple_solider", potato_purple_soldier);
 		stringToAnimation.put("potato_purple_knight", potato_purple_knight);
 		
-		hex_grass = mySprites.findRegion("grass");
-		hex_sea = mySprites.findRegion("tile_sea");
-		hex_meadow = mySprites.findRegion("tile_meadow");
-		hex_tree = mySprites.findRegion("tile_tree");
-		
-		village_hovel = mySprites.findRegion("village-hovel");
-		village_town = mySprites.findRegion("village-town");
-		village_fort = mySprites.findRegion("village-fort");
-		village_castle = mySprites.findRegion("village-castle");
+		AtlasRegion hex_grass = mySprites.findRegion("grass");
+		AtlasRegion hex_sea = mySprites.findRegion("tile_sea");
+		AtlasRegion hex_meadow = mySprites.findRegion("tile_meadow");
+		AtlasRegion hex_tree = mySprites.findRegion("tile_tree");
 		
 		stringToAtlasRegion.put("hex_grass", hex_grass);
 		stringToAtlasRegion.put("hex_sea", hex_sea);
 		stringToAtlasRegion.put("hex_meadow", hex_meadow);
 		stringToAtlasRegion.put("hex_tree", hex_tree);
+		
+		AtlasRegion hex_grass_yellow = mySprites.findRegion("grass_yellow");
+		AtlasRegion hex_meadow_yellow = mySprites.findRegion("tile_meadow_yellow");
+		AtlasRegion hex_tree_yellow = mySprites.findRegion("tile_tree_yellow");
+		
+		stringToAtlasRegion.put("hex_grass_yellow", hex_grass_yellow);
+		stringToAtlasRegion.put("hex_meadow_yellow", hex_meadow_yellow);
+		stringToAtlasRegion.put("hex_tree_yellow", hex_tree_yellow);
+		
+		AtlasRegion hex_grass_red = mySprites.findRegion("grass_red");
+		AtlasRegion hex_meadow_red = mySprites.findRegion("tile_meadow_red");
+		AtlasRegion hex_tree_red = mySprites.findRegion("tile_tree_red");
+		
+		stringToAtlasRegion.put("hex_grass_red", hex_grass_red);
+		stringToAtlasRegion.put("hex_meadow_red", hex_meadow_red);
+		stringToAtlasRegion.put("hex_tree_red", hex_tree_red);
+		
+		AtlasRegion hex_grass_purple = mySprites.findRegion("grass_purple");
+		AtlasRegion hex_meadow_purple = mySprites.findRegion("tile_meadow_purple");
+		AtlasRegion hex_tree_purple = mySprites.findRegion("tile_tree_purple");
+		
+		stringToAtlasRegion.put("hex_grass_purple", hex_grass_purple);
+		stringToAtlasRegion.put("hex_meadow_purple", hex_meadow_purple);
+		stringToAtlasRegion.put("hex_tree_purple", hex_tree_purple);
+		
+		AtlasRegion village_hovel = mySprites.findRegion("village-hovel");
+		AtlasRegion village_town = mySprites.findRegion("village-town");
+		AtlasRegion village_fort = mySprites.findRegion("village-fort");
+		AtlasRegion village_castle = mySprites.findRegion("village-castle");
 		
 		stringToAtlasRegion.put("village_hovel", village_hovel);
 		stringToAtlasRegion.put("village_town", village_town);

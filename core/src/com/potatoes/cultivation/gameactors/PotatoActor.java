@@ -132,7 +132,7 @@ public class PotatoActor extends Actor {
 		}
 		
 		public void testUpgrade() {
-			setAnimation(myAssets.potato_yellow_soldier);
+//			setAnimation(myAssets.potato_yellow_soldier);
 		}
 		
 		public Unit getUnit(){

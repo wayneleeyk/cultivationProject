@@ -16,7 +16,7 @@ import com.potatoes.cultivation.logic.Tile;
 
 public class TileActor extends Group {
 	Tile myTile;
-	Color overlay;
+	String color;
 	
 	LandType myLandtype;
 	StructureType myStructure;
@@ -39,10 +39,10 @@ public class TileActor extends Group {
 		myStructure = t.getStructure();
 		theRound = pRound;
 		if(myTile.getPlayer() != null && myTile.getPlayer().notNull()) {
-			overlay = theRound.playerToColor(myTile.getPlayer());
+			color = theRound.playerToPotatoColor(myTile.getPlayer());
 		}
 		else {
-			overlay = Color.WHITE;
+			color = null;
 		}
 		
 		// Add listener to Tiles
@@ -55,18 +55,16 @@ public class TileActor extends Group {
 	 */
 	public TileActor(ActorAssets a) {
 		myAssets = a;
-		overlay = Color.WHITE;
+		color = null;
 	}
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		batch.setColor(overlay);
 		// Draw the structure
 		
 		// Draw the base
-		batch.draw(myAssets.stringToAtlasRegion.get("hex_" + myLandtype.toString().toLowerCase()),
+		batch.draw(myAssets.stringToAtlasRegion.get("hex_" + myLandtype.toString().toLowerCase() + (color != null? ("_" + color) : "")),
 				getX(), getY());
-		batch.setColor(Color.WHITE);
 		super.draw(batch, parentAlpha);
 	}
 	/*
@@ -96,12 +94,12 @@ public class TileActor extends Group {
 	 * This may be useful for debugging. 
 	 * @param newLand - Can be null to not change it
 	 * @param newStruct - Can be null to not change it
-	 * @param newColor - Can be null to not change it
+	 * @param newColor - Can be null to not change it, if not null, then it's either "yellow", "red" or "purple"
 	 */
-	public void updateTile(LandType newLand, StructureType newStruct, Color newColor) {
+	public void updateTile(LandType newLand, StructureType newStruct, String newColor) {
 		if(newLand != null) myLandtype = newLand;
 		if(newStruct != null) myStructure = newStruct;
-		if(newColor != null) overlay = newColor;
+		if(newColor != null) color = newColor;
 	}
 	/*
 	 * This method refreshes the tile's information
@@ -110,10 +108,10 @@ public class TileActor extends Group {
 		myLandtype = myTile.getLandType();
 		myStructure = myTile.getStructure();
 		if(myTile.getPlayer() != null && myTile.getPlayer().notNull()) {
-			overlay = theRound.playerToColor(myTile.getPlayer());
+			color = theRound.playerToPotatoColor(myTile.getPlayer());
 		}
 		else {
-			overlay = Color.WHITE;
+			color = null;
 		}
 	}
 	

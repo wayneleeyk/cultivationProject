@@ -1,152 +1,215 @@
 
 ingame.png
-size: 1024,512
+size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 grass
   rotate: false
-  xy: 2, 256
+  xy: 312, 799
+  size: 308, 88
+  orig: 308, 88
+  offset: 0, 0
+  index: -1
+grass_purple
+  rotate: false
+  xy: 622, 900
+  size: 308, 88
+  orig: 308, 88
+  offset: 0, 0
+  index: -1
+grass_red
+  rotate: false
+  xy: 2, 597
+  size: 308, 88
+  orig: 308, 88
+  offset: 0, 0
+  index: -1
+grass_yellow
+  rotate: false
+  xy: 312, 709
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
 potato_purple
   rotate: false
-  xy: 622, 365
+  xy: 622, 638
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_infantry
   rotate: false
-  xy: 2, 84
+  xy: 2, 335
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_knight
   rotate: false
-  xy: 434, 275
+  xy: 434, 537
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_soldier
   rotate: false
-  xy: 774, 365
+  xy: 774, 638
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red
   rotate: false
-  xy: 2, 2
+  xy: 2, 253
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_infantry
   rotate: false
-  xy: 154, 84
+  xy: 154, 335
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_knight
   rotate: false
-  xy: 154, 2
+  xy: 2, 171
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_soldier
   rotate: false
-  xy: 434, 193
+  xy: 154, 253
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow
   rotate: false
-  xy: 407, 111
+  xy: 2, 89
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_cannon
   rotate: false
-  xy: 306, 56
+  xy: 932, 898
   size: 90, 90
   orig: 90, 90
   offset: 0, 0
   index: -1
 potato_yellow_infantry
   rotate: false
-  xy: 398, 29
+  xy: 154, 171
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_knight
   rotate: false
-  xy: 622, 283
+  xy: 2, 7
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_yellow_soldier
   rotate: false
-  xy: 774, 283
+  xy: 154, 89
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 tile_meadow
   rotate: false
-  xy: 312, 357
+  xy: 622, 810
+  size: 308, 88
+  orig: 308, 88
+  offset: 0, 0
+  index: -1
+tile_meadow_purple
+  rotate: false
+  xy: 2, 507
+  size: 308, 88
+  orig: 308, 88
+  offset: 0, 0
+  index: -1
+tile_meadow_red
+  rotate: false
+  xy: 312, 619
+  size: 308, 88
+  orig: 308, 88
+  offset: 0, 0
+  index: -1
+tile_meadow_yellow
+  rotate: false
+  xy: 622, 720
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
 tile_sea
   rotate: false
-  xy: 2, 166
+  xy: 2, 417
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
 tile_tree
   rotate: false
-  xy: 2, 346
+  xy: 2, 889
+  size: 308, 99
+  orig: 308, 99
+  offset: 0, 0
+  index: -1
+tile_tree_purple
+  rotate: false
+  xy: 2, 788
+  size: 308, 99
+  orig: 308, 99
+  offset: 0, 0
+  index: -1
+tile_tree_red
+  rotate: false
+  xy: 312, 889
+  size: 308, 99
+  orig: 308, 99
+  offset: 0, 0
+  index: -1
+tile_tree_yellow
+  rotate: false
+  xy: 2, 687
   size: 308, 99
   orig: 308, 99
   offset: 0, 0
   index: -1
 village-castle
   rotate: false
-  xy: 312, 235
+  xy: 312, 497
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: -1
 village-fort
   rotate: false
-  xy: 926, 360
+  xy: 154, 2
   size: 93, 85
   orig: 93, 85
   offset: 0, 0
   index: -1
 village-hovel
   rotate: false
-  xy: 312, 148
+  xy: 312, 410
   size: 93, 85
   orig: 93, 85
   offset: 0, 0
   index: -1
 village-town
   rotate: false
-  xy: 926, 273
+  xy: 306, 323
   size: 93, 85
   orig: 93, 85
   offset: 0, 0
