@@ -63,7 +63,7 @@ public class HUD2 extends Stage {
 		
 		// If the clicked villageActor is yours, open the menu
 		VillageActor targetVillageActor = cm.getVillageActor();
-		if(targetVillageActor != null && targetVillageActor.getVillage().getOwner().equals(currentPlayer)) {
+		if(game.isMyTurn(currentPlayer) && targetVillageActor != null && targetVillageActor.getVillage().getOwner().equals(currentPlayer)) {
 			villageMenu.setVisible(true);
 			villageMenu.setVillageActor(targetVillageActor);
 		}
@@ -81,22 +81,24 @@ public class HUD2 extends Stage {
 
 	private void addGUIStuff() {
 		// Top label
-		Label stats = new Label("", skin, "white"){
+		Label stats = new Label("", skin, "stats"){
 			@Override
 			public void act(float delta) {
 				super.act(delta);
 				if (currentVillage!=null && currentVillage.getType()!=null) {
-					this.setText("Turn :"+ game.turnOf().getUsername() + 
+					this.setText("  Turn :"+ game.turnOf().getUsername() + "  " + 
 								 "Village: " + currentVillage.getType() + ", " + 
 								 "Gold: " + currentVillage.getGold() + ", " + 
 								 "Logs " + currentVillage.getWood());
 				} else {
-					this.setText("Turn :"+ game.turnOf().getUsername());
+					this.setText("  Turn :"+ game.turnOf().getUsername());
 					
 				}
 			}
 		};
-		stats.setPosition(5, height-30); //Hardcode FTW
+		stats.setWidth(width);
+		stats.setHeight(55);
+		stats.setPosition(0, height - 55); //Hardcode FTW
 		this.addActor(stats);
 		
 		/********************* Buttons ******************************************/
@@ -128,6 +130,7 @@ public class HUD2 extends Stage {
 		/******************** MenuGroups ************************/
 		villageMenu = new VillageMenuGroup();
 		this.addActor(villageMenu);
+		villageMenu.toBack();
 	}
 	
 	class VillageMenuGroup extends Group {

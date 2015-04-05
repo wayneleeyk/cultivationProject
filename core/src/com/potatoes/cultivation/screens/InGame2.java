@@ -38,7 +38,7 @@ public class InGame2 extends ScreenAdapter {
 		hud = new HUD2(pGame, cm);
 		world = new GameWorld(aRound, assets, cm);
 		cm.setWorld(world);
-		
+		aRound.setWorld(world);
 		addHandlers();
 	}
 	

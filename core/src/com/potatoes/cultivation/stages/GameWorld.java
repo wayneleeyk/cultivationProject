@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.potatoes.cultivation.gameactors.ActorAssets;
+import com.potatoes.cultivation.gameactors.PotatoActor;
 import com.potatoes.cultivation.gameactors.TileActor;
 import com.potatoes.cultivation.gameactors.VillageActor;
 import com.potatoes.cultivation.helpers.ClickManager;
@@ -21,10 +22,12 @@ public class GameWorld extends Stage {
 	public TileActor[][] tiles;
 	CultivationGame gameRound;
 	ClickManager cm;
+	ActorAssets assets;
 	
-	public GameWorld(CultivationGame aRound, ActorAssets assets, ClickManager aCM) {
+	public GameWorld(CultivationGame aRound, ActorAssets actorAssets, ClickManager aCM) {
 		gameRound = aRound;
 		cm = aCM;
+		assets = actorAssets;
 		GameMap map = aRound.getGameMap();
 		Tile[][] gameMap = map.getMap();
 		int mapWidth = gameMap.length;
@@ -93,5 +96,13 @@ public class GameWorld extends Stage {
 				super.dragStop(event, x, y, pointer);
 			}
 		});
+	}
+
+	public void createPotatoAt(int x, int y) {
+		TileActor tile = tiles[x][y];
+		Tile t = tile.getTile();
+		PotatoActor p = new PotatoActor(t.getUnit(), assets, gameRound.playerToPotatoColor(t.getPlayer()), cm);
+		tile.addActor(p);
+		p.setPosition(80, 30);
 	}
 }

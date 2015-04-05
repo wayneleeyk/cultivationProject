@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.Color;
+import com.potatoes.cultivation.stages.GameWorld;
 
 public class CultivationGame implements Serializable {
 	private static final long serialVersionUID = -4015259598754971722L;
@@ -15,6 +16,7 @@ public class CultivationGame implements Serializable {
 	private List<Player> players;
 	private List<ColorEnum> colors;
 	private GameMap map;
+	private GameWorld world;
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
@@ -29,6 +31,14 @@ public class CultivationGame implements Serializable {
 		colors.add(ColorEnum.YELLOW);
 	}
 
+	public void setWorld(GameWorld pWorld) {
+		world = pWorld;
+	}
+	
+	public GameWorld getWorld() {
+		return world;
+	}
+	
 	public List<Player> getPlayers() {
 		List<Player> players = new LinkedList<Player>(this.players);
 		return players;

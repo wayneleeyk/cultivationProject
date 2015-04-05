@@ -35,6 +35,7 @@ public class VillageActor extends Actor {
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		refreshVillage();
 		batch.draw(myAssets.stringToAtlasRegion.get("village_" + myType.toString().toLowerCase()), 
 				getX(), getY());
 		super.draw(batch, parentAlpha);

@@ -28,10 +28,10 @@ public class PotatoActor extends Actor {
 		/**
 		 * @param u - Unit
 		 * @param a - ActorAssets
-		 * @param c, either "yellow", "purple" or "red", or defaults to "yellow"
+		 * @param c -  either "yellow", "purple" or "red", or defaults to "yellow"
+		 * @param cm - Clickmanager
 		 */
 		public PotatoActor(Unit u, ActorAssets a, String c, final ClickManager cm) {
-			super();
 			gameUnit = u;
 			myAssets = a;
 			

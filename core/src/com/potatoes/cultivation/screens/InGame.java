@@ -99,7 +99,7 @@ public class InGame extends ScreenAdapter {
 
 		// load map
 		Tile[][] map = gameMap.getMap();
-		game.GAMEMANAGER.getGameMap().setTGMap(tileGroups);
+//		game.GAMEMANAGER.getGameMap().setTGMap(tileGroups);
 
 		int originX = hex_grass.getRegionWidth() / 2, originY = hex_grass
 				.getRegionHeight() / 2;

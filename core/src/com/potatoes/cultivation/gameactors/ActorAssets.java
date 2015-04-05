@@ -33,6 +33,7 @@ public class ActorAssets {
 	public AtlasRegion village_hovel;
 	public AtlasRegion village_town;
 	public AtlasRegion village_fort;
+	public AtlasRegion village_castle;
 	
 	public HashMap<String, Animation> stringToAnimation;
 	public HashMap<String, AtlasRegion> stringToAtlasRegion;
@@ -80,6 +81,7 @@ public class ActorAssets {
 		village_hovel = mySprites.findRegion("village-hovel");
 		village_town = mySprites.findRegion("village-town");
 		village_fort = mySprites.findRegion("village-fort");
+		village_castle = mySprites.findRegion("village-castle");
 		
 		stringToAtlasRegion.put("hex_grass", hex_grass);
 		stringToAtlasRegion.put("hex_sea", hex_sea);
@@ -89,6 +91,7 @@ public class ActorAssets {
 		stringToAtlasRegion.put("village_hovel", village_hovel);
 		stringToAtlasRegion.put("village_town", village_town);
 		stringToAtlasRegion.put("village_fort", village_fort);
+		stringToAtlasRegion.put("village_castle", village_castle);
 	}
 	
 	public static Animation newAnimation(TextureRegion sprite, int row, int col, float frameDuration) {
