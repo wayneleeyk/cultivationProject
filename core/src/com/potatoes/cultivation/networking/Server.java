@@ -95,13 +95,18 @@ public class Server implements Runnable{
 				e.printStackTrace();
 			}
 		}		
+		System.out.println(""+this.savedGames);
 	}
 	
 	public void load(List<Player> players) {
+		System.out.println("Loading game for players "+ players);
 		if(players.size() <= 0) return ;
 		Player one = players.get(0);
-		for (CultivationGame game : this.savedGames.get(one)) {
+		List<CultivationGame> savedGames = this.savedGames.get(one.getUsername());
+		for (CultivationGame game : (savedGames==null)?new LinkedList<CultivationGame>():savedGames) {
+			System.out.println("This saved game has players "+game.getPlayers());
 			if(game.getPlayers().containsAll(players)){
+				System.out.println("Found game, loading data");
 				GameDataProtocol gameData = new GameDataProtocol(null, game);
 				for (Player player : players) {
 					User user = usernameToUser.get(player.getUsername());

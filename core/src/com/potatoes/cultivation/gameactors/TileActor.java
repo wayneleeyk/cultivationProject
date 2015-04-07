@@ -1,13 +1,9 @@
 package com.potatoes.cultivation.gameactors;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.LandType;
@@ -60,6 +56,7 @@ public class TileActor extends Group {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
+		refreshTile();
 		// Draw the structure
 		
 		// Draw the base

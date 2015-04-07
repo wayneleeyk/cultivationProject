@@ -1,22 +1,32 @@
 package com.potatoes.cultivation.stages;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.gameactors.PotatoActor;
+import com.potatoes.cultivation.gameactors.TileActor;
 import com.potatoes.cultivation.gameactors.VillageActor;
 import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
+import com.potatoes.cultivation.logic.GameAction.MoveUnitAction;
+import com.potatoes.cultivation.logic.GameMap;
+import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
+import com.potatoes.cultivation.logic.GameMap.MapDirections;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
@@ -37,6 +47,8 @@ public class HUD2 extends Stage {
 	TextButton endTurn;
 	VillageMenuGroup villageMenu;
 	PotatoMenuGroup potatoMenu;
+	
+	TileActor previouslySelectedTile;
 	
 	public HUD2(Cultivation app, ClickManager cm) {
 		this.gameApp = app;
@@ -90,6 +102,14 @@ public class HUD2 extends Stage {
 			endTurn.setVisible(false);
 		} else {
 			endTurn.setVisible(true);
+		}
+		
+		/**********************************************************************/
+		
+		if(previouslySelectedTile != cm.getTileActor() && cm.getTileActor()!=null) {
+			Tile tile = cm.getTileActor().getTile();
+			System.out.println("Clicked on "+tile + " owner:" + tile.owner+" occupant:"+tile.occupant);
+			previouslySelectedTile = cm.getTileActor();
 		}
 	}
 
@@ -227,8 +247,33 @@ public class HUD2 extends Stage {
 			upgradePotato = new TextButton("Upgrade Potato", skin, "default");
 			buildRoad = new TextButton("Build Road", skin, "default");
 			
+			final PotatoMenuGroup menu = this;
+			for (MapDirections direction : MapDirections.values()) {
+				final MapDirections thatWay = direction;
+				TextButton button = new TextButton(direction.name(), skin);
+				button.addListener(new ClickListener(){
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						super.clicked(event, x, y);
+						System.out.println(thatWay.name() + " clicked");
+						Tile tile = menu.myPotato.getUnit().getTile();
+						GameMap.MapCoordinates destination = new MapCoordinates(tile.x, tile.y).go(thatWay);
+						System.out.println("Moving from "+tile.x +" "+tile.y+" to "+ destination.getTile(game.getGameMap()).x+" "+destination.getTile(game.getGameMap()).y);
+						System.out.println("From a "+tile+" to "+destination.getTile(game.getGameMap()));
+						GameAction.MoveUnitAction moveAction = new MoveUnitAction(tile, destination.getTile(game.getGameMap()));
+						gameApp.client.sendActions(moveAction);
+					}
+				});
+				button.setY(45*direction.ordinal());
+				button.setX(-100);
+				topLevel.addActor(button);
+			}
+			
+			
 			topLevel.addActor(upgradePotato);
 			topLevel.addActor(buildRoad);
+			
+			
 			
 			float buttonHeight = upgradePotato.getHeight();
 			
@@ -322,6 +367,10 @@ public class HUD2 extends Stage {
 			if(visible) {
 				topLevel.setVisible(true);
 				upgrades.setVisible(false);
+				infantry.setDisabled(false);
+				soldier.setDisabled(false);
+				knight.setDisabled(false);
+				upgradePotato.setDisabled(false);
 			}
 		}
 

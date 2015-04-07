@@ -133,19 +133,23 @@ public class GameMap implements Serializable {
 			this.iShift = iShift;
 			this.jShift = jShift;
 		}
+		
 	}
 
 	public Set<Tile> getNeighbouringTiles(Tile t) {
 		MapCoordinates tileLocation = getCoordinates(t);
 		Set<Tile> neighbours = new HashSet<>();
 		for (MapDirections direction : MapDirections.values()) {
-			Tile tile = tileLocation.go(direction).getTile();
-			if (tile != null) neighbours.add(tile);
+			Tile tile = tileLocation.go(direction).getTile(this);
+			if (tile != null) {
+				neighbours.add(tile);
+//				System.out.println("Looking at direction "+ direction+" got tile "+tile.x+" "+tile.y);
+			}
 		}
 		return neighbours;
 	}
 
-	public class MapCoordinates {
+	public static class MapCoordinates {
 		int i, j;
 
 		public MapCoordinates(int i, int j) {
@@ -158,8 +162,8 @@ public class GameMap implements Serializable {
 					+ direction.jShift);
 		}
 		
-		public Tile getTile(){
-			if(i > 0 && i < map.length && j > 0 && j<map[0].length) return map[i][j];
+		public Tile getTile(GameMap gameMap){
+			if(i > 0 && i < gameMap.map.length && j > 0 && j<gameMap.map[0].length) return gameMap.map[i][j];
 			return null;
 		}
 	}
@@ -175,15 +179,15 @@ public class GameMap implements Serializable {
 	}
 
 	public Set<Village> getMyVillagesOfAdjacentTiles(Set<Tile> tiles, Player p) {
-		Queue<Tile> qTiles = new LinkedList<Tile>();
-		for (Tile t : tiles) {
-			qTiles.add(t);
+		if(tiles.size() > 0){
+			Iterator<Tile> it = tiles.iterator();
+			Tile tile = it.next();
+			it.remove();
+			Set<Village> villages = getMyVillagesOfAdjacentTiles(tiles, p);
+			if (tile.getPlayer()!=null && tile.getPlayer().equals(p)) villages.add(getRegion(tile).getVillage());
+			return villages;
 		}
-		Tile t = qTiles.poll();
-		Set<Village> villages = getMyVillagesOfAdjacentTiles(tiles, p);
-		if (t.getPlayer().equals(p))
-			villages.add(getRegion(t).getVillage());
-		return villages;
+		return new HashSet<Village>();
 	}
 
 	public int getRegionCount(Player p) {
@@ -215,6 +219,7 @@ public class GameMap implements Serializable {
 	}
 
 	public Village biggestOf(Collection<Village> villages) {
+		if(villages.size() == 1) return villages.iterator().next();
 		Village v1 = pop(villages);
 		Village v2 = biggestOf(villages);
 		if (v1.compareTo(v2) > 0)
@@ -268,14 +273,8 @@ public class GameMap implements Serializable {
 						Village r_village = r.getVillage();
 						if(r_village == null){
 							Set<Tile> newTiles = r.getTiles();
-							
-							
 					}
 				
-				
-				
-					
-					
 				}
 			}
 			
@@ -336,7 +335,7 @@ public class GameMap implements Serializable {
 	}
 
 	public void mergeTo(Village v, Stack<Village> villages) {
-		mergeTo(villages.pop().merge(v), villages);
+		if(!villages.empty()) mergeTo(villages.pop().merge(v), villages);
 	}
 
 	private Set<Tile> getMapTiles() {

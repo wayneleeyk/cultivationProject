@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 
@@ -11,7 +12,7 @@ public class Tile implements Serializable{
 	private LandType myType = LandType.Grass;
 	private StructureType structure = StructureType.None;
 	public Unit occupant = null;
-	private Player owner = null;
+	public Player owner = null;
 	public final int x;
 	public final int y;
 	
@@ -57,8 +58,6 @@ public class Tile implements Serializable{
 		return occupant;
 	}
 
-	//Checks if Unit u can invade this tile
-	//NOTE: I added a check if the invader unit (u) can defeat the unit on the tile (if any). This seems missing in the sequence diagram..
 	public boolean canInvade(Unit u){
 		boolean invadable = true;
 		if (getRegion()!=null && getVillage()!=null) {
@@ -72,12 +71,20 @@ public class Tile implements Serializable{
 		}		
 		if (invadable && occupant !=null) {
 			//Check if unit on this tile can be invaded by the invader unit u
+			System.out.println("Check if unit on this tile can be invaded");
 			invadable = this.occupant.getType().canInvadeBy(u.getType());
 		} else if (invadable && occupant==null) {
 			//Check neighbouring tiles to see if an enemy exists
+			System.out.println("Checking if neighbouring tiles has higher level enemy");
 			Set<Tile> neighbourTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(this);
+			Iterator<Tile> it = neighbourTiles.iterator();
+			while(it.hasNext()){
+				Tile next = it.next();
+				if(next.owner!=null && next.owner.equals(u.myVillage.getOwner())) it.remove();
+			}
 			for (Tile tile : neighbourTiles) {
 				if (tile.getUnit()!=null) {
+					System.out.println("Tile "+tile+" has a unit! " + tile.occupant + " " + u);
 					invadable = invadable && tile.getUnit().getType().canInvadeBy(u.getType());
 					//Check if neighbouring tile has a tower, if so, any invader Unit that is infantry cannot invade
 					if (invadable && tile.getStructure() == StructureType.Watchtower && u.getType() == UnitType.Infantry) {
@@ -86,71 +93,63 @@ public class Tile implements Serializable{
 				}
 			}
 		}
+		System.out.println("This tile is invadable "+invadable);
 		return invadable;
 	}
-	/*
-	 * Questions or mistakes? --> Monica
-	 * Unit u is the unit that tries to go on this tile
-	 */
+
 	public boolean tryInvade(Unit u){
 		boolean moved = false;
 		Tile tileOfUnit = u.getTile();
 		Set<Tile> neighbouringTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(tileOfUnit);
+		System.out.println("Tiles neighbouring unit "+ neighbouringTiles);
 		if (neighbouringTiles.contains(this)) { //We only enter this if Unit u is one tile away from this tile
+			System.out.println("Trying to move to neighbouring tile " + this + " , this belongs to "+ this.owner + " whereas unit belongs to "+ u.getVillage().getOwner());
 			if (UnitType.Knight.equals(u) && (structure==StructureType.Tombstone || myType == LandType.Tree)) {
-				//If invader is knight, he cannot invade tile that contains tomb stone nor tree
+				System.out.println("Knight cannot move into "+this.structure.name());
 			}
 			else if(UnitType.Cannon.equals(u) && owner == tileOfUnit.getPlayer()){
 				moved = true;
 				u.updateTileLocation(this);
+				
 			}
 			else if (myType!= LandType.Sea && (owner == tileOfUnit.getPlayer() || this.canInvade(u))) {
-				//Enter here if unit can be moved onto this tile
+				System.out.println("Moving to destination");
 				moved = true;
 				u.updateTileLocation(this);
 				//If there is already an occupant on this tile, destroy it
 				if (occupant!=null) {
-					System.out.println("There is not occupant at destination");
+					System.out.println("There is no occupant at destination");
 					Region victimsRegion = this.occupant.getTile().getRegion();
-					//Remove this tile from victim's region since it got invaded
 					victimsRegion.removeTile(this);
-					//Remove victim unit from region
 					victimsRegion.killUnit(this.occupant);
-					//Add this tile to the invader's region
 					tileOfUnit.getRegion().addTile(this);
-					//Update occupant to the invader unit
 					this.occupant = u;
-					//Note: we don't change the ownership of the tile yet because we need it in takeoverTile
 				}
 				//Handle village invasion, splitting/merging regions in takeoverTile
-				if (owner!=null) {
-					Cultivation.GAMEMANAGER.getGameMap().takeOverTile(this);
-				}
+//				if (owner!=null) {
+//					Cultivation.GAMEMANAGER.getGameMap().takeOverTile(this);
+//				}
 				//If there is a tree on this tile, cut it down
 				if (myType == LandType.Tree) {
 					System.out.println("There is a tree at destination");
-					//Change landtype to grass
 					myType = LandType.Grass;
-					//Update wood stats of village
-					this.getVillage().addWood(1);
-					//Update unit's action to cutting wood
+					u.myVillage.addWood(1);
 					u.updateAction(ActionType.ChoppingTree);
 				}
-				//If there is a tomb stone on tile, clear it
 				if (structure == StructureType.Tombstone) {
-					//Set unit's action to clearing tomb stone
+					System.out.println("There is a tombstone at destination");
 					u.updateAction(ActionType.ClearingTombStone);
-					//Destroy tomb stone
 					structure = StructureType.None;
 				}
-				//If unit is Knight and there is a meadow and no road, he tramples the meadow 
 				if (structure!=StructureType.Road && u.getType()==UnitType.Knight && myType==LandType.Meadow) {
+					System.out.println("Knight has destroyed a meadow");
 					myType = LandType.Grass;
 				}
-				//Merge part 
+				
 				Set<Village> myNeighbouringVillages = Cultivation.GAMEMANAGER.getGameMap().getMyVillagesOfAdjacentTiles(neighbouringTiles, owner);
 				//Convert to stack for mergeTo method
 				if (myNeighbouringVillages.size()>=1) {
+					System.out.println("Merging neighbouring "+neighbouringTiles.size()+" tiles");
 					Village biggestVillage = Cultivation.GAMEMANAGER.getGameMap().biggestOf(myNeighbouringVillages);
 					Stack<Village> stackOfVillages = new Stack<Village>();
 					for (Village v : myNeighbouringVillages) {
@@ -160,6 +159,7 @@ public class Tile implements Serializable{
 				}
 			}
 		}
+		System.out.println("Unit has moved : "+ moved);
 		return moved;
 	}
 	
@@ -174,8 +174,9 @@ public class Tile implements Serializable{
 		}
 		return null;
 	}
-	@Override public String toString() {
-		return myType.toString();
+	@Override 
+	public String toString() {
+		return myType.toString() + "("+this.x+","+this.y+")";
 	}
 	/**
 	 * 
@@ -191,6 +192,4 @@ public class Tile implements Serializable{
 		return false;
 	}
 
-	
-	
 }

@@ -53,8 +53,10 @@ public class Unit implements Serializable{
 	}
 
 	public void updateTileLocation(Tile t){
+		myTile.occupant = null;
 		myTile = t;
 		t.occupant = this;
+		t.owner = t.occupant.myVillage.getOwner();
 	}
 
 	@Override

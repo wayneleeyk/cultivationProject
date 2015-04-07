@@ -1,31 +1,21 @@
 package com.potatoes.cultivation.screens;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
-import com.potatoes.cultivation.logic.GameManager;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.networking.GameDataProtocol;
 import com.potatoes.cultivation.networking.GetARoomProtocol;
@@ -93,6 +83,22 @@ public class GameRoom extends ScreenAdapter {
 			}
 		});
 		table.add(start).width(200).expand().center();
+		
+		TextButton load = new TextButton("Load Game!", skin, "default");
+		load.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				System.out.println("Pressed Load");
+				System.out.println("Loaded game");
+				List<Player> players = new LinkedList<>();
+				players.addAll(playersInRoom);
+				game.client.load(players);
+				System.out.println("Players in room :"+players);
+				
+				System.out.println("sent request");
+			}
+		});
+		table.add(load).width(200).expand().center();
 		
 		table.setDebug(true);
 		

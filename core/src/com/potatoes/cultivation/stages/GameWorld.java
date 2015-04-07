@@ -112,4 +112,10 @@ public class GameWorld extends Stage {
 		PotatoActor p = tile.findActor("PotatoActor");
 		p.upgradePotato(uType);
 	}
+	
+	public void movePotato(int fromX, int fromY, int toX, int toY){
+		TileActor tileActor = tiles[fromX][fromY];
+		PotatoActor potato = tileActor.findActor("PotatoActor");
+		potato.testMove2(tiles[toX][toY]);
+	}
 }

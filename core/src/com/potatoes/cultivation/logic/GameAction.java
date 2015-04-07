@@ -52,24 +52,10 @@ public interface GameAction extends Serializable {
 		}
 		@Override
 		public void execute(CultivationGame game) {
-//			game.moveUnit(unit, target);
-//			Tile unit = game.getGameMap().getMap()[unitTile.x][unitTile.y];
-//			Tile dest = game.getGameMap().getMap()[target.x][target.y];
-//			
-//			if(unit == null || dest == null || unit.getUnit() == null) return;
-//			
-//			unit.getUnit().myTile = dest;
-//			dest.setUnit(unit.getUnit());
-//			
-//			if(dest.getLandType() == LandType.Tree) {
-//				dest.updateLandType(LandType.Grass);
-//				unit.occupant.getVillage().addWood(1);
-//			}
-//			
-//			// Graphics part
-//			TileGroup[][] tgmap = game.getGameMap().getTGMap();
-//			tgmap[dest.x][dest.y].setUnit(tgmap[unit.x][unit.y].getUnit());
-//			tgmap[dest.x][dest.y].getTileImage().setColor(new Color(1, 0, 0, 0.99f));
+			Unit unit = game.getGameMap().getMap()[unitTile.x][unitTile.y].occupant;
+			if(game.moveUnit(unit, game.getGameMap().getMap()[target.x][target.y])){
+				game.getWorld().movePotato(unitTile.x, unitTile.y, target.x, target.y);
+			}
 		}
 	}
 	
