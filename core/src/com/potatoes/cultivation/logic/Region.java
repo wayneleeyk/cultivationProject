@@ -3,6 +3,7 @@ package com.potatoes.cultivation.logic;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import com.potatoes.cultivation.Cultivation;
@@ -62,15 +63,23 @@ public class Region implements Serializable{
 	}
 	
 	public void merge(Region r){
-		//Add all units from Region r to our set of units
-		for (Unit u : r.getUnits()) {
-			this.myUnits.add(u);
+		System.out.println("Merging region");
+		Iterator<Unit> uit = r.myUnits.iterator();
+		Iterator<Tile> tit = r.myTiles.iterator();
+		System.out.println(r.myUnits.size() + " tile size:"+ r.myTiles.size());
+		while(uit.hasNext()){
+			Unit unit = uit.next();
+			this.myUnits.add(unit);
+			System.out.println("units village in merge region (before)" +unit.myVillage);
+			unit.myVillage = this.village;
+			System.out.println("units village in merge region (after)" +unit.myVillage);
+			uit.remove();
 		}
-		//Add all tiles from Region r to our set of tiles
-		for (Tile t : r.getTiles()) {
-			this.myTiles.add(t);
+		while(tit.hasNext()){
+			Tile tile = tit.next();
+			this.myTiles.add(tile);
+			tit.remove();
 		}
-		//Delete Region r
 		Cultivation.GAMEMANAGER.getGameMap().deleteRegion(r);
 	}
 

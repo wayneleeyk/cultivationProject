@@ -79,14 +79,14 @@ public class GameMap implements Serializable {
 	}
 
 	public Region getRegion(Tile t) {
-		Set<Region> r = regions.get(t.getPlayer());
-		if (r != null) {
-			for (Region region : r) {
+		Set<Region> regionSet = regions.get(t.getPlayer());
+		if (regionSet != null) {
+			for (Region region : regionSet) {
 				if (region.getTiles().contains(t))
 					return region;
 			}
 		}
-		return Region.NO_REGION;
+		return null;
 	}
 
 	public Set<Tile> getTombstoneTiles(Player p) {
@@ -105,8 +105,15 @@ public class GameMap implements Serializable {
 
 	}
 
-	public void deleteRegion(Region r) {
-
+	public void deleteRegion(Region region) {
+		for (Player p : this.regions.keySet()) {
+			if(this.regions.get(p).contains(region)) {
+				Set<Region> regionSet = this.regions.get(p);
+				regionSet.remove(region);
+				region.getTiles().clear();
+				region.getUnits().clear();
+			}
+		}
 	}
 
 	public Set<Region> getRegions(Player p) {
@@ -205,11 +212,12 @@ public class GameMap implements Serializable {
 
 	public Set<Village> getMyVillagesOfAdjacentTiles(Set<Tile> tiles, Player p) {
 		if(tiles.size() > 0){
-			Iterator<Tile> it = tiles.iterator();
-			Tile tile = it.next();
-			it.remove();
+			Tile tile = pop(tiles);
 			Set<Village> villages = getMyVillagesOfAdjacentTiles(tiles, p);
-			if (tile.getPlayer()!=null && tile.getPlayer().equals(p)) villages.add(getRegion(tile).getVillage());
+			if (tile.getPlayer()!=null && tile.getPlayer().equals(p)) {
+				villages.add(getRegion(tile).getVillage());
+			}
+				
 			return villages;
 		}
 		return new HashSet<Village>();
@@ -263,8 +271,11 @@ public class GameMap implements Serializable {
 
 	public Village biggestOf(Collection<Village> villages) {
 		if(villages.size() == 1) return villages.iterator().next();
+		System.out.println("before :" + villages.size());
 		Village v1 = pop(villages);
+		System.out.println("after :" + villages.size());
 		Village v2 = biggestOf(villages);
+		System.out.println("Merging "+v1+" "+v2);
 		if (v1.compareTo(v2) > 0)
 			return v1;
 		else

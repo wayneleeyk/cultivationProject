@@ -81,11 +81,18 @@ public class Village implements Comparable<Village>, Serializable {
 	
 	//Merges the smaller village to the larger village
 	public Village merge(Village v){
+		if(v.equals(this)) return this;
 		if (this.compareTo(v)>0) {
 			(this.myRegion).merge(v.getRegion());
+			v.myRegion = null;
+			this.gold += v.gold;
+			this.wood += v.wood;
 			return this;
 		} else {
 			(v.getRegion()).merge(this.myRegion);
+			this.myRegion = null;
+			v.gold += this.gold;
+			v.wood += this.wood;
 			return v;
 		}
 	}

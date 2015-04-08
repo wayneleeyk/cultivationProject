@@ -27,6 +27,7 @@ public class VillageActor extends Actor {
 	}
 	
 	public void refreshVillage() {
+		if(this.myVillage.getRegion() == null) this.remove();
 		myType = myVillage.getType();
 		AtlasRegion region = myAssets.stringToAtlasRegion.get("village_" + myType.toString().toLowerCase());
 		setWidth(region.getRegionWidth());

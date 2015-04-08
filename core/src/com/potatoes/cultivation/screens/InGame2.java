@@ -36,9 +36,9 @@ public class InGame2 extends ScreenAdapter {
 		ClickManager cm = new ClickManager();		
 //		hud = new HUD(pGame, null, pGameRound.getGameMap(), pGame.player, cm);\
 		hud = new HUD2(pGame, cm);
-		world = new GameWorld(aRound, assets, cm);
-		cm.setWorld(world);
+		world = new GameWorld(aRound, assets, cm);	
 		aRound.setWorld(world);
+		cm.setWorld(world);
 		addHandlers();
 	}
 	

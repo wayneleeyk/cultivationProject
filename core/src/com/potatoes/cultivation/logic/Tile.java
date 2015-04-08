@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
@@ -110,21 +111,23 @@ public class Tile implements Serializable{
 			else if(UnitType.Cannon.equals(u) && owner == tileOfUnit.getPlayer()){
 				moved = true;
 				u.updateTileLocation(this);
-				
 			}
 			else if (myType!= LandType.Sea && (owner == tileOfUnit.getPlayer() || this.canInvade(u))) {
 				System.out.println("Moving to destination");
-				moved = true;
-				u.updateTileLocation(this);
-				//If there is already an occupant on this tile, destroy it
+				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage());
 				if (occupant!=null) {
-					System.out.println("There is no occupant at destination");
-					Region victimsRegion = this.occupant.getTile().getRegion();
-					victimsRegion.removeTile(this);
-					victimsRegion.killUnit(this.occupant);
-					tileOfUnit.getRegion().addTile(this);
-					this.occupant = u;
+					System.out.println("There is an occupant at destination");
+//					Region victimsRegion = this.occupant.getTile().getRegion();
+//					victimsRegion.removeTile(this);
+//					victimsRegion.killUnit(this.occupant);
+//					tileOfUnit.getRegion().addTile(this);
+//					this.occupant = u;
 				}
+				moved = true;
+				Region oldRegion = u.myVillage.getRegion();
+				System.out.println("Old region is "+oldRegion);
+				u.updateTileLocation(this);
+				
 				//Handle village invasion, splitting/merging regions in takeoverTile
 //				if (owner!=null) {
 //					Cultivation.GAMEMANAGER.getGameMap().takeOverTile(this);
@@ -145,18 +148,32 @@ public class Tile implements Serializable{
 					System.out.println("Knight has destroyed a meadow");
 					myType = LandType.Grass;
 				}
+				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage());
+
+				Set<Tile> tilesNeighbouringDestination = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(this);
+				System.out.println("Neighbouring tiles "+tilesNeighbouringDestination);
+				Set<Village> myNeighbouringVillages = Cultivation.GAMEMANAGER.getGameMap().getMyVillagesOfAdjacentTiles(tilesNeighbouringDestination, this.owner);
+				System.out.println("Neighbouring villages " +myNeighbouringVillages);
 				
-				Set<Village> myNeighbouringVillages = Cultivation.GAMEMANAGER.getGameMap().getMyVillagesOfAdjacentTiles(neighbouringTiles, owner);
 				//Convert to stack for mergeTo method
-				if (myNeighbouringVillages.size()>=1) {
-					System.out.println("Merging neighbouring "+neighbouringTiles.size()+" tiles");
-					Village biggestVillage = Cultivation.GAMEMANAGER.getGameMap().biggestOf(myNeighbouringVillages);
+				if (myNeighbouringVillages.size()>1) {
+					System.out.println("Merging neighbouring "+myNeighbouringVillages.size()+" villages");
+					Village biggestVillage = Cultivation.GAMEMANAGER.getGameMap().biggestOf(new HashSet<>(myNeighbouringVillages));
+					System.out.println("Biggest village is "+biggestVillage);
 					Stack<Village> stackOfVillages = new Stack<Village>();
 					for (Village v : myNeighbouringVillages) {
+						System.out.println(v+" has gold "+v.getGold());
 						stackOfVillages.push(v);
 					}
+					System.out.println("Biggest before "+ biggestVillage.getGold());
 					Cultivation.GAMEMANAGER.getGameMap().mergeTo(biggestVillage, stackOfVillages);
+					System.out.println("Biggest after "+ biggestVillage.getGold());
+					biggestVillage.getRegion().addTile(this);
 				}
+				else{
+					oldRegion.addTile(this);
+				}
+				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage() + " region:"+this.getRegion());
 			}
 		}
 		System.out.println("Unit has moved : "+ moved);
@@ -169,7 +186,7 @@ public class Tile implements Serializable{
 	
 	public Village getVillage(){
 		Region region = Cultivation.GAMEMANAGER.getGameMap().getRegion(this);
-		if (region!=Region.NO_REGION) {
+		if (region!=null) {
 			return region.getVillage();
 		}
 		return null;

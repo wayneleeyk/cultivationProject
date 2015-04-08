@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-public class ActorAssets {
+public class ActorAssets  {
 	TextureAtlas mySprites;
 	
 	public HashMap<String, Animation> stringToAnimation;

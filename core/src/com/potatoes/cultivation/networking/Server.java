@@ -84,6 +84,7 @@ public class Server implements Runnable{
 		if(!loadDirectory.exists()) loadDirectory.mkdirs();
 		for (File file : loadDirectory.listFiles()) {
 			try {
+				System.out.println("Loading "+file+" to memory");
 				ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
 				CultivationGame game = (CultivationGame) ois.readObject();
 				for (Player player : game.getPlayers()) {
@@ -103,15 +104,18 @@ public class Server implements Runnable{
 		if(players.size() <= 0) return ;
 		Player one = players.get(0);
 		List<CultivationGame> savedGames = this.savedGames.get(one.getUsername());
+		GameDataProtocol gameData = null;
 		for (CultivationGame game : (savedGames==null)?new LinkedList<CultivationGame>():savedGames) {
 			System.out.println("This saved game has players "+game.getPlayers());
 			if(game.getPlayers().containsAll(players)){
 				System.out.println("Found game, loading data");
-				GameDataProtocol gameData = new GameDataProtocol(null, game);
-				for (Player player : players) {
-					User user = usernameToUser.get(player.getUsername());
-					queue.add(new ServerTask(user.oos, gameData));
-				}
+				gameData = new GameDataProtocol(null, game);
+			}
+		}
+		if (gameData!=null){
+			for (Player player : players) {
+				User user = usernameToUser.get(player.getUsername());
+				queue.add(new ServerTask(user.oos, gameData));
 			}
 		}
 	}

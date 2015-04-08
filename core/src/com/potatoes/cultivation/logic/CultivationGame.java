@@ -1,13 +1,11 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import com.badlogic.gdx.graphics.Color;
 import com.potatoes.cultivation.stages.GameWorld;
 
 public class CultivationGame implements Serializable {
@@ -15,7 +13,7 @@ public class CultivationGame implements Serializable {
 	private int roundsPlayed;
 	private List<Player> players;
 	private GameMap map;
-	private GameWorld world;
+	transient private GameWorld world;
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
@@ -253,9 +251,11 @@ public class CultivationGame implements Serializable {
 	
 	//
 	public void hireVillager(Tile t) {
-		t.setUnit(new Unit(t));
+		Unit unit = new Unit(t);
+		t.setUnit(unit);
 		//Subtract gold
-		t.getVillage().removeGold(10);		
+		t.getVillage().removeGold(10);	
+		t.getVillage().getRegion().getUnits().add(unit);
 	}
 
 	

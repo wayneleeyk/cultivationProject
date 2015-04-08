@@ -1,5 +1,7 @@
 package com.potatoes.cultivation.stages;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,7 +23,7 @@ import com.potatoes.cultivation.logic.GameMap.MapDirections;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
 
-public class GameWorld extends Stage {
+public class GameWorld extends Stage{
 	public TileActor[][] tiles;
 	CultivationGame gameRound;
 	ClickManager cm;
@@ -46,11 +48,18 @@ public class GameWorld extends Stage {
 				final TileActor newTile = new TileActor(t, assets, aRound, cm);
 				newTile.setPosition(i * tileWidth * 0.75f + 150, i * tileHeight/2 + (j * tileHeight));
 				
-				if(gameMap[i][j].containsVillage()) {
+				if(t.containsVillage()) {
 					final VillageActor village = new VillageActor(t.getVillage(), assets, cm);
 					newTile.addActor(village);
 					village.setPosition(150, 30);
 				}
+				
+				if(t.occupant != null) {
+					final PotatoActor potato = new PotatoActor(t.occupant, assets, aRound.playerToPotatoColor(t.getPlayer()), cm);
+					newTile.addActor(potato);
+					potato.setPosition(80, 30);
+				}
+				
 				tiles[i][j] = newTile;
 			}
 		}
@@ -64,6 +73,14 @@ public class GameWorld extends Stage {
 		
 		// Add dragcontrols
 		addDragControls();
+	}
+	
+	public void setCM(ClickManager cm) {
+		this.cm = cm;
+	}
+	
+	public void setAssetManager(ActorAssets a) {
+		this.assets = a;
 	}
 	
 	private void addDragControls() {

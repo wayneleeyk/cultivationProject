@@ -1,5 +1,7 @@
 package com.potatoes.cultivation.gameactors;
 
+import java.io.Serializable;
+
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -10,7 +12,8 @@ import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.StructureType;
 import com.potatoes.cultivation.logic.Tile;
 
-public class TileActor extends Group {
+public class TileActor extends Group implements Serializable{
+	private static final long serialVersionUID = 1058213324683113124L;
 	Tile myTile;
 	String color;
 	
