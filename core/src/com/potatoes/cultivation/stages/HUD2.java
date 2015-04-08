@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -345,11 +346,43 @@ public class HUD2 extends Stage {
 			upgrades.setVisible(false);
 			
 			/*********** Second level Group - Direction Menu**********/
+			int horizontalOffset = 120;
+			int verticalOffset = 40;
+			
 			directionMenu = new Group();
 			
 			for (MapDirections direction : MapDirections.values()) {
 				final MapDirections thatWay = direction;
-				TextButton button = new TextButton(direction.name(), skin);
+				Button button = null;
+				if(direction.equals(MapDirections.Up)) {
+					button = new Button(skin, "arrow-up");
+					button.setY(verticalOffset + 20);
+				}
+				if(direction.equals(MapDirections.Down)) {
+					button = new Button(skin, "arrow-down");
+					button.setY(-verticalOffset - 20);
+				}
+				if(direction.equals(MapDirections.LeftUp)) {
+					button = new Button(skin, "arrow-leftUp");
+					button.setY(verticalOffset);
+					button.setX(-horizontalOffset);
+				}
+				if(direction.equals(MapDirections.LeftDown)) {
+					button = new Button(skin, "arrow-leftDown");
+					button.setY(-verticalOffset);
+					button.setX(-horizontalOffset);
+				}
+				if(direction.equals(MapDirections.RightUp)) {
+					button = new Button(skin, "arrow-rightUp");
+					button.setY(verticalOffset);
+					button.setX(horizontalOffset);
+				}
+				if(direction.equals(MapDirections.RightDown)) {
+					button = new Button(skin, "arrow-rightDown");
+					button.setY(-verticalOffset);
+					button.setX(horizontalOffset);
+				}
+				
 				button.addListener(new ClickListener(){
 					@Override
 					public void clicked(InputEvent event, float x, float y) {
@@ -361,14 +394,14 @@ public class HUD2 extends Stage {
 						System.out.println("From a "+tile+" to "+destination.getTile(game.getGameMap()));
 						GameAction.MoveUnitAction moveAction = new MoveUnitAction(tile, destination.getTile(game.getGameMap()));
 						gameApp.client.sendActions(moveAction);
+						cm.reset();
 					}
 				});
 				directionMenu.addActor(button);
-				button.setY(button.getHeight()*direction.ordinal());
-				button.setX(-100);
 			}
 			
-			
+			directionMenu.setX(70);
+			directionMenu.setY(-30);
 			directionMenu.setVisible(false);
 			
 			/*** Adding the create stuff to this ***/

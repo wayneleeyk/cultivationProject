@@ -16,6 +16,8 @@ import com.potatoes.cultivation.gameactors.VillageActor;
 import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameMap;
+import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
+import com.potatoes.cultivation.logic.GameMap.MapDirections;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
 
@@ -116,6 +118,14 @@ public class GameWorld extends Stage {
 	public void movePotato(int fromX, int fromY, int toX, int toY){
 		TileActor tileActor = tiles[fromX][fromY];
 		PotatoActor potato = tileActor.findActor("PotatoActor");
-		potato.testMove2(tiles[toX][toY]);
+		MapCoordinates mapCoordFrom = new MapCoordinates(fromX, fromY);
+		MapCoordinates mapCoordTo = new MapCoordinates(toX, toY);
+		if(mapCoordFrom.go(MapDirections.Up).equals(mapCoordTo) || mapCoordFrom.go(MapDirections.Down).equals(mapCoordTo)) {
+			System.out.println("fast move");
+			potato.moveToTile(tiles[toX][toY], 1);
+		}
+		else {
+			potato.moveToTile(tiles[toX][toY], 3);
+		}
 	}
 }

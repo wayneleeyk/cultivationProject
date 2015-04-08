@@ -166,6 +166,31 @@ public class GameMap implements Serializable {
 			if(i > 0 && i < gameMap.map.length && j > 0 && j<gameMap.map[0].length) return gameMap.map[i][j];
 			return null;
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + i;
+			result = prime * result + j;
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			MapCoordinates other = (MapCoordinates) obj;
+			if (i != other.i)
+				return false;
+			if (j != other.j)
+				return false;
+			return true;
+		}
 	}
 
 	private MapCoordinates getCoordinates(Tile t) {

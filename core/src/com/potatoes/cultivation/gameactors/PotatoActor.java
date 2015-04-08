@@ -100,7 +100,7 @@ public class PotatoActor extends Actor {
 			this.addAction(to);
 		}
 		
-		public void testMove2(final TileActor t) {
+		public void moveToTile(final TileActor t, float duration) {
 			MoveToAction to = new MoveToAction();
 			
 			ScaleToAction flip = new ScaleToAction();
@@ -120,7 +120,7 @@ public class PotatoActor extends Actor {
 			this.toFront();
 			this.setPosition(oldPos.x, oldPos.y);
 			
-			to.setDuration(3);
+			to.setDuration(duration);
 			to.setPosition(newPos.x, newPos.y);
 			to.setInterpolation(Interpolation.pow2Out);
 			
