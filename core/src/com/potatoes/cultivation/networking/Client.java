@@ -70,6 +70,7 @@ public class Client{
 	
 	public void startGame(CultivationGame game){
 		try {
+			out.reset();
 			out.writeObject(new GameDataProtocol(this.game.player, game));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -78,6 +79,7 @@ public class Client{
 	
 	public Map<Player, Boolean> areOnline(List<Player> usernames){
 		try {
+			out.reset();
 			out.writeObject(new GetPlayersStatusProtocol(usernames));
 			GetPlayersStatusProtocol status = (GetPlayersStatusProtocol) in.readObject();
 			return status.areOnline();
@@ -91,6 +93,7 @@ public class Client{
 	
 	void sendHeartbeat(){
 		try {
+			out.reset();
 			out.writeObject(new HeartbeatProtocol(this.game.player.getUsername()));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -104,6 +107,7 @@ public class Client{
 	public void addWinLoss(WinLoss status){
 		String playerName = this.game.player.getUsername();
 		try {
+			out.reset();
 			out.writeObject((status.equals(WinLoss.WIN))? new AddWinProtocol(playerName):new AddLossProtocol(playerName));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -113,6 +117,7 @@ public class Client{
 	public int getWinLoss(Player player, WinLoss status){
 		String playerName = player.getUsername();
 		try {
+			out.reset();
 			out.writeObject(new GetWinLossProtocol(playerName));
 			GetWinLossProtocol returnedMessage = (GetWinLossProtocol) in.readObject();
 //			socket.close();
@@ -141,6 +146,7 @@ public class Client{
 	public void getPlayersForRoom(int number) {
 		try {
 			System.out.println("Getting players for room " + number);
+			out.reset();
 			out.writeObject(new GetARoomProtocol(number));
 //			GetARoomProtocol returnedMessage = (GetARoomProtocol) in.readObject();
 //			game.updateRoomPlayerList(returnedMessage.getList());
@@ -156,6 +162,7 @@ public class Client{
 	
 	public void joinRoom(int number, Player p) {
 		try {
+			out.reset();
 			out.writeObject(new JoinRoomProtocol(number, p));
 //			JoinRoomProtocol returnedMessage = (JoinRoomProtocol) in.readObject();
 //			return returnedMessage.getResult();
@@ -167,6 +174,7 @@ public class Client{
 	
 	public void login(String username, String password){
 		try{
+			out.reset();
 			out.writeObject(new LoginProtocol(username, password));
 //			LoginProtocol returnedMessage = (LoginProtocol) in.readObject();
 //			game.setPlayer(returnedMessage.player());
@@ -187,7 +195,9 @@ public class Client{
 	 * Sends the game to the server to be saved
 	 */
 	public void save(CultivationGame game){
+		System.out.println("Sending to server save, for game at round : "+game.getRoundsPlayed());
 		try {
+			out.reset();
 			out.writeObject(new SaveProtocol(game));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -202,6 +212,7 @@ public class Client{
 	 */
 	public void load(List<Player> players){
 		try{
+			out.reset();
 			out.writeObject(new LoadProtocol(players));
 		} catch(IOException e){
 			e.printStackTrace();
@@ -210,6 +221,7 @@ public class Client{
 	
 	public void register(String username, String password){
 		try{
+			out.reset();
 			out.writeObject(new RegisterProtocol(username, password));
 //			RegisterProtocol returnedMessage = (RegisterProtocol) in.readObject();
 //			game.setPlayer(returnedMessage.player());
@@ -224,6 +236,7 @@ public class Client{
 	
 	public void sendActions(GameAction... actions) {
 		try {
+			out.reset();
 			out.writeObject(new ActionBlockProtocol(game.player, actions));
 		} catch (IOException e) {
 			e.printStackTrace();
