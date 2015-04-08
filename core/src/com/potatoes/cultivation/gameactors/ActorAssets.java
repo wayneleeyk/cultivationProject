@@ -22,31 +22,37 @@ public class ActorAssets {
 		Animation potato_yellow_infantry = newAnimation(mySprites.createSprite("potato_yellow_infantry"), 1, 2, 0.5f);
 		Animation potato_yellow_soldier = newAnimation(mySprites.createSprite("potato_yellow_soldier"), 1, 2, 0.5f);
 		Animation potato_yellow_knight = newAnimation(mySprites.createSprite("potato_yellow_knight"), 1, 2, 0.5f);
+		Animation potato_yellow_cannon = newAnimation(mySprites.createSprite("potato_yellow_cannon"), 1, 2, 0.2f);
 		
 		Animation potato_red = newAnimation(mySprites.createSprite("potato_red"), 1, 2, 0.5f);
 		Animation potato_red_infantry = newAnimation(mySprites.createSprite("potato_red_infantry"), 1, 2, 0.5f);
 		Animation potato_red_soldier = newAnimation(mySprites.createSprite("potato_red_soldier"), 1, 2, 0.5f);
 		Animation potato_red_knight = newAnimation(mySprites.createSprite("potato_red_knight"), 1, 2, 0.5f);
+		Animation potato_red_cannon = newAnimation(mySprites.createSprite("potato_red_cannon"), 1, 2, 0.2f);
 		
 		Animation potato_purple = newAnimation(mySprites.createSprite("potato_purple"), 1, 2, 0.5f);
 		Animation potato_purple_infantry = newAnimation(mySprites.createSprite("potato_purple_infantry"), 1, 2, 0.5f);
 		Animation potato_purple_soldier = newAnimation(mySprites.createSprite("potato_purple_soldier"), 1, 2, 0.5f);
 		Animation potato_purple_knight = newAnimation(mySprites.createSprite("potato_purple_knight"), 1, 2, 0.5f);
+		Animation potato_purple_cannon = newAnimation(mySprites.createSprite("potato_purple_cannon"), 1, 2, 0.2f);
 		
 		stringToAnimation.put("potato_yellow_peasant", potato_yellow);
 		stringToAnimation.put("potato_yellow_infantry", potato_yellow_infantry);
 		stringToAnimation.put("potato_yellow_soldier", potato_yellow_soldier);
 		stringToAnimation.put("potato_yellow_knight", potato_yellow_knight);
+		stringToAnimation.put("potato_yellow_cannon", potato_yellow_cannon);
 		
 		stringToAnimation.put("potato_red_peasant", potato_red);
 		stringToAnimation.put("potato_red_infantry", potato_red_infantry);
 		stringToAnimation.put("potato_red_soldier", potato_red_soldier);
 		stringToAnimation.put("potato_red_knight", potato_red_knight);
+		stringToAnimation.put("potato_red_cannon", potato_red_cannon);
 		
 		stringToAnimation.put("potato_purple_peasant", potato_purple);
 		stringToAnimation.put("potato_purple_infantry", potato_purple_infantry);
 		stringToAnimation.put("potato_purple_soldier", potato_purple_soldier);
 		stringToAnimation.put("potato_purple_knight", potato_purple_knight);
+		stringToAnimation.put("potato_purple_cannon", potato_purple_cannon);
 		
 		AtlasRegion hex_grass = mySprites.findRegion("grass");
 		AtlasRegion hex_sea = mySprites.findRegion("tile_sea");
