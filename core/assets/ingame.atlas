@@ -196,21 +196,21 @@ village-castle
 village-fort
   rotate: false
   xy: 154, 2
-  size: 93, 85
-  orig: 93, 85
+  size: 97, 85
+  orig: 97, 85
   offset: 0, 0
   index: -1
 village-hovel
   rotate: false
-  xy: 312, 410
-  size: 93, 85
-  orig: 93, 85
+  xy: 312, 408
+  size: 95, 87
+  orig: 95, 87
   offset: 0, 0
   index: -1
 village-town
   rotate: false
-  xy: 306, 323
-  size: 93, 85
-  orig: 93, 85
+  xy: 306, 319
+  size: 95, 87
+  orig: 95, 87
   offset: 0, 0
   index: -1
