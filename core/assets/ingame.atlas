@@ -4,13 +4,6 @@ size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-arrow
-  rotate: false
-  xy: 932, 865
-  size: 48, 31
-  orig: 48, 31
-  offset: 0, 0
-  index: -1
 grass
   rotate: false
   xy: 312, 799
@@ -41,42 +34,42 @@ grass_yellow
   index: -1
 potato_purple
   rotate: false
-  xy: 622, 638
+  xy: 2, 335
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_infantry
   rotate: false
-  xy: 2, 335
+  xy: 312, 447
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_knight
   rotate: false
-  xy: 434, 537
+  xy: 744, 638
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_purple_soldier
   rotate: false
-  xy: 774, 638
+  xy: 2, 253
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red
   rotate: false
-  xy: 2, 253
+  xy: 154, 335
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
   index: -1
 potato_red_infantry
   rotate: false
-  xy: 154, 335
+  xy: 464, 447
   size: 150, 80
   orig: 150, 80
   offset: 0, 0
@@ -130,37 +123,44 @@ potato_yellow_soldier
   orig: 150, 80
   offset: 0, 0
   index: -1
-tile_meadow
+road
   rotate: false
   xy: 622, 810
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
-tile_meadow_purple
+tile_meadow
   rotate: false
   xy: 2, 507
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
-tile_meadow_red
+tile_meadow_purple
   rotate: false
   xy: 312, 619
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
-tile_meadow_yellow
+tile_meadow_red
   rotate: false
   xy: 622, 720
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
   index: -1
-tile_sea
+tile_meadow_yellow
   rotate: false
   xy: 2, 417
+  size: 308, 88
+  orig: 308, 88
+  offset: 0, 0
+  index: -1
+tile_sea
+  rotate: false
+  xy: 312, 529
   size: 308, 88
   orig: 308, 88
   offset: 0, 0
@@ -195,7 +195,7 @@ tile_tree_yellow
   index: -1
 village-castle
   rotate: false
-  xy: 312, 497
+  xy: 622, 598
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
@@ -209,14 +209,14 @@ village-fort
   index: -1
 village-hovel
   rotate: false
-  xy: 312, 408
+  xy: 622, 509
   size: 95, 87
   orig: 95, 87
   offset: 0, 0
   index: -1
 village-town
   rotate: false
-  xy: 306, 319
+  xy: 616, 420
   size: 95, 87
   orig: 95, 87
   offset: 0, 0
