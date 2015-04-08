@@ -108,10 +108,21 @@ public class Tile implements Serializable{
 			if ((UnitType.Knight.equals(u.getType()) || UnitType.Cannon.equals(u.getType())) && (structure == StructureType.Tombstone || myType == LandType.Tree)) {
 				System.out.println("Knight/Cannon cannot move into "+this.structure.name());
 			}
-			else if (myType!= LandType.Sea && (owner == tileOfUnit.getPlayer() || this.canInvade(u))) {
+			// If it's not a sea, and (unowned or invadable or ours)
+			else if (myType!= LandType.Sea && (owner == null || owner.equals(tileOfUnit.getPlayer()) || this.canInvade(u))) {
 				System.out.println("Moving to destination");
 				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage());
+				
+				// If the target tile is neutral
+				if(owner == null) {
+					u.currentAction = ActionType.Moved;
+				}
+				
+				// If there's someone
 				if (occupant!=null) {
+					// If one of our unit is there, we don't crush it
+					if(owner.equals(tileOfUnit.getPlayer())) return false;
+					// Else we crush it
 					System.out.println("There is an occupant at destination");
 //					Region victimsRegion = this.occupant.getTile().getRegion();
 //					victimsRegion.removeTile(this);
@@ -144,6 +155,7 @@ public class Tile implements Serializable{
 					System.out.println("Knight/Soldier/Cannon has destroyed a meadow");
 					myType = LandType.Grass;
 				}
+			
 				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage());
 
 				Set<Tile> tilesNeighbouringDestination = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(this);
