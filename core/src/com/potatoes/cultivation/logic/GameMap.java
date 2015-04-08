@@ -98,7 +98,7 @@ public class GameMap implements Serializable {
 					tiles.add(t);
 			}
 		}
-		return new HashSet<>();
+		return tiles;
 	}
 
 	public void deleteVillage(Village v) {
@@ -224,19 +224,37 @@ public class GameMap implements Serializable {
 	}
 
 	public void clearTombstones(Player p) {
-
+		//Get all the tiles belonging to p that has a tombstone
+		Set<Tile> tombstoneTiles = getTombstoneTiles(p);
+		for (Tile t : tombstoneTiles) {
+			//Destroy tombstone and update land type to grass
+			t.destroyStructure();
+			t.updateLandType(LandType.Grass);
+		}
 	}
 
-	public void produceMeadows(Player p) {
-
-	}
-
-	public void produceRoads(Player p) {
-
+	public void produceMeadowsRoads(Player p) {
+		Set<Village> villages = getVillages(p);
+		for (Village v : villages) {
+			Set<Unit> units = v.getRegion().getUnits();
+			for (Unit u : units) {
+				if (u.getCurrentAction()==ActionType.StartCultivating) {
+					u.updateAction(ActionType.FinishCultivating);
+				} else if (u.getCurrentAction()==ActionType.FinishCultivating) {
+					u.updateAction(ActionType.ReadyForOrders);
+					Tile tile = u.getTile();
+					tile.updateLandType(LandType.Meadow);
+				} else if (u.getCurrentAction()==ActionType.BuildingRoad) {
+					u.updateAction(ActionType.ReadyForOrders);
+					Tile tile = u.getTile();
+					tile.addStructure(StructureType.Road);
+				}
+			}
+		}
 	}
 
 	public void updateTileOwner(Player p) {
-
+		
 	}
 
 	public int playersLeft() {

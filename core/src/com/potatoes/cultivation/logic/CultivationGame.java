@@ -58,8 +58,7 @@ public class CultivationGame implements Serializable {
 	// Mang0-Tang0
 	public void beginTurn(Player p) {
 		map.clearTombstones(p);
-		map.produceMeadows(p);
-		map.produceRoads(p);
+		map.produceMeadowsRoads(p);
 		updateGoldEconomy(p);
 
 	}
