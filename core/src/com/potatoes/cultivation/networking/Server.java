@@ -121,6 +121,7 @@ public class Server implements Runnable{
 	}
 	
 	void save(CultivationGame game){
+		System.out.println("Server recieved game with round : "+game.getRoundsPlayed());
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(new File(savedGameFolder+game.hashCode())));
 			oos.writeObject(game);

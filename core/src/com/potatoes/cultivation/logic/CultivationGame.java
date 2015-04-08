@@ -17,7 +17,7 @@ public class CultivationGame implements Serializable {
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
-		map = new GameMap(10, 10, participants);
+		map = new GameMap(30, 10, participants);
 		System.out.println("Made new game map");
 		this.roundsPlayed = 0;
 		
