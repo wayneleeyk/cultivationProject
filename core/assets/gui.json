@@ -43,4 +43,12 @@
     	white: { font: pixFont-small, fontColor: white },
     	stats: { font: pixFont-small, fontColor: white, background: onepix-light-brown }
 	}
+	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
+		arrow-up: { up: arrow-up },
+		arrow-down: { up: arrow-down },
+		arrow-leftUp: { up: arrow-leftUp },
+		arrow-leftDown: { up: arrow-leftDown },
+		arrow-rightUp: { up: arrow-rightUp },
+		arrow-rightDown: { up: arrow-rightDown }
+	}
 }

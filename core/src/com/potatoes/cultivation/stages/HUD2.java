@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -234,11 +235,13 @@ public class HUD2 extends Stage {
 		Group topLevel;
 		TextButton buildRoad;
 		TextButton upgradePotato;
+		TextButton movePotato;
 		Group upgrades;
 		TextButton infantry;
 		TextButton soldier;
 		TextButton knight;
 		TextButton cannoneer;
+		Group directionMenu;
 		
 		public PotatoMenuGroup() {
 			/******* First level group **********/
@@ -246,39 +249,17 @@ public class HUD2 extends Stage {
 			
 			upgradePotato = new TextButton("Upgrade Potato", skin, "default");
 			buildRoad = new TextButton("Build Road", skin, "default");
-			
-			final PotatoMenuGroup menu = this;
-			for (MapDirections direction : MapDirections.values()) {
-				final MapDirections thatWay = direction;
-				TextButton button = new TextButton(direction.name(), skin);
-				button.addListener(new ClickListener(){
-					@Override
-					public void clicked(InputEvent event, float x, float y) {
-						super.clicked(event, x, y);
-						System.out.println(thatWay.name() + " clicked");
-						Tile tile = menu.myPotato.getUnit().getTile();
-						GameMap.MapCoordinates destination = new MapCoordinates(tile.x, tile.y).go(thatWay);
-						System.out.println("Moving from "+tile.x +" "+tile.y+" to "+ destination.getTile(game.getGameMap()).x+" "+destination.getTile(game.getGameMap()).y);
-						System.out.println("From a "+tile+" to "+destination.getTile(game.getGameMap()));
-						GameAction.MoveUnitAction moveAction = new MoveUnitAction(tile, destination.getTile(game.getGameMap()));
-						gameApp.client.sendActions(moveAction);
-					}
-				});
-				button.setY(45*direction.ordinal());
-				button.setX(-100);
-				topLevel.addActor(button);
-			}
-			
+			movePotato = new TextButton("Move", skin, "default");
 			
 			topLevel.addActor(upgradePotato);
 			topLevel.addActor(buildRoad);
-			
-			
+			topLevel.addActor(movePotato);
 			
 			float buttonHeight = upgradePotato.getHeight();
 			
 			// Stack the buttons on top of each other
-			upgradePotato.setY(buttonHeight);
+			upgradePotato.setY(2*buttonHeight);
+			buildRoad.setY(buttonHeight);
 			
 			// Add listeners to the buttons 
 			upgradePotato.addListener(new ChangeListener() {
@@ -295,6 +276,14 @@ public class HUD2 extends Stage {
 				public void changed(ChangeEvent event, Actor actor) {
 					System.out.println("buildRoad clicked");
 					cm.reset();
+				}
+			});
+			
+			movePotato.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					topLevel.setVisible(false);
+					directionMenu.setVisible(true);
 				}
 			});
 			
@@ -366,8 +355,70 @@ public class HUD2 extends Stage {
 			
 			upgrades.setVisible(false);
 			
+			/*********** Second level Group - Direction Menu**********/
+			int horizontalOffset = 120;
+			int verticalOffset = 40;
+			
+			directionMenu = new Group();
+			
+			for (MapDirections direction : MapDirections.values()) {
+				final MapDirections thatWay = direction;
+				Button button = null;
+				if(direction.equals(MapDirections.Up)) {
+					button = new Button(skin, "arrow-up");
+					button.setY(verticalOffset + 20);
+				}
+				if(direction.equals(MapDirections.Down)) {
+					button = new Button(skin, "arrow-down");
+					button.setY(-verticalOffset - 20);
+				}
+				if(direction.equals(MapDirections.LeftUp)) {
+					button = new Button(skin, "arrow-leftUp");
+					button.setY(verticalOffset);
+					button.setX(-horizontalOffset);
+				}
+				if(direction.equals(MapDirections.LeftDown)) {
+					button = new Button(skin, "arrow-leftDown");
+					button.setY(-verticalOffset);
+					button.setX(-horizontalOffset);
+				}
+				if(direction.equals(MapDirections.RightUp)) {
+					button = new Button(skin, "arrow-rightUp");
+					button.setY(verticalOffset);
+					button.setX(horizontalOffset);
+				}
+				if(direction.equals(MapDirections.RightDown)) {
+					button = new Button(skin, "arrow-rightDown");
+					button.setY(-verticalOffset);
+					button.setX(horizontalOffset);
+				}
+				
+				button.addListener(new ClickListener(){
+					@Override
+					public void clicked(InputEvent event, float x, float y) {
+						super.clicked(event, x, y);
+						System.out.println(thatWay.name() + " clicked");
+						Tile tile = myPotato.getUnit().getTile();
+						GameMap.MapCoordinates destination = new MapCoordinates(tile.x, tile.y).go(thatWay);
+						System.out.println("Moving from "+tile.x +" "+tile.y+" to "+ destination.getTile(game.getGameMap()).x+" "+destination.getTile(game.getGameMap()).y);
+						System.out.println("From a "+tile+" to "+destination.getTile(game.getGameMap()));
+						GameAction.MoveUnitAction moveAction = new MoveUnitAction(tile, destination.getTile(game.getGameMap()));
+						gameApp.client.sendActions(moveAction);
+						cm.reset();
+					}
+				});
+				directionMenu.addActor(button);
+			}
+			
+			directionMenu.setX(70);
+			directionMenu.setY(-30);
+			directionMenu.setVisible(false);
+			
+			/*** Adding the create stuff to this ***/
+			
 			this.addActor(topLevel);
 			this.addActor(upgrades);
+			this.addActor(directionMenu);
 			this.setVisible(false);
 		}
 		
@@ -377,6 +428,7 @@ public class HUD2 extends Stage {
 			if(visible) {
 				topLevel.setVisible(true);
 				upgrades.setVisible(false);
+				directionMenu.setVisible(false);
 				infantry.setDisabled(false);
 				soldier.setDisabled(false);
 				knight.setDisabled(false);

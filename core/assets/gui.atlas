@@ -4,16 +4,51 @@ size: 1024,1024
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-arrow
+arrow-down
   rotate: false
-  xy: 804, 773
+  xy: 852, 815
+  size: 48, 31
+  orig: 48, 31
+  offset: 0, 0
+  index: -1
+arrow-leftDown
+  rotate: false
+  xy: 804, 805
+  size: 46, 41
+  orig: 46, 41
+  offset: 0, 0
+  index: -1
+arrow-leftUp
+  rotate: false
+  xy: 2, 36
+  size: 46, 40
+  orig: 46, 40
+  offset: 0, 0
+  index: -1
+arrow-rightDown
+  rotate: false
+  xy: 229, 142
+  size: 45, 39
+  orig: 45, 39
+  offset: 0, 0
+  index: -1
+arrow-rightUp
+  rotate: false
+  xy: 671, 203
+  size: 46, 41
+  orig: 46, 41
+  offset: 0, 0
+  index: -1
+arrow-up
+  rotate: false
+  xy: 719, 213
   size: 48, 31
   orig: 48, 31
   offset: 0, 0
   index: -1
 buttonDown
   rotate: false
-  xy: 671, 170
+  xy: 804, 771
   size: 32, 32
   split: 15, 15, 15, 15
   orig: 32, 32
@@ -29,28 +64,28 @@ buttonUp
   index: -1
 companyLogo
   rotate: false
-  xy: 2, 36
+  xy: 2, 78
   size: 225, 103
   orig: 225, 103
   offset: 0, 0
   index: -1
 gameTitle
   rotate: false
-  xy: 2, 141
+  xy: 2, 183
   size: 667, 61
   orig: 667, 61
   offset: 0, 0
   index: -1
 landscape
   rotate: false
-  xy: 2, 204
+  xy: 2, 246
   size: 800, 600
   orig: 800, 600
   offset: 0, 0
   index: -1
 onepix
   rotate: false
-  xy: 229, 138
+  xy: 671, 200
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
