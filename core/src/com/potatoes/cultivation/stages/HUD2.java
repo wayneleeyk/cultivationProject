@@ -343,6 +343,16 @@ public class HUD2 extends Stage {
 				}
 			});
 			
+			cannoneer.addListener(new ChangeListener(){
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("cannon clicked");
+					GameAction.UpgradePotatoAction gameAction = new GameAction.UpgradePotatoAction(myPotato.getUnit(), UnitType.Cannon);
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
+			});
+			
 			upgrades.setVisible(false);
 			
 			/*********** Second level Group - Direction Menu**********/
