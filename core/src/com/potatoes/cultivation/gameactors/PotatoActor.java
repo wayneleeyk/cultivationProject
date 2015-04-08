@@ -1,5 +1,6 @@
 package com.potatoes.cultivation.gameactors;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.helpers.ClickManager.ClickToCMListener;
+import com.potatoes.cultivation.logic.ActionType;
 import com.potatoes.cultivation.logic.Unit;
 import com.potatoes.cultivation.logic.UnitType;
 
@@ -63,8 +65,12 @@ public class PotatoActor extends Actor {
 
 		@Override
 		public void draw(Batch batch, float parentAlpha) {
+			if(!gameUnit.currentAction.equals(ActionType.ReadyForOrders)) {
+				batch.setColor(0.4f,0.4f,0.4f,1);
+			}
 			TextureRegion currentFrame = potatoAnim.getKeyFrame(stateTime, true);
 			batch.draw(currentFrame, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+			batch.setColor(Color.WHITE);
 			super.draw(batch, parentAlpha);
 		}
 		

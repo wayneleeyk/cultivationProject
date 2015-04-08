@@ -7,13 +7,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.Stack;
 
 import com.badlogic.gdx.utils.Predicate;
-import com.potatoes.cultivation.screens.InGame;
 
 public class GameMap implements Serializable {
 	private static final long serialVersionUID = 1777608645753451446L;

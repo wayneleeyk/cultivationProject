@@ -1,15 +1,9 @@
 package com.potatoes.cultivation.stages;
 
-import java.io.Serializable;
-
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.potatoes.cultivation.gameactors.ActorAssets;
 import com.potatoes.cultivation.gameactors.PotatoActor;
@@ -138,7 +132,6 @@ public class GameWorld extends Stage{
 		MapCoordinates mapCoordFrom = new MapCoordinates(fromX, fromY);
 		MapCoordinates mapCoordTo = new MapCoordinates(toX, toY);
 		if(mapCoordFrom.go(MapDirections.Up).equals(mapCoordTo) || mapCoordFrom.go(MapDirections.Down).equals(mapCoordTo)) {
-			System.out.println("fast move");
 			potato.moveToTile(tiles[toX][toY], 1);
 		}
 		else {

@@ -5,10 +5,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
-import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.gameactors.ActorAssets;
 import com.potatoes.cultivation.helpers.ClickManager;
@@ -18,7 +14,6 @@ import com.potatoes.cultivation.networking.ActionBlockProtocol;
 import com.potatoes.cultivation.networking.Protocol;
 import com.potatoes.cultivation.networking.ProtocolHandler;
 import com.potatoes.cultivation.stages.GameWorld;
-import com.potatoes.cultivation.stages.HUD;
 import com.potatoes.cultivation.stages.HUD2;
 
 public class InGame2 extends ScreenAdapter {
@@ -34,7 +29,6 @@ public class InGame2 extends ScreenAdapter {
 		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class));
 		
 		ClickManager cm = new ClickManager();		
-//		hud = new HUD(pGame, null, pGameRound.getGameMap(), pGame.player, cm);\
 		hud = new HUD2(pGame, cm);
 		world = new GameWorld(aRound, assets, cm);	
 		aRound.setWorld(world);

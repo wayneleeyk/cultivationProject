@@ -105,12 +105,8 @@ public class Tile implements Serializable{
 		System.out.println("Tiles neighbouring unit "+ neighbouringTiles);
 		if (neighbouringTiles.contains(this)) { //We only enter this if Unit u is one tile away from this tile
 			System.out.println("Trying to move to neighbouring tile " + this + " , this belongs to "+ this.owner + " whereas unit belongs to "+ u.getVillage().getOwner());
-			if (UnitType.Knight.equals(u) && (structure==StructureType.Tombstone || myType == LandType.Tree)) {
-				System.out.println("Knight cannot move into "+this.structure.name());
-			}
-			else if(UnitType.Cannon.equals(u) && owner == tileOfUnit.getPlayer()){
-				moved = true;
-				u.updateTileLocation(this);
+			if ((UnitType.Knight.equals(u.getType()) || UnitType.Cannon.equals(u.getType())) && (structure == StructureType.Tombstone || myType == LandType.Tree)) {
+				System.out.println("Knight/Cannon cannot move into "+this.structure.name());
 			}
 			else if (myType!= LandType.Sea && (owner == tileOfUnit.getPlayer() || this.canInvade(u))) {
 				System.out.println("Moving to destination");
@@ -144,8 +140,8 @@ public class Tile implements Serializable{
 					u.updateAction(ActionType.ClearingTombStone);
 					structure = StructureType.None;
 				}
-				if (structure!=StructureType.Road && u.getType()==UnitType.Knight && myType==LandType.Meadow) {
-					System.out.println("Knight has destroyed a meadow");
+				if (structure!=StructureType.Road && (u.getType()==UnitType.Knight || u.getType()==UnitType.Soldier || u.getType()==UnitType.Cannon) && myType==LandType.Meadow) {
+					System.out.println("Knight/Soldier/Cannon has destroyed a meadow");
 					myType = LandType.Grass;
 				}
 				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage());

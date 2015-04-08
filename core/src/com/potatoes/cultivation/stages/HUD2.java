@@ -28,6 +28,7 @@ import com.potatoes.cultivation.logic.GameAction.MoveUnitAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.GameMap.MapDirections;
+import com.potatoes.cultivation.logic.ActionType;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
@@ -89,7 +90,9 @@ public class HUD2 extends Stage {
 		
 		// If the clicked potatoActor is yours, open the menu
 		PotatoActor targetPotatoActor = cm.getPotatoActor();
-		if(game.isMyTurn(currentPlayer) && targetPotatoActor != null && targetPotatoActor.getUnit().myVillage.getOwner().equals(currentPlayer)) {
+		if(game.isMyTurn(currentPlayer) && targetPotatoActor != null 
+				&& targetPotatoActor.getUnit().myVillage.getOwner().equals(currentPlayer)
+				&& targetPotatoActor.getUnit().currentAction.equals(ActionType.ReadyForOrders)) {
 			if(!potatoMenu.isVisible()) potatoMenu.setVisible(true);
 			potatoMenu.setPotatoActor(targetPotatoActor);
 			potatoMenu.disableButtonsAccordingToTypeAndResources();
