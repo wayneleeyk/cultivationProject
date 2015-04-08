@@ -140,8 +140,9 @@ public class CultivationGame implements Serializable {
 			if (v.getType().equals(VillageType.Castle)) {
 				boolean success = v.removeGold(80);//80 gold? what a rip off!
 				if (!success) {
-					//If can't afford to pay for castle..
-					//TODO
+					//If can't afford to pay for castle,
+					//downgrade castle to fort
+					v.setType(VillageType.Fort);
 				}
 			}
 			//For each tile, generate gold depending on its landtype
