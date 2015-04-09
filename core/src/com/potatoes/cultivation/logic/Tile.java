@@ -119,6 +119,11 @@ public class Tile implements Serializable{
 					u.currentAction = ActionType.Moved;
 				}
 				
+				// Can't move own villager to own village tiles
+				if (this.containsVillage() && u.getTile().owner.equals(this.owner)) {
+					return false;
+				}
+				
 				// If there's someone
 				if (occupant!=null) {
 					// If one of our unit is there, we don't crush it
@@ -205,6 +210,9 @@ public class Tile implements Serializable{
 			// If it's not a sea, and (unowned or invadable or ours)
 			else if (myType!= LandType.Sea && (owner == null || owner.equals(tileOfUnit.getPlayer()) || this.canInvade(u))) {
 				if (occupant!=null && owner.equals(tileOfUnit.getPlayer())) return false;
+				if (this.containsVillage() && u.getTile().owner.equals(this.owner)) {
+					return false;
+				}
 				moved = true;
 			}
 		}

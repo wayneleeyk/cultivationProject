@@ -19,7 +19,7 @@ public class CultivationGame implements Serializable {
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
-		map = new GameMap(20, 20, participants);
+		map = new GameMap(10, 10, participants);
 		System.out.println("Made new game map");
 		this.roundsPlayed = 0;
 		
@@ -55,7 +55,6 @@ public class CultivationGame implements Serializable {
 		return "yellow";
 	}
 
-	// Mang0-Tang0
 	public void beginTurn(Player p) {
 		System.out.println("Beginning turn");
 		map.clearTombstones(p);
