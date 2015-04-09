@@ -490,8 +490,7 @@ public class HUD2 extends Stage {
 				directionMenu.addActor(button);
 			}
 			
-			directionMenu.setX(-30);
-			directionMenu.setY(-30);
+			directionMenu.setX(15);
 			directionMenu.setVisible(false);
 			
 			/*** Adding the create stuff to this ***/
@@ -516,7 +515,10 @@ public class HUD2 extends Stage {
 				buildRoad.setDisabled(false);
 				cultivateMeadow.setDisabled(false);
 				for(Actor a : directionMenu.getChildren()) {
-					a.setVisible(true);
+					if(a instanceof Button) {
+						Button aButton = (Button) a;
+						aButton.setDisabled(false);
+					}
 				}
 			}
 		}
@@ -528,7 +530,7 @@ public class HUD2 extends Stage {
 		 */
 		public void setPotatoActor(PotatoActor p) {
 			myPotato = p;
-			Vector2 potatoStageCoord = p.localToStageCoordinates(new Vector2(p.getX(), p.getY()));
+			Vector2 potatoStageCoord = p.localToStageCoordinates(new Vector2(p.getOriginX(), p.getOriginY()));
 			Vector2 potatoScreen = p.getStage().stageToScreenCoordinates(potatoStageCoord);
 			Vector2 menuCoord = this.getStage().screenToStageCoordinates(potatoScreen);
 			this.setPosition(menuCoord.x, menuCoord.y);	
@@ -583,22 +585,28 @@ public class HUD2 extends Stage {
 			Tile toRightDown = current.go(MapDirections.RightDown).getTile(game.getGameMap());
 			
 			if(!toUp.tryInvadeCheck(myPotato.getUnit())) {
-				directionMenu.findActor("arrow-up").setVisible(false);
+				Button arrowUp = directionMenu.findActor("arrow-up");
+				arrowUp.setDisabled(true);
 			}
 			if(!toDown.tryInvadeCheck(myPotato.getUnit())) {
-				directionMenu.findActor("arrow-down").setVisible(false);
+				Button arrowDown = directionMenu.findActor("arrow-down");
+				arrowDown.setDisabled(true);
 			}
 			if(!toLeftUp.tryInvadeCheck(myPotato.getUnit())) {
-				directionMenu.findActor("arrow-leftUp").setVisible(false);
+				Button arrowLeftUp = directionMenu.findActor("arrow-leftUp");
+				arrowLeftUp.setDisabled(true);
 			}
 			if(!toRightUp.tryInvadeCheck(myPotato.getUnit())) {
-				directionMenu.findActor("arrow-rightUp").setVisible(false);
+				Button arrowRightUp = directionMenu.findActor("arrow-rightUp");
+				arrowRightUp.setDisabled(true);
 			}
 			if(!toLeftDown.tryInvadeCheck(myPotato.getUnit())) {
-				directionMenu.findActor("arrow-leftDown").setVisible(false);
+				Button arrowLeftDown = directionMenu.findActor("arrow-leftDown");
+				arrowLeftDown.setDisabled(true);
 			}
 			if(!toRightDown.tryInvadeCheck(myPotato.getUnit())) {
-				directionMenu.findActor("arrow-rightDown").setVisible(false);
+				Button arrowRightDown = directionMenu.findActor("arrow-rightDown");
+				arrowRightDown.setDisabled(true);
 			}
 
 
