@@ -63,10 +63,11 @@ public class TileActor extends Group implements Serializable{
 		// Draw the base
 		batch.draw(myAssets.stringToAtlasRegion.get("hex_" + myLandtype.toString().toLowerCase() + (color != null? ("_" + color) : "")),
 				getX(), getY());
-		
 		// Draw the structure
 		if(myStructure.equals(StructureType.Road)) {
 			batch.draw(myAssets.stringToAtlasRegion.get("road"), getX(), getY());	
+		} else if (myStructure.equals(StructureType.Watchtower)) {
+			batch.draw(myAssets.stringToAtlasRegion.get("tower"), getX()+70, getY()+20);
 		}
 		super.draw(batch, parentAlpha);
 	}
