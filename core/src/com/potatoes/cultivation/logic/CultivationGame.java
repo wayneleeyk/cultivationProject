@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.potatoes.cultivation.stages.GameWorld;
@@ -55,9 +56,18 @@ public class CultivationGame implements Serializable {
 
 	// Mang0-Tang0
 	public void beginTurn(Player p) {
+		System.out.println("Beginning turn");
 		map.clearTombstones(p);
 		// Produce Meadow, Roads and ALSO updates unit ActionType (even those that are chopping trees)
 		map.produceMeadowsRoads(p);
+		Tile[][] tiles = map.getMap();
+		for (Tile[] column : tiles) {
+			for (Tile tile : column) {
+				if(tile.occupant!=null){
+					tile.occupant.updateAction(ActionType.ReadyForOrders);
+				}
+			}
+		}
 		updateGoldEconomy(p);
 	}
 

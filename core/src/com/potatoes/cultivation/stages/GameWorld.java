@@ -170,6 +170,9 @@ public class GameWorld extends Stage{
 	public void removeVillageAt(int x, int y) {
 		TileActor tileActor = tiles[x][y];
 		VillageActor village = tileActor.findActor("VillageActor");
-		if(village!=null) village.remove();
+		if(village!=null) {
+			village.remove();
+			System.out.println("Removing village actor at "+x+" "+y+" done:"+tileActor.findActor("VillageActor")==null);
+		}
 	}
 }

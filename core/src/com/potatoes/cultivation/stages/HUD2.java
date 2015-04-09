@@ -109,7 +109,8 @@ public class HUD2 extends Stage {
 		if(previouslySelectedTile != cm.getTileActor() && cm.getTileActor()!=null) {
 			Tile tile = cm.getTileActor().getTile();
 			boolean tileHasVillage = tile.getVillage()!=null && tile.getVillage().getTile()== tile;
-			System.out.println("Clicked on "+tile + " owner:" + tile.owner+" occupant:"+tile.occupant+ " structure:"+tile.getStructure()+"\nvillage:"+tile.getVillage()+" is on this tile "+tileHasVillage+"\nregion:"+tile.getRegion());
+			String actionType = (tile.occupant!=null)?tile.occupant.getCurrentAction().name():"None";
+			System.out.println("Clicked on "+tile + " owner:" + tile.owner+ " structure:"+tile.getStructure()+"\noccupant:"+tile.occupant+" action:"+actionType+"\nvillage:"+tile.getVillage()+" is on this tile "+tileHasVillage+"\nregion:"+tile.getRegion());
 			previouslySelectedTile = cm.getTileActor();
 		}
 	}

@@ -116,6 +116,7 @@ public class TileActor extends Group implements Serializable{
 		else {
 			color = null;
 		}
+		if(!myTile.containsVillage() && this.findActor("VillageActor")!=null) this.findActor("VillageActor").remove();
 	}
 	
 	public Tile getTile(){

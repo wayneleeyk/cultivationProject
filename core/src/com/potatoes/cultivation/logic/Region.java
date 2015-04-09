@@ -89,7 +89,7 @@ public class Region implements Serializable{
 	}
 	
 	public void destroy(){
-		System.out.println("Destroying region "+ this+ " has tiles "+this.myTiles);
+		System.out.println("Destroying region "+ this+ " which has tiles "+this.myTiles);
 		myUnits.clear();
 		for (Tile tile : myTiles) {
 			if(tile.occupant!=null) this.killUnit(tile.occupant);

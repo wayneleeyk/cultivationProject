@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
@@ -86,6 +87,10 @@ public class GameMap implements Serializable {
 			}
 		}
 		return null;
+	}
+	
+	public Map<Player, Set<Region>> getAllRegions(){
+		return new HashMap<>(this.regions);
 	}
 
 	public Set<Tile> getTombstoneTiles(Player p) {

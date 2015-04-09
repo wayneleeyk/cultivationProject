@@ -223,18 +223,10 @@ public class Tile implements Serializable{
 	public String toString() {
 		return myType.toString() + "("+this.x+","+this.y+")";
 	}
-	/**
-	 * 
-	 * @return true if this tile contains its village building, false otherwise
-	 */
+
 	public boolean containsVillage() {
 		Village myVillage = getVillage();
-		if (myVillage!=null && myVillage.getTile()==(this)) {
-//			System.out.println("Found village in containsVillage method");
-			return true;
-		}
-//		System.out.println("Cannot find village in containsVillage");
-		return false;
+		return myVillage!=null && myVillage.getTile()==(this);
 	}
 
 }
