@@ -75,6 +75,7 @@ public class InGame2 extends ScreenAdapter {
 			public void handle(Protocol p) {
 				if(p instanceof CreateVillageProtocol) {
 					result = ((CreateVillageProtocol) p).getVillageLocation();
+					System.out.println("Received a village location "+result);
 				}
 			}
 		};

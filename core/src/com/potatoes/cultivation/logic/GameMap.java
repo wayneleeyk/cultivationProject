@@ -204,6 +204,13 @@ public class GameMap implements Serializable {
 				return false;
 			return true;
 		}
+
+		@Override
+		public String toString() {
+			return "MapCoordinate("+this.i+","+this.j+")";
+		}
+		
+		
 	}
 
 	private MapCoordinates getCoordinates(Tile t) {
@@ -254,6 +261,7 @@ public class GameMap implements Serializable {
 						coordinates = villageLocator.getResult();
 					}
 					villageLocator.reset();
+					System.out.println("Received village for subregion at "+coordinates);
 					village = new Village(r.getOwner(), region, this.map[coordinates.i][coordinates.j]);
 				}
 				region.setVillage(village);
@@ -343,6 +351,23 @@ public class GameMap implements Serializable {
 			if(target.equals(village.getTile())){
 				invaderVillage.addGold(village.getGold());
 				invaderVillage.addWood(village.getWood());
+				// generate a new village
+				System.out.println("Generating new village after hostile takeover");
+				Region region = village.getRegion();
+				List<Tile> regionTiles = new LinkedList<>(region.getTiles());
+				if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
+					village = new Village(target.owner, region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+					Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
+				}
+				else{
+					MapCoordinates coordinates = null;
+					ProtocolHandler<MapCoordinates> villageLocator = Cultivation.GAMEMANAGER.getGame().getWorld().getVillageLocator();
+					while(coordinates == null){
+						coordinates = villageLocator.getResult();
+					}
+					villageLocator.reset();
+					village = new Village(target.owner, region, this.map[coordinates.i][coordinates.j]);
+				}
 				break;
 			}
 		}
