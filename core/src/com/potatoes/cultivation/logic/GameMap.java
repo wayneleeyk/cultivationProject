@@ -262,10 +262,6 @@ public class GameMap implements Serializable {
 		}
 	}
 
-	public void updateTileOwner(Player p) {
-		
-	}
-
 	public int playersLeft() {
 		return regions.keySet().size();
 	}

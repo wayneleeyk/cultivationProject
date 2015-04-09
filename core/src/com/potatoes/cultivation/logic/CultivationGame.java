@@ -97,7 +97,7 @@ public class CultivationGame implements Serializable {
 			support = true;
 		} else if ((vType == VillageType.Town) && (uType != UnitType.Knight)) {
 			support = true;
-		} else if (vType == VillageType.Fort) {
+		} else if (vType == VillageType.Fort || vType == VillageType.Castle) {
 			support = true;
 		}
 

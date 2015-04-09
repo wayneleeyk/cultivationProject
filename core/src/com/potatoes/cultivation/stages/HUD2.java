@@ -33,6 +33,7 @@ import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
+import com.potatoes.cultivation.logic.VillageType;
 
 public class HUD2 extends Stage {
 	Cultivation gameApp;
@@ -83,6 +84,7 @@ public class HUD2 extends Stage {
 		if(game.isMyTurn(currentPlayer) && targetVillageActor != null && targetVillageActor.getVillage().getOwner().equals(currentPlayer)) {
 			if(!villageMenu.isVisible()) villageMenu.setVisible(true);
 			villageMenu.setVillageActor(targetVillageActor);
+			System.out.println("Village clicked is type: " + targetVillageActor.getVillage().getType() );
 		}
 		else {
 			villageMenu.setVisible(false);
@@ -96,6 +98,7 @@ public class HUD2 extends Stage {
 			if(!potatoMenu.isVisible()) potatoMenu.setVisible(true);
 			potatoMenu.setPotatoActor(targetPotatoActor);
 			potatoMenu.disableButtonsAccordingly();
+			System.out.println("Potato is type: " + targetPotatoActor.getUnit().getType());
 		}
 		else {
 			potatoMenu.setVisible(false);
@@ -488,6 +491,20 @@ public class HUD2 extends Stage {
 				cultivateMeadow.setDisabled(true);
 			}
 			
+			VillageType myVillageType = myPotato.getUnit().getVillage().getType();
+			//Check based on village type
+			if (myVillageType==VillageType.Hovel) {
+				soldier.setDisabled(true);
+				knight.setDisabled(true);
+				cannoneer.setDisabled(true);
+			} else if (myVillageType==VillageType.Town) {
+				knight.setDisabled(true);
+				cannoneer.setDisabled(true);
+			} else {
+				knight.setDisabled(false);
+				cannoneer.setDisabled(false);
+			}
+			//Check based on current unit type
 			if(myType.equals(UnitType.Cannon)) {
 				upgradePotato.setDisabled(true);
 			}
@@ -503,6 +520,7 @@ public class HUD2 extends Stage {
 			if(myType.equals(UnitType.Infantry)) {
 				infantry.setDisabled(true);
 			}
+
 			
 			// Disable directional buttons according to possibility of moving
 			Tile p = myPotato.getUnit().getTile();
@@ -532,11 +550,8 @@ public class HUD2 extends Stage {
 			if(!toRightDown.tryInvadeCheck(myPotato.getUnit())) {
 				directionMenu.findActor("arrow-rightDown").setVisible(false);
 			}
-			
-			
-			
-			// According to resources...
-			// Something like village.canHire?
+
+
 		}
 	}
 }
