@@ -164,7 +164,8 @@ public class GameMap implements Serializable {
 
 	public static class MapCoordinates implements Serializable{
 		private static final long serialVersionUID = -5390246105930686786L;
-		int i, j;
+		private int i;
+		int j;
 
 		public MapCoordinates(int i, int j) {
 			this.i = i;
@@ -172,12 +173,12 @@ public class GameMap implements Serializable {
 		}
 
 		public MapCoordinates go(MapDirections direction) {
-			return new MapCoordinates(this.i + direction.iShift, this.j
+			return new MapCoordinates(this.i() + direction.iShift, this.j
 					+ direction.jShift);
 		}
 
 		public Tile getTile(GameMap gameMap){
-			if(i >= 0 && i < gameMap.map.length && j >= 0 && j<gameMap.map[0].length) return gameMap.map[i][j];
+			if(i() >= 0 && i() < gameMap.map.length && j >= 0 && j<gameMap.map[0].length) return gameMap.map[i()][j];
 			return null;
 		}
 
@@ -185,7 +186,7 @@ public class GameMap implements Serializable {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + i;
+			result = prime * result + i();
 			result = prime * result + j;
 			return result;
 		}
@@ -199,7 +200,7 @@ public class GameMap implements Serializable {
 			if (getClass() != obj.getClass())
 				return false;
 			MapCoordinates other = (MapCoordinates) obj;
-			if (i != other.i)
+			if (i() != other.i())
 				return false;
 			if (j != other.j)
 				return false;
@@ -208,10 +209,16 @@ public class GameMap implements Serializable {
 
 		@Override
 		public String toString() {
-			return "MapCoordinate("+this.i+","+this.j+")";
+			return "MapCoordinate("+this.i()+","+this.j+")";
 		}
 
+		public int i() {
+			return i;
+		}
 
+		public int j(){
+			return j;
+		}
 	}
 
 	private MapCoordinates getCoordinates(Tile t) {
@@ -256,8 +263,8 @@ public class GameMap implements Serializable {
 					if(established.hasSameTilesAs(region)) repeat = true;
 				}
 				if(!repeat) {
-					brokenRegions.add(region);
-					Village village = null;
+					
+					Village village;
 					if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
 						village = new Village(r.getOwner(), region, regionTiles.get(new Random().nextInt(regionTiles.size())));
 						Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
@@ -265,19 +272,21 @@ public class GameMap implements Serializable {
 					}
 					else{
 						GameWorld world = Cultivation.GAMEMANAGER.getGame().getWorld();
-						MapCoordinates constructionSite = world.getNextVillageConstructionSite();
+						MapCoordinates constructionSite = world.getNextVillageConstructionSite(region);
 						while(constructionSite==null) {
-							System.out.println("Queue is "+ world.villageConstructionSites);
-							constructionSite = world.getNextVillageConstructionSite();
+							constructionSite = world.getNextVillageConstructionSite(region);
 						}
 						System.out.println("Received village for subregion at "+constructionSite);
-						village = new Village(r.getOwner(), region, this.map[constructionSite.i][constructionSite.j]);
+						village = new Village(r.getOwner(), region, this.map[constructionSite.i()][constructionSite.j]);
+						System.out.println("Made village "+village);
 					}
 					region.setVillage(village);
+					brokenRegions.add(region);
 					Cultivation.GAMEMANAGER.getGame().getWorld().createVillageAt(village.getTile().x, village.getTile().y);
 				}
 			}
 		}
+		Cultivation.GAMEMANAGER.getGame().getWorld().villageConstructionSites.clear();
 		Player owner = r.getOwner();
 		regions.get(owner).remove(r);
 		regions.get(owner).addAll(brokenRegions);
@@ -363,12 +372,12 @@ public class GameMap implements Serializable {
 					region.setVillage(village);
 				}
 				else{
-					MapCoordinates coordinates = Cultivation.GAMEMANAGER.getGame().getWorld().getNextVillageConstructionSite();
+					MapCoordinates coordinates = Cultivation.GAMEMANAGER.getGame().getWorld().getNextVillageConstructionSite(region);
 					while(coordinates==null) {
 						System.out.println("Polling for coordinates");
-						coordinates = Cultivation.GAMEMANAGER.getGame().getWorld().getNextVillageConstructionSite();
+						coordinates = Cultivation.GAMEMANAGER.getGame().getWorld().getNextVillageConstructionSite(region);
 					}
-					village = new Village(target.owner, region, this.map[coordinates.i][coordinates.j]);
+					village = new Village(target.owner, region, this.map[coordinates.i()][coordinates.j]);
 					region.setVillage(village);
 				}
 				break;

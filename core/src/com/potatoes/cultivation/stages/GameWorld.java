@@ -18,6 +18,7 @@ import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.GameMap.MapDirections;
+import com.potatoes.cultivation.logic.Region;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.networking.ProtocolHandler;
@@ -196,7 +197,11 @@ public class GameWorld extends Stage{
 		this.villageConstructionSites.add(result);
 	}
 	
-	public MapCoordinates getNextVillageConstructionSite(){
-		return this.villageConstructionSites.poll();
+	public MapCoordinates getNextVillageConstructionSite(Region region){
+		for (MapCoordinates coordinate : this.villageConstructionSites) {
+			Tile t = this.gameRound.getGameMap().getMap()[coordinate.i()][coordinate.j()];
+			if(region.getTiles().contains(t)) return coordinate;
+		}
+		return null;
 	}
 }
