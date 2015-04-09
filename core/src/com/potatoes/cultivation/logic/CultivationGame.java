@@ -22,7 +22,7 @@ public class CultivationGame implements Serializable {
 		map = new GameMap(10, 10, participants);
 		System.out.println("Made new game map");
 		this.roundsPlayed = 0;
-		
+		beginTurn(players.get(0));
 	}
 
 	public void setWorld(GameWorld pWorld) {

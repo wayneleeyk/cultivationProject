@@ -140,25 +140,45 @@ public class HUD2 extends Stage {
 
 	private void addGUIStuff() {
 		// Top label
+		Label turnName = new Label("", skin, "stats") {
+			@Override
+			public void act(float delta) {
+				super.act(delta);
+				String color = game.playerToPotatoColor(game.turnOf());
+				if(color.equals("red")) {
+					this.setColor(1, 0.5f, 0.5f, 1);
+				}
+				if(color.equals("yellow")) {
+					this.setColor(1, 1, 0.5f, 1);
+				}
+				if(color.equals("purple")) {
+					this.setColor(0.4f, 0.1f, 1, 1);
+				}
+				this.setText("  Round : " + game.getRoundsPlayed() + "  --  Turn of : " + game.turnOf().getUsername());
+			}
+		};
 		Label stats = new Label("", skin, "stats"){
 			@Override
 			public void act(float delta) {
 				super.act(delta);
 				if (currentVillage!=null && currentVillage.getType()!=null) {
-					this.setText("  Turn :"+ game.turnOf().getUsername() + "  " + 
-								 "Village: " + currentVillage.getType() + ", " + 
-								 "Gold: " + currentVillage.getGold() + ", " + 
-								 "Logs " + currentVillage.getWood());
+					this.setText("  Village : " + currentVillage.getType() + ", " + 
+								 "Gold : " + currentVillage.getGold() + ", " + 
+								 "Logs : " + currentVillage.getWood());
 				} else {
-					this.setText("  Turn :"+ game.turnOf().getUsername());
+					this.setText("");
 					
 				}
 			}
 		};
 		stats.setWidth(width);
-		stats.setHeight(55);
-		stats.setPosition(0, height - 55); //Hardcode FTW
+		stats.setHeight(30);
+		stats.setPosition(0, height - 60); //Hardcode FTW
+		turnName.setHeight(30);
+		turnName.setWidth(width);
+		turnName.setPosition(0, height-30);
 		this.addActor(stats);
+		this.addActor(turnName);
 		
 		/********************* Buttons ******************************************/
 		// End turn button
