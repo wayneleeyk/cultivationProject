@@ -108,6 +108,15 @@ public class Tile implements Serializable{
 			System.out.println("Trying to move to neighbouring tile " + this + " , this belongs to "+ this.owner + " whereas unit belongs to "+ u.getVillage().getOwner());
 			if ((UnitType.Knight.equals(u.getType()) || UnitType.Cannon.equals(u.getType())) && (structure == StructureType.Tombstone || myType == LandType.Tree)) {
 				System.out.println("Knight/Cannon cannot move into "+this.structure.name());
+				return false;
+			}
+			else if(UnitType.Cannon.equals(u.getType()) ){
+				System.out.println("Trying to move a cannon");
+				if(occupant==null && this.getPlayer().equals(u.getVillage().getOwner())){
+					u.currentAction = ActionType.Moved;
+					return true;
+				}
+				return false;
 			}
 			// If it's not a sea, and (unowned or invadable or ours)
 			else if (myType!= LandType.Sea && (owner == null || owner.equals(tileOfUnit.getPlayer()) || this.canInvade(u))) {
@@ -131,11 +140,11 @@ public class Tile implements Serializable{
 					if(owner.equals(tileOfUnit.getPlayer())) return false;
 					// Else we crush it
 					System.out.println("There is an occupant at destination");
-//					Region victimsRegion = this.occupant.getTile().getRegion();
-//					victimsRegion.removeTile(this);
-//					victimsRegion.killUnit(this.occupant);
-//					tileOfUnit.getRegion().addTile(this);
-//					this.occupant = u;
+					// note:The level of the enemy has already been checked in can invade
+					Player victim = this.owner;
+					// kill the victim unit 
+					Region victimsRegion = this.getRegion();
+					victimsRegion.killUnit(this.occupant);
 				}
 				moved = true;
 				Region oldRegion = u.myVillage.getRegion();
@@ -206,6 +215,9 @@ public class Tile implements Serializable{
 		if (neighbouringTiles.contains(this)) { //We only enter this if Unit u is one tile away from this tile
 			if ((UnitType.Knight.equals(u.getType()) || UnitType.Cannon.equals(u.getType())) && (structure == StructureType.Tombstone || myType == LandType.Tree)) {
 				return false;
+			}
+			else if(UnitType.Cannon.equals(u.getType()) ){
+				return occupant==null && this.getPlayer().equals(u.getVillage().getOwner());
 			}
 			// If it's not a sea, and (unowned or invadable or ours)
 			else if (myType!= LandType.Sea && (owner == null || owner.equals(tileOfUnit.getPlayer()) || this.canInvade(u))) {

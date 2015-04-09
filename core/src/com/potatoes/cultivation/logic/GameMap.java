@@ -357,7 +357,8 @@ public class GameMap implements Serializable {
 
 	public void takeOverTile(Tile target) {
 		Region victimRegion = target.getRegion();
-		System.out.println("Victim "+victimRegion.getOwner()+" region has "+victimRegion.getTiles());
+		if (victimRegion!=null)
+			System.out.println("Victim "+victimRegion.getOwner()+" region has "+victimRegion.getTiles());
 		Player victim = target.getPlayer();
 		System.out.println("Taking over enemy region "+ victimRegion+" of "+victim);
 		Unit invadingUnit = target.getUnit();
