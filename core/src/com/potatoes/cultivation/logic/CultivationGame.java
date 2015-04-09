@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.stages.GameWorld;
 
@@ -57,6 +58,7 @@ public class CultivationGame implements Serializable {
 
 	public void beginTurn(Player p) {
 		System.out.println("Beginning turn");
+		if(roundsPlayed != 0 && roundsPlayed % players.size() == 0) map.growTrees();
 		map.clearTombstones(p);
 		// Produce Meadow, Roads and ALSO updates unit ActionType (even those that are chopping trees)
 		map.produceMeadowsRoads(p);
@@ -154,17 +156,33 @@ public class CultivationGame implements Serializable {
 			
 			//Pay villagers their wage
 			Set<Unit> myUnits = myRegion.getUnits();
-			for (Unit u : myUnits) {
+			Iterator<Unit> myUit = myUnits.iterator();
+			while(myUit.hasNext()) {
+				Unit u = myUit.next();
 				UnitType uType = u.getType();
 				int salary = uType.getSalary();
 				boolean success = v.removeGold(salary);
 				//If fail to pay villager, it dies and gets buried
 				if (success == false) {
 					Tile myTile = u.getTile();
-					myRegion.killUnit(u);
+					myUit.remove();
+					
+					Cultivation.GAMEMANAGER.getGame().getWorld().removePotatoAt(myTile.x, myTile.y);
+					myTile.setUnit(null);
 					myTile.addStructure(StructureType.Tombstone);
 				}
 			}
+//			for (Unit u : myUnits) {
+//				UnitType uType = u.getType();
+//				int salary = uType.getSalary();
+//				boolean success = v.removeGold(salary);
+//				//If fail to pay villager, it dies and gets buried
+//				if (success == false) {
+//					Tile myTile = u.getTile();
+//					myRegion.killUnit(u);
+//					myTile.addStructure(StructureType.Tombstone);
+//				}
+//			}
 		}
 	}
 

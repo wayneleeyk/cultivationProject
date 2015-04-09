@@ -569,4 +569,29 @@ public class GameMap implements Serializable {
 		}
 	}
 
+	public void growTrees() {
+		Random r = new Random(1);
+		Set<Tile> tilesWithTree = new HashSet<Tile>();
+		for(int i = 0; i < map.length; i++) {
+			for(int j = 0; j < map[0].length; j++) {
+				if(map[i][j].getLandType().equals(LandType.Tree)) {
+					tilesWithTree.add(map[i][j]);
+				}
+			}
+		}
+		for(Tile t : tilesWithTree) {
+			Set<Tile> neighbours = getNeighbouringTiles(t);
+			for(Tile aNeighbour : neighbours) {
+				LandType neighbourLandType = aNeighbour.getLandType();
+				if((neighbourLandType.equals(LandType.Grass) || neighbourLandType.equals(LandType.Meadow)) 
+						&& (!aNeighbour.containsVillage() 
+								&& aNeighbour.occupant == null 
+								&& aNeighbour.getStructure().equals(StructureType.None))) {
+					aNeighbour.updateLandType((r.nextFloat() > 0.5)? LandType.Tree : neighbourLandType);
+					break;
+				}
+			}
+		}
+	}
+
 }

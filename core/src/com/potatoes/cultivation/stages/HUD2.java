@@ -154,7 +154,7 @@ public class HUD2 extends Stage {
 				if(color.equals("purple")) {
 					this.setColor(0.4f, 0.1f, 1, 1);
 				}
-				this.setText("  Round : " + game.getRoundsPlayed() + "  --  Turn of : " + game.turnOf().getUsername());
+				this.setText("  Round : " + game.getRoundsPlayed()/game.getPlayers().size() + "  --  Turn of : " + game.turnOf().getUsername());
 			}
 		};
 		Label stats = new Label("", skin, "stats"){
@@ -190,6 +190,7 @@ public class HUD2 extends Stage {
 				gameApp.client.sendActions(endTurnAction);
 				System.out.println("current player: " + currentPlayer.getUsername());
 				System.out.println("turn of: " + game.turnOf());
+				cm.reset();
 			}
 		});
 		this.addActor(endTurn);

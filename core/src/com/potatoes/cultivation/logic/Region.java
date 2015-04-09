@@ -56,7 +56,6 @@ public class Region implements Serializable{
 		Cultivation.GAMEMANAGER.getGame().getWorld().removePotatoAt(u.myTile.x, u.myTile.y);
 		myUnits.remove(u);
 		u.myTile.setUnit(null);
-		
 	}
 	
 	public int size(){
