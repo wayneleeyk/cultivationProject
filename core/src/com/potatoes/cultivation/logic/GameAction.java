@@ -108,7 +108,36 @@ public interface GameAction extends Serializable {
 				game.getWorld().upgradePotatoAt(t.x, t.y, uType);
 			}
 		}
+	}
+	
+	class CultivateMeadowAction implements GameAction {
+		private static final long serialVersionUID = -2011495395926540040L;
+		Tile t;
 		
+		public CultivateMeadowAction(Tile unitTile) {
+			t = unitTile;
+		}
+		
+		@Override
+		public void execute(CultivationGame game) {
+			Unit cultivatingUnit = game.getGameMap().getMap()[t.x][t.y].getUnit();
+			game.cultivateMeadow(cultivatingUnit);
+		}
+	}
+	
+	class BuildRoadAction implements GameAction {
+		private static final long serialVersionUID = -2011495395926540040L;
+		Tile t;
+		
+		public BuildRoadAction(Tile unitTile) {
+			t = unitTile;
+		}
+		
+		@Override
+		public void execute(CultivationGame game) {
+			Unit cultivatingUnit = game.getGameMap().getMap()[t.x][t.y].getUnit();
+			game.buildRoad(cultivatingUnit);
+		}
 	}
 	
 }

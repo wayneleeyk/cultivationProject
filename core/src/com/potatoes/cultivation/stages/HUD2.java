@@ -237,6 +237,7 @@ public class HUD2 extends Stage {
 		PotatoActor myPotato;
 		Group topLevel;
 		TextButton buildRoad;
+		TextButton cultivateMeadow;
 		TextButton upgradePotato;
 		TextButton movePotato;
 		Group upgrades;
@@ -253,16 +254,19 @@ public class HUD2 extends Stage {
 			upgradePotato = new TextButton("Upgrade Potato", skin, "default");
 			buildRoad = new TextButton("Build Road", skin, "default");
 			movePotato = new TextButton("Move", skin, "default");
+			cultivateMeadow = new TextButton("Cultivate Meadow", skin, "default");
 			
 			topLevel.addActor(upgradePotato);
 			topLevel.addActor(buildRoad);
 			topLevel.addActor(movePotato);
+			topLevel.addActor(cultivateMeadow);
 			
 			float buttonHeight = upgradePotato.getHeight();
 			
 			// Stack the buttons on top of each other
-			upgradePotato.setY(2*buttonHeight);
-			buildRoad.setY(buttonHeight);
+			cultivateMeadow.setY(3*buttonHeight);
+			buildRoad.setY(2*buttonHeight);
+			upgradePotato.setY(buttonHeight);
 			
 			// Add listeners to the buttons 
 			upgradePotato.addListener(new ChangeListener() {
@@ -274,19 +278,33 @@ public class HUD2 extends Stage {
 				}
 			});
 			
-			buildRoad.addListener(new ChangeListener() {
-				@Override
-				public void changed(ChangeEvent event, Actor actor) {
-					System.out.println("buildRoad clicked");
-					cm.reset();
-				}
-			});
-			
 			movePotato.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
 					topLevel.setVisible(false);
 					directionMenu.setVisible(true);
+				}
+			});
+			
+
+			buildRoad.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("buildRoad clicked");
+					GameAction.BuildRoadAction gameAction = new GameAction.BuildRoadAction(myPotato.getUnit().getTile());
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
+			});
+			
+
+			cultivateMeadow.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("cultivate meadow clicked");
+					GameAction.CultivateMeadowAction gameAction = new GameAction.CultivateMeadowAction(myPotato.getUnit().getTile());
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
 				}
 			});
 			
@@ -413,7 +431,7 @@ public class HUD2 extends Stage {
 				directionMenu.addActor(button);
 			}
 			
-			directionMenu.setX(70);
+			directionMenu.setX(-30);
 			directionMenu.setY(-30);
 			directionMenu.setVisible(false);
 			
@@ -436,6 +454,8 @@ public class HUD2 extends Stage {
 				soldier.setDisabled(false);
 				knight.setDisabled(false);
 				upgradePotato.setDisabled(false);
+				buildRoad.setDisabled(false);
+				cultivateMeadow.setDisabled(false);
 			}
 		}
 
@@ -449,11 +469,16 @@ public class HUD2 extends Stage {
 			Vector2 potatoStageCoord = p.localToStageCoordinates(new Vector2(p.getX(), p.getY()));
 			Vector2 potatoScreen = p.getStage().stageToScreenCoordinates(potatoStageCoord);
 			Vector2 menuCoord = this.getStage().screenToStageCoordinates(potatoScreen);
-			this.setPosition(menuCoord.x - 100, menuCoord.y);	
+			this.setPosition(menuCoord.x, menuCoord.y);	
 		}
 		
 		public void disableButtonsAccordingToTypeAndResources() {
 			UnitType myType = myPotato.getUnit().myType;
+			if(!myType.equals(UnitType.Peasant)) {
+				buildRoad.setDisabled(true);
+				cultivateMeadow.setDisabled(true);
+			}
+			
 			if(myType.equals(UnitType.Cannon)) {
 				upgradePotato.setDisabled(true);
 			}

@@ -177,12 +177,9 @@ public class CultivationGame implements Serializable {
 		ActionType currAction = u.getCurrentAction();
 		boolean success = false;
 
-		if (uType == UnitType.Peasant
-				&& currAction == ActionType.ReadyForOrders) {
+		if (uType == UnitType.Peasant && currAction == ActionType.ReadyForOrders) {
 			u.updateAction(ActionType.BuildingRoad);
-			if (u.getCurrentAction() == ActionType.BuildingRoad) {
-				success = true;
-			}
+			success = true;
 		}
 		return success;
 	}
@@ -267,5 +264,17 @@ public class CultivationGame implements Serializable {
 	}
 	public boolean isMyTurn(Player me) {
 		return turnOf().equals(me);
+	}
+
+	public boolean cultivateMeadow(Unit u) {
+		UnitType uType = u.getType();
+		ActionType currAction = u.getCurrentAction();
+		boolean success = false;
+
+		if (uType == UnitType.Peasant && currAction == ActionType.ReadyForOrders) {
+			u.updateAction(ActionType.StartCultivating);
+			success = true;
+		}
+		return success;
 	}
 }

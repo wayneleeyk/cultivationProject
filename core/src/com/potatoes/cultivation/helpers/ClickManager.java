@@ -13,7 +13,7 @@ public class ClickManager {
 	
 	Actor first = null;
 	Actor second = null;
-
+	private boolean secondClickOn = false;
 	GameWorld world;
 	
 	public void setWorld(GameWorld pWorld) {
@@ -26,13 +26,17 @@ public class ClickManager {
 			reset();
 		}
 		
-		if(first instanceof PotatoActor && !(actor instanceof PotatoActor)){
+		if(secondClickOn && first instanceof PotatoActor && !(actor instanceof PotatoActor)){
 			second = actor;
 		}
 		else{
 			first = actor;
 			second = null;
 		}
+	}
+	
+	public void useSecondaryClick(boolean enable) {
+		secondClickOn = enable;
 	}
 	
 	public void reset() {
