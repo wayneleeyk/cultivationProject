@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.gameactors.PotatoActor;
 import com.potatoes.cultivation.gameactors.TileActor;
@@ -96,7 +97,20 @@ public class HUD2 extends Stage {
 		else {
 			potatoMenu.setVisible(false);
 		}
-		
+		//Check if player wants to build watchtower
+		if (cm.secondaryClickEnabled() && cm.getVillageActor()!=null) {
+			if (cm.getTileActor()!=null) {
+				Tile t = cm.getTileActor().getTile();
+				System.out.println("Adding tower to tile.." + cm.getTileActor().getX()+","+cm.getTileActor().getX());
+				GameAction.BuildWatchtowerAction gameAction = new GameAction.BuildWatchtowerAction(t);
+				gameApp.client.sendActions(gameAction);
+				cm.reset();
+			}
+		}
+		//Check if a cannoneer wants to shoot
+		if (cm.secondaryClickEnabled() && cm.getPotatoActor()!=null) {
+			
+		}
 		//If it's your turn, display the "End Turn" button
 		if (!game.isMyTurn(currentPlayer)) {
 			endTurn.setVisible(false);
@@ -181,13 +195,15 @@ public class HUD2 extends Stage {
 		public VillageMenuGroup() {
 			TextButton upgradeVillage = new TextButton("Upgrade Village", skin, "default");
 			TextButton hireVillager = new TextButton("Hire Villager", skin, "default");
-			
+			TextButton buildWatchtower = new TextButton("Build Watchtower", skin, "default");;
 			this.addActor(upgradeVillage);
 			this.addActor(hireVillager);
+			this.addActor(buildWatchtower);
 			
 			float buttonHeight = upgradeVillage.getHeight();
 			
 			// Stack the buttons on top of each other
+			buildWatchtower.setY(2*buttonHeight);
 			upgradeVillage.setY(buttonHeight);
 			
 			// Add listeners to the buttons 
@@ -211,6 +227,13 @@ public class HUD2 extends Stage {
 //						hireAction.execute(game.GAMEMANAGER.getGame());
 						gameApp.client.sendActions(hireAction);	
 					}
+				}
+			});
+			buildWatchtower.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("buildWatchtower clicked");
+					cm.useSecondaryClick(true);
 				}
 			});
 			
@@ -262,7 +285,8 @@ public class HUD2 extends Stage {
 			float buttonHeight = upgradePotato.getHeight();
 			
 			// Stack the buttons on top of each other
-			cultivateMeadow.setY(3*buttonHeight);
+			
+			cultivateMeadow.setY(4*buttonHeight);
 			buildRoad.setY(2*buttonHeight);
 			upgradePotato.setY(buttonHeight);
 			
@@ -294,7 +318,6 @@ public class HUD2 extends Stage {
 					cm.reset();
 				}
 			});
-			
 
 			cultivateMeadow.addListener(new ChangeListener() {
 				@Override

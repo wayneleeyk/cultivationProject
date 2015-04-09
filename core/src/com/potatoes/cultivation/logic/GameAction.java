@@ -156,5 +156,19 @@ public interface GameAction extends Serializable {
 			game.buildRoad(cultivatingUnit);
 		}
 	}
+	class BuildWatchtowerAction implements GameAction {
+		private static final long serialVersionUID = -256171586814621743L;
+		Tile t;
+		
+		public BuildWatchtowerAction(Tile tile) {
+			t = tile;
+		}
+		
+		@Override
+		public void execute(CultivationGame game) {
+			Tile realTile = game.getGameMap().getMap()[t.x][t.y];
+			realTile.addStructure(StructureType.Watchtower);
+		}
+	}
 	
 }

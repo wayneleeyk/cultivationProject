@@ -28,6 +28,7 @@ public class Tile implements Serializable{
 		this.occupant = u;
 	}
 	public void addStructure(StructureType structure){
+		System.out.println("adding " + structure + " to tile "+ x + "," + y);
 		this.structure = structure;
 	}
 	

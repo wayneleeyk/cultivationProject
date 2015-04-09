@@ -26,7 +26,7 @@ public class ClickManager {
 			reset();
 		}
 		
-		if(secondClickOn && first instanceof PotatoActor && !(actor instanceof PotatoActor)){
+		if(secondClickOn) {//&& first instanceof PotatoActor && !(actor instanceof PotatoActor)){
 			second = actor;
 		}
 		else{
@@ -39,9 +39,14 @@ public class ClickManager {
 		secondClickOn = enable;
 	}
 	
+	public boolean secondaryClickEnabled() {
+		return secondClickOn;
+	}
+	
 	public void reset() {
 		first = null;
 		second = null;
+		secondClickOn = false;
 	}
 	
 	/**
@@ -94,6 +99,7 @@ public class ClickManager {
 	 */
 	public PotatoActor getPotatoActor() {
 		if(first instanceof PotatoActor) return (PotatoActor) first;
+		if(second instanceof PotatoActor) return (PotatoActor) second;
 		return null;
 	}
 	
@@ -103,6 +109,7 @@ public class ClickManager {
 	 */
 	public TileActor getTileActor() {
 		if(first instanceof TileActor) return (TileActor) first;
+		if(secondClickOn && second instanceof TileActor) return (TileActor) second;
 		return null;
 	}
 	
