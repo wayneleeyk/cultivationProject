@@ -84,6 +84,7 @@ public class HUD2 extends Stage {
 				&& targetVillageActor.getVillage().getStatus().equals(VillageStatus.VillageReady)) {
 			if(!villageMenu.isVisible()) villageMenu.setVisible(true);
 			villageMenu.setVillageActor(targetVillageActor);
+			villageMenu.disableVillageButtonsAccordingly();
 		}
 		else {
 			villageMenu.setVisible(false);
@@ -96,17 +97,19 @@ public class HUD2 extends Stage {
 				&& targetPotatoActor.getUnit().currentAction.equals(ActionType.ReadyForOrders)) {
 			if(!potatoMenu.isVisible()) potatoMenu.setVisible(true);
 			potatoMenu.setPotatoActor(targetPotatoActor);
-			potatoMenu.disableButtonsAccordingly();
+			potatoMenu.disableUnitButtonsAccordingly();
 		}
 		else {
 			potatoMenu.setVisible(false);
 		}
 		//Check if player wants to build watchtower
-		if (cm.secondaryClickEnabled() && cm.getVillageActor()!=null) {
-			if (cm.getTileActor()!=null) {
-				Tile t = cm.getTileActor().getTile();
-				System.out.println("Adding tower to tile.." + cm.getTileActor().getX()+","+cm.getTileActor().getX());
-				GameAction.BuildWatchtowerAction gameAction = new GameAction.BuildWatchtowerAction(t);
+		if (cm.secondaryClickEnabled() && targetVillageActor !=null) {
+			TileActor targetTile = cm.getTileActor();
+			if (targetTile != null 
+					&& targetTile.getTile().getVillage() != null 
+					&& targetTile.getTile().getVillage().equals(targetVillageActor.getVillage())) {
+				System.out.println("Adding tower to tile.." + targetTile.getX()+","+ targetTile.getY());
+				GameAction.BuildWatchtowerAction gameAction = new GameAction.BuildWatchtowerAction(targetTile.getTile());
 				gameApp.client.sendActions(gameAction);
 				cm.reset();
 			}
@@ -192,14 +195,17 @@ public class HUD2 extends Stage {
 	
 	class VillageMenuGroup extends Group {
 		VillageActor myVillageActor;
+		TextButton upgradeVillage;
+		TextButton hireVillager;
+		TextButton buildWatchtower;
 		
 		/*
 		 * Constructor for a villageMenuGroup, set to invisible when constructed
 		 */
 		public VillageMenuGroup() {
-			TextButton upgradeVillage = new TextButton("Upgrade Village", skin, "default");
-			TextButton hireVillager = new TextButton("Hire Villager", skin, "default");
-			TextButton buildWatchtower = new TextButton("Build Watchtower", skin, "default");;
+			upgradeVillage = new TextButton("Upgrade Village", skin, "default");
+			hireVillager = new TextButton("Hire Villager", skin, "default");
+			buildWatchtower = new TextButton("Build Watchtower", skin, "default");;
 			this.addActor(upgradeVillage);
 			this.addActor(hireVillager);
 			this.addActor(buildWatchtower);
@@ -256,6 +262,19 @@ public class HUD2 extends Stage {
 			Vector2 menuCoord = this.getStage().screenToStageCoordinates(villageScreen);
 			this.setPosition(menuCoord.x - 100, menuCoord.y);	
 		}		
+		public void disableVillageButtonsAccordingly() {
+			VillageType myType = myVillageActor.getVillage().getType();
+			if (myType==VillageType.Hovel) {
+				buildWatchtower.setDisabled(true);
+			} else {
+				buildWatchtower.setDisabled(false);
+			}
+			if (myType==VillageType.Castle) {
+				upgradeVillage.setDisabled(true);
+			} else {
+				upgradeVillage.setDisabled(false);
+			}
+		}
 	}
 	
 	class PotatoMenuGroup extends Group {
@@ -290,7 +309,7 @@ public class HUD2 extends Stage {
 			
 			// Stack the buttons on top of each other
 			
-			cultivateMeadow.setY(4*buttonHeight);
+			cultivateMeadow.setY(3*buttonHeight);
 			buildRoad.setY(2*buttonHeight);
 			upgradePotato.setY(buttonHeight);
 			
@@ -506,7 +525,7 @@ public class HUD2 extends Stage {
 			this.setPosition(menuCoord.x, menuCoord.y);	
 		}
 		
-		public void disableButtonsAccordingly() {
+		public void disableUnitButtonsAccordingly() {
 			UnitType myType = myPotato.getUnit().myType;
 			if(!myType.equals(UnitType.Peasant)) {
 				buildRoad.setDisabled(true);
