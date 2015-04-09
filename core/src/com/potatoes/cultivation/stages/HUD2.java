@@ -25,6 +25,7 @@ import com.potatoes.cultivation.logic.GameAction.MoveUnitAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.GameMap.MapDirections;
+import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
@@ -77,7 +78,10 @@ public class HUD2 extends Stage {
 		
 		// If the clicked villageActor is yours, open the menu
 		VillageActor targetVillageActor = cm.getVillageActor();
-		if(game.isMyTurn(currentPlayer) && targetVillageActor != null && targetVillageActor.getVillage().getOwner().equals(currentPlayer)) {
+		if(game.isMyTurn(currentPlayer) 
+				&& targetVillageActor != null 
+				&& targetVillageActor.getVillage().getOwner().equals(currentPlayer)
+				&& targetVillageActor.getVillage().getStatus().equals(VillageStatus.VillageReady)) {
 			if(!villageMenu.isVisible()) villageMenu.setVisible(true);
 			villageMenu.setVillageActor(targetVillageActor);
 			villageMenu.disableVillageButtonsAccordingly();

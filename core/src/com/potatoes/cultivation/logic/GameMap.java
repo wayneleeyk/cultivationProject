@@ -15,6 +15,7 @@ import java.util.Stack;
 
 import com.badlogic.gdx.utils.Predicate;
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.networking.ProtocolHandler;
 import com.potatoes.cultivation.stages.GameWorld;
 
@@ -521,7 +522,9 @@ public class GameMap implements Serializable {
 		}
 		return item;
 	}
-
+	/**
+	 * Not used because produce meadow takes care of it
+	 */
 	public void updateUnitActions(Player p) {
 		for(Region r : getRegions(p)) {
 			for(Unit u : r.getUnits()) {
@@ -531,6 +534,20 @@ public class GameMap implements Serializable {
 				else {
 					u.currentAction = ActionType.FinishCultivating;
 				}
+			}
+		}
+	}
+	/**
+	 * Updates the status of every village of Player p. Called at the begining of the turn
+	 */
+	public void updateVillageStatus(Player p) {
+		for(Village v : getVillages(p)) {
+			if(v.getStatus().equals(VillageStatus.StartUpgrading)) {
+				v.upgradeVillageType();
+				v.updateStatus(VillageStatus.StillUpgrading);
+			}
+			else {
+				v.updateStatus(VillageStatus.VillageReady);
 			}
 		}
 	}

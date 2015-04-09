@@ -15,6 +15,7 @@ public class Village implements Comparable<Village>, Serializable {
 	private Player owner;
 	
 	private int HP;
+	private VillageStatus myStatus;
 	
 	public Village(Player owner, Region region, Tile tile) {
 		this.owner = owner;
@@ -24,6 +25,7 @@ public class Village implements Comparable<Village>, Serializable {
 		this.gold = 99;
 		this.wood = 99;
 		this.HP = myType.maxHP();
+		this.myStatus = VillageStatus.VillageReady;
 	}
 	
 	/**
@@ -152,5 +154,25 @@ public class Village implements Comparable<Village>, Serializable {
 	
 	public boolean higherThan(VillageType v){
 		return this.myType.ordinal() > v.ordinal();
+	}
+	
+	public VillageStatus getStatus() {
+		return myStatus;
+	}
+	
+	public void updateStatus(VillageStatus status) {
+		myStatus = status;
+	}
+	
+	public void upgradeVillageType() {
+		VillageType type = myType;
+		if (myType == VillageType.Hovel) type = VillageType.Town;
+		if (myType == VillageType.Town) type = VillageType.Fort;
+		if (myType == VillageType.Fort) type = VillageType.Castle;
+		setType(type);
+	}
+	
+	public enum VillageStatus {
+		VillageReady, StartUpgrading, StillUpgrading
 	}
 }
