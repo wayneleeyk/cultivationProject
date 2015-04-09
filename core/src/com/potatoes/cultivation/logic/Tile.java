@@ -137,11 +137,12 @@ public class Tile implements Serializable{
 				System.out.println("Old region is "+oldRegion+ " old owner:"+oldOwner);
 				u.updateTileLocation(this);
 				//Handle village invasion, splitting/merging regions in takeoverTile
-				if (oldOwner!=null && !oldOwner.equals(Player.nullPlayer)) {
+				if (oldOwner!=null && !oldOwner.equals(Player.nullPlayer) && !oldOwner.equals(u.myVillage.getOwner())) {
 					Cultivation.GAMEMANAGER.getGameMap().takeOverTile(this);
+					u.updateAction(ActionType.Moved);
 				}
 				else this.owner = this.occupant.myVillage.getOwner();
-				u.updateAction(ActionType.Moved);
+				
 				//If there is a tree on this tile, cut it down
 				if (myType == LandType.Tree) {
 					System.out.println("There is a tree at destination");
