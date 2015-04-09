@@ -103,6 +103,9 @@ public class ActorAssets  {
 		
 		AtlasRegion road = mySprites.findRegion("road");
 		stringToAtlasRegion.put("road", road);
+		
+		AtlasRegion tower = mySprites.findRegion("tower");
+		stringToAtlasRegion.put("tower", tower);
 	}
 	
 	public static Animation newAnimation(TextureRegion sprite, int row, int col, float frameDuration) {
