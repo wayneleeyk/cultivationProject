@@ -43,7 +43,7 @@ public class TestScreen extends ScreenAdapter {
 		game = pGame;
 		batch = pGame.batch;
 		a = game.manager.get("ingame.atlas", TextureAtlas.class);
-		actorAssets = new ActorAssets(a);
+		actorAssets = new ActorAssets(a, null);
 		gameStage = new Stage();
 		
 		cam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.ScaleToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.helpers.ClickManager.ClickToCMListener;
@@ -26,6 +28,7 @@ public class PotatoActor extends Actor {
 		
 		private float stateTime;
 		private Animation potatoAnim;
+		private Label currentActionStatus;
 		
 		private ActorAssets myAssets;
 		
@@ -55,6 +58,11 @@ public class PotatoActor extends Actor {
 			// Add listener to forward to ClickManager
 			this.addListener(cm.new ClickToCMListener());
 			this.setName("PotatoActor");
+			
+			// Add action status
+			currentActionStatus = new Label("", myAssets.getSkin(), "default-mini");
+			currentActionStatus.setFontScale(0.55f);
+			currentActionStatus.setPosition(90, 8);
 		}
 		
 		@Override
@@ -65,6 +73,8 @@ public class PotatoActor extends Actor {
 
 		@Override
 		public void draw(Batch batch, float parentAlpha) {
+			currentActionStatus.setText(gameUnit.currentAction.toString());
+			currentActionStatus.draw(batch, parentAlpha);
 			if(!gameUnit.currentAction.equals(ActionType.ReadyForOrders)) {
 				batch.setColor(0.4f,0.4f,0.4f,1);
 			}

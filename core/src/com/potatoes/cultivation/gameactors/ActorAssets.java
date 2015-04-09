@@ -6,15 +6,18 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class ActorAssets  {
 	TextureAtlas mySprites;
+	Skin mySkin;
 	
 	public HashMap<String, Animation> stringToAnimation;
 	public HashMap<String, AtlasRegion> stringToAtlasRegion;
 	
-	public ActorAssets(TextureAtlas gameSprites) {
+	public ActorAssets(TextureAtlas gameSprites, Skin skin) {
 		mySprites = gameSprites;
+		mySkin = skin;
 		stringToAnimation = new HashMap<String, Animation>();
 		stringToAtlasRegion = new HashMap<String, AtlasRegion>();
 		
@@ -112,5 +115,9 @@ public class ActorAssets  {
 			}
 		}
 		return new Animation(frameDuration, frames);
+	}
+	
+	public Skin getSkin() {
+		return mySkin;
 	}
 }
