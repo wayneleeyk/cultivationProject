@@ -8,10 +8,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 
 import com.badlogic.gdx.utils.Predicate;
+import com.potatoes.cultivation.Cultivation;
 
 public class GameMap implements Serializable {
 	private static final long serialVersionUID = 1777608645753451446L;
@@ -68,9 +70,8 @@ public class GameMap implements Serializable {
 	}
 
 	public Set<Village> getVillages(Player p) {
-		Set<Region> r = regions.get(p);
 		Set<Village> villages = new HashSet<>();
-		for (Region region : r) {
+		for (Region region : regions.get(p)) {
 			villages.add(region.getVillage());
 		}
 		return villages;
@@ -150,7 +151,7 @@ public class GameMap implements Serializable {
 				neighbours.add(tile);
 //				System.out.println("Looking at direction "+ direction+" got tile "+tile.x+" "+tile.y);
 			}
-		}
+			}
 		return neighbours;
 	}
 
@@ -226,7 +227,33 @@ public class GameMap implements Serializable {
 	}
 
 	public Set<Region> breakUpRegion(Region r, Tile t) {
-		return null;
+		Set<Tile> tiles = getNeighbouringTiles(t);
+		Set<Region> brokenRegions = new HashSet<>();
+		System.out.println("Region before breaking up has size "+ r.size());
+		for (Tile tile : tiles) {
+			if(tile.owner != null && tile.owner.equals(r.getOwner())){
+				List<Tile> regionTiles = bfsTileOfRegion(tile);
+				System.out.println("subregion has size "+regionTiles.size());
+				Region region = new Region(null);
+				Village village = new Village(r.getOwner(), region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+				System.out.println("Region "+region+" has village at "+village.getTile());
+				region.setVillage(village);
+				region.addTiles(regionTiles);
+				boolean repeat = false;
+				for (Region established : brokenRegions) {
+					if(established.sameAs(region)) repeat = true;
+				}
+				if(!repeat) {
+					brokenRegions.add(region);
+					Cultivation.GAMEMANAGER.getGame().getWorld().createVillageAt(village.getTile().x, village.getTile().y);
+				}
+			}
+		}
+		Player owner = r.getOwner();
+		regions.get(owner).remove(r);
+		regions.get(owner).addAll(brokenRegions);
+		
+		return brokenRegions;
 	}
 
 	public void clearTombstones(Player p) {
@@ -279,68 +306,50 @@ public class GameMap implements Serializable {
 			return v2;
 	}
 
-	public void takeOverTile(Tile t) {
-		Region enemyRegion = t.getRegion();
-		Player enemy = t.getPlayer();
-		Unit myUnit = t.getUnit();
-		Village myVillage = myUnit.getVillage();
-		Player owner = myVillage.getOwner();
-		Region myRegion = myVillage.getRegion();
-		t.updateOwner(owner);
-		enemyRegion.removeTile(t);
-		myRegion.addTile(t);
+	public void takeOverTile(Tile target) {
+		Region victimRegion = target.getRegion();
+		Player enemy = target.getPlayer();
+		System.out.println("Taking over enemy region "+ victimRegion+" of "+enemy);
+		Unit invadingUnit = target.getUnit();
+		Village invaderVillage = invadingUnit.getVillage();
+		Player invadingOwner = invaderVillage.getOwner();
+		Region invaderRegion = invaderVillage.getRegion();
+		target.owner = target.occupant.myVillage.getOwner();
+		target.updateOwner(invadingOwner);
+		victimRegion.removeTile(target);
+		invaderRegion.addTile(target);
 		Set<Village> villages = getVillages(enemy);
-		
-		for(Village v: villages){
-			Tile v_tile = v.getTile();
-			
-			if(t == v_tile){
-				int gold = v.getGold();
-				myVillage.addGold(gold);
-				int wood = v.getWood();
-				myVillage.addWood(wood);				
+		// check if the tile is a village tile
+		for (Village village : villages) {
+			if(target.equals(village.getTile())){
+				invaderVillage.addGold(village.getGold());
+				invaderVillage.addWood(village.getWood());
+				break;
 			}
-			
-			Set<Region> regions = breakUpRegion(enemyRegion,t);
-			
-			for(Region r: regions){
-				Player regionOwner = r.getOwner();
-				int regionSize = r.size();
-				Set<Tile> regionTiles = r.getTiles();
-				
-				if(regionSize < 3){
-					for(Tile tile: regionTiles){
-						tile.destroyStructure();
-						tile.updateOwner(null);
-						Unit u = tile.getUnit();
-						
-						if(u != null){
-							r.killUnit(u);
-						}	
-					}
-					deleteRegion(r);	
-				}
-					else{
-						Village r_village = r.getVillage();
-						if(r_village == null){
-							Set<Tile> newTiles = r.getTiles();
-					}
-				
-				}
-			}
-			
 		}
 		
+		// break apart the region if at a branch point
+		Set<Region> regions = breakUpRegion(victimRegion,target);
+		if(regions.size() > 1) System.out.println("Regions are broken up into "+regions.size());
+		for (Region region : regions) {
+			System.out.println("Region "+region+" has size "+ region.size());
+			// destroy regions, along with their units, which have tiles less than 3
+			if(region.size() <3){
+				System.out.println("Region "+region+" has been destroyed");
+				region.destroy();
+			}
+		}
+			
 	}
 
 	public List<Tile> bfsTile(Predicate<Tile> p, Tile t) {
+		System.out.println("BFSing tile "+ t);
 		Set<Tile> visited = new HashSet<>();
 		Queue<Tile> toVisit = new LinkedList<>();
 		List<Tile> result = new LinkedList<>();
 
 		Tile current = t;
-		toVisit.add(t);
-		while(!toVisit.isEmpty()) {
+		while(current != null){
 			result.add(current);
 			visited.add(current);
 			Set<Tile> neighbours = getNeighbouringTiles(current);
@@ -351,6 +360,7 @@ public class GameMap implements Serializable {
 				if (visited.contains(tentative) || !p.evaluate(tentative))
 					it.remove();
 			}
+			visited.addAll(neighbours);
 			toVisit.addAll(neighbours);
 			current = toVisit.poll();
 		}
@@ -380,7 +390,7 @@ public class GameMap implements Serializable {
 		return bfsTile(new Predicate<Tile>() {
 			@Override
 			public boolean evaluate(Tile tile) {
-				return tile.getRegion().equals(region);
+				return (tile.getRegion()!=null)? tile.getRegion().equals(region): region == null;
 			}
 		}, t);
 	}

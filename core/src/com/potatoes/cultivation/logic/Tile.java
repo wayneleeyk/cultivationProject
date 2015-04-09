@@ -133,13 +133,15 @@ public class Tile implements Serializable{
 				}
 				moved = true;
 				Region oldRegion = u.myVillage.getRegion();
-				System.out.println("Old region is "+oldRegion);
+				Player oldOwner = this.owner;
+				System.out.println("Old region is "+oldRegion+ " old owner:"+oldOwner);
 				u.updateTileLocation(this);
-				
 				//Handle village invasion, splitting/merging regions in takeoverTile
-//				if (owner!=null) {
-//					Cultivation.GAMEMANAGER.getGameMap().takeOverTile(this);
-//				}
+				if (oldOwner!=null && !oldOwner.equals(Player.nullPlayer)) {
+					Cultivation.GAMEMANAGER.getGameMap().takeOverTile(this);
+				}
+				else this.owner = this.occupant.myVillage.getOwner();
+				u.updateAction(ActionType.Moved);
 				//If there is a tree on this tile, cut it down
 				if (myType == LandType.Tree) {
 					System.out.println("There is a tree at destination");
@@ -160,9 +162,7 @@ public class Tile implements Serializable{
 				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage());
 
 				Set<Tile> tilesNeighbouringDestination = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(this);
-				System.out.println("Neighbouring tiles "+tilesNeighbouringDestination);
 				Set<Village> myNeighbouringVillages = Cultivation.GAMEMANAGER.getGameMap().getMyVillagesOfAdjacentTiles(tilesNeighbouringDestination, this.owner);
-				System.out.println("Neighbouring villages " +myNeighbouringVillages);
 				
 				//Convert to stack for mergeTo method
 				if (myNeighbouringVillages.size()>1) {

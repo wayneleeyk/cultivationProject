@@ -112,6 +112,14 @@ public class GameWorld extends Stage{
 			}
 		});
 	}
+	
+	public void createVillageAt(int x, int y){
+		TileActor tile = tiles[x][y];
+		Tile t = tile.getTile();
+		VillageActor villageActor = new VillageActor(t.getVillage(), assets, cm);
+		tile.addActor(villageActor);
+		villageActor.setPosition(150, 30);
+	}
 
 	public void createPotatoAt(int x, int y) {
 		TileActor tile = tiles[x][y];
@@ -125,6 +133,12 @@ public class GameWorld extends Stage{
 		TileActor tile = tiles[x][y];
 		PotatoActor p = tile.findActor("PotatoActor");
 		p.upgradePotato(uType);
+	}
+	
+	public void removePotatoAt(int x, int y){
+		TileActor tile = tiles[x][y];
+		PotatoActor p = tile.findActor("PotatoActor");
+		if(p != null) p.remove();
 	}
 	
 	public void movePotato(int fromX, int fromY, int toX, int toY){
@@ -151,5 +165,11 @@ public class GameWorld extends Stage{
 		else {
 			potato.moveToTileV2(tiles[toX][toY], 2, move);
 		}
+	}
+
+	public void removeVillageAt(int x, int y) {
+		TileActor tileActor = tiles[x][y];
+		VillageActor village = tileActor.findActor("VillageActor");
+		if(village!=null) village.remove();
 	}
 }

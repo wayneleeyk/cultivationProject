@@ -10,6 +10,7 @@ public class Unit implements Serializable{
 	public ActionType currentAction;
 	public Tile myTile;
 	public Village myVillage;
+	
 	public Unit(Tile t) {
 		this.myType = UnitType.Peasant;
 		this.currentAction = ActionType.ReadyForOrders;
@@ -47,16 +48,10 @@ public class Unit implements Serializable{
 		return myVillage;
 	}
 	
-	//I can't find this in the sequence diagrams. Might be an old method that we don't use anymore
-	public boolean tryInvadeTile(Tile t){
-		return false;
-	}
-
 	public void updateTileLocation(Tile t){
 		myTile.occupant = null;
 		myTile = t;
 		t.occupant = this;
-		t.owner = t.occupant.myVillage.getOwner();
 	}
 
 	@Override

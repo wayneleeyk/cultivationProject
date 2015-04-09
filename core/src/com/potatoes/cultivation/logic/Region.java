@@ -7,12 +7,11 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.gameactors.TileActor;
 
 public class Region implements Serializable{
 	private static final long serialVersionUID = -6761074377290852816L;
 
-	public final static Region NO_REGION = new Region(null);
-	
 	private Set<Tile> myTiles = new HashSet<>();
 	private Village village ;
 	private Set<Unit> myUnits = new HashSet<>();
@@ -54,8 +53,10 @@ public class Region implements Serializable{
 	}
 	
 	public void killUnit(Unit u){
+		Cultivation.GAMEMANAGER.getGame().getWorld().removePotatoAt(u.myTile.x, u.myTile.y);
 		myUnits.remove(u);
 		u.myTile.setUnit(null);
+		
 	}
 	
 	public int size(){
@@ -81,6 +82,25 @@ public class Region implements Serializable{
 			tit.remove();
 		}
 		Cultivation.GAMEMANAGER.getGameMap().deleteRegion(r);
+	}
+	
+	public boolean sameAs(Region other){
+		return this.myTiles.containsAll(other.myTiles) && other.myTiles.containsAll(this.myTiles);
+	}
+	
+	public void destroy(){
+		System.out.println("Destroying region "+ this+ " has tiles "+this.myTiles);
+		myUnits.clear();
+		for (Tile tile : myTiles) {
+			if(tile.occupant!=null) this.killUnit(tile.occupant);
+			if(this.village!=null && tile == this.village.getTile()) {
+				this.village = null;
+				Cultivation.GAMEMANAGER.getGame().getWorld().removeVillageAt(tile.x,tile.y);
+			}
+			tile.owner=null;
+		}
+		myTiles.clear();
+		Cultivation.GAMEMANAGER.getGameMap().deleteRegion(this);
 	}
 
 	

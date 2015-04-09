@@ -24,6 +24,8 @@ public class VillageActor extends Actor {
 		
 		// Listener for clicking
 		this.addListener(cm.new ClickToCMListener());
+		
+		this.setName("VillageActor");
 	}
 	
 	public void refreshVillage() {

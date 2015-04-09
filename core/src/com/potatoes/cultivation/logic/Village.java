@@ -3,6 +3,8 @@ package com.potatoes.cultivation.logic;
 import java.io.Serializable;
 import java.util.Random;
 
+import com.potatoes.cultivation.Cultivation;
+
 public class Village implements Comparable<Village>, Serializable {
 	private static final long serialVersionUID = -8934307394308919420L;
 	private VillageType myType;
@@ -80,20 +82,22 @@ public class Village implements Comparable<Village>, Serializable {
 	}
 	
 	//Merges the smaller village to the larger village
-	public Village merge(Village v){
-		if(v.equals(this)) return this;
-		if (this.compareTo(v)>0) {
-			(this.myRegion).merge(v.getRegion());
-			v.myRegion = null;
-			this.gold += v.gold;
-			this.wood += v.wood;
+	public Village merge(Village village){
+		if(village.equals(this)) return this;
+		if (this.compareTo(village)>0) {
+			(this.myRegion).merge(village.getRegion());
+			village.myRegion = null;
+			Cultivation.GAMEMANAGER.getGame().getWorld().removeVillageAt(village.getTile().x, village.getTile().y);
+			this.gold += village.gold;
+			this.wood += village.wood;
 			return this;
 		} else {
-			(v.getRegion()).merge(this.myRegion);
+			(village.getRegion()).merge(this.myRegion);
 			this.myRegion = null;
-			v.gold += this.gold;
-			v.wood += this.wood;
-			return v;
+			Cultivation.GAMEMANAGER.getGame().getWorld().removeVillageAt(this.getTile().x, this.getTile().y);
+			village.gold += this.gold;
+			village.wood += this.wood;
+			return village;
 		}
 	}
 	

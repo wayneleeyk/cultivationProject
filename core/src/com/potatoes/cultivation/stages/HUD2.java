@@ -1,8 +1,5 @@
 package com.potatoes.cultivation.stages;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,22 +10,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.gameactors.PotatoActor;
 import com.potatoes.cultivation.gameactors.TileActor;
 import com.potatoes.cultivation.gameactors.VillageActor;
 import com.potatoes.cultivation.helpers.ClickManager;
+import com.potatoes.cultivation.logic.ActionType;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
 import com.potatoes.cultivation.logic.GameAction.MoveUnitAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.GameMap.MapDirections;
-import com.potatoes.cultivation.logic.ActionType;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
@@ -113,7 +108,8 @@ public class HUD2 extends Stage {
 		
 		if(previouslySelectedTile != cm.getTileActor() && cm.getTileActor()!=null) {
 			Tile tile = cm.getTileActor().getTile();
-			System.out.println("Clicked on "+tile + " owner:" + tile.owner+" occupant:"+tile.occupant+ " structure:"+tile.getStructure()+" village:"+tile.getVillage());
+			boolean tileHasVillage = tile.getVillage()!=null && tile.getVillage().getTile()== tile;
+			System.out.println("Clicked on "+tile + " owner:" + tile.owner+" occupant:"+tile.occupant+ " structure:"+tile.getStructure()+"\nvillage:"+tile.getVillage()+" is on this tile "+tileHasVillage+"\nregion:"+tile.getRegion());
 			previouslySelectedTile = cm.getTileActor();
 		}
 	}
