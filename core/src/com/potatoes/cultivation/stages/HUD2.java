@@ -95,7 +95,7 @@ public class HUD2 extends Stage {
 				&& targetPotatoActor.getUnit().currentAction.equals(ActionType.ReadyForOrders)) {
 			if(!potatoMenu.isVisible()) potatoMenu.setVisible(true);
 			potatoMenu.setPotatoActor(targetPotatoActor);
-			potatoMenu.disableButtonsAccordingToTypeAndResources();
+			potatoMenu.disableButtonsAccordingly();
 		}
 		else {
 			potatoMenu.setVisible(false);
@@ -387,29 +387,35 @@ public class HUD2 extends Stage {
 				Button button = null;
 				if(direction.equals(MapDirections.Up)) {
 					button = new Button(skin, "arrow-up");
+					button.setName("arrow-up");
 					button.setY(verticalOffset + 20);
 				}
 				if(direction.equals(MapDirections.Down)) {
 					button = new Button(skin, "arrow-down");
+					button.setName("arrow-down");
 					button.setY(-verticalOffset - 20);
 				}
 				if(direction.equals(MapDirections.LeftUp)) {
 					button = new Button(skin, "arrow-leftUp");
+					button.setName("arrow-leftUp");
 					button.setY(verticalOffset);
 					button.setX(-horizontalOffset);
 				}
 				if(direction.equals(MapDirections.LeftDown)) {
 					button = new Button(skin, "arrow-leftDown");
+					button.setName("arrow-leftDown");
 					button.setY(-verticalOffset);
 					button.setX(-horizontalOffset);
 				}
 				if(direction.equals(MapDirections.RightUp)) {
 					button = new Button(skin, "arrow-rightUp");
+					button.setName("arrow-rightUp");
 					button.setY(verticalOffset);
 					button.setX(horizontalOffset);
 				}
 				if(direction.equals(MapDirections.RightDown)) {
 					button = new Button(skin, "arrow-rightDown");
+					button.setName("arrow-rightDown");
 					button.setY(-verticalOffset);
 					button.setX(horizontalOffset);
 				}
@@ -456,6 +462,9 @@ public class HUD2 extends Stage {
 				upgradePotato.setDisabled(false);
 				buildRoad.setDisabled(false);
 				cultivateMeadow.setDisabled(false);
+				for(Actor a : directionMenu.getChildren()) {
+					a.setVisible(true);
+				}
 			}
 		}
 
@@ -472,7 +481,7 @@ public class HUD2 extends Stage {
 			this.setPosition(menuCoord.x, menuCoord.y);	
 		}
 		
-		public void disableButtonsAccordingToTypeAndResources() {
+		public void disableButtonsAccordingly() {
 			UnitType myType = myPotato.getUnit().myType;
 			if(!myType.equals(UnitType.Peasant)) {
 				buildRoad.setDisabled(true);
@@ -494,6 +503,37 @@ public class HUD2 extends Stage {
 			if(myType.equals(UnitType.Infantry)) {
 				infantry.setDisabled(true);
 			}
+			
+			// Disable directional buttons according to possibility of moving
+			Tile p = myPotato.getUnit().getTile();
+			MapCoordinates current = new MapCoordinates(p.x, p.y);
+			Tile toUp = current.go(MapDirections.Up).getTile(game.getGameMap());
+			Tile toDown = current.go(MapDirections.Down).getTile(game.getGameMap());
+			Tile toLeftUp = current.go(MapDirections.LeftUp).getTile(game.getGameMap());
+			Tile toRightUp = current.go(MapDirections.RightUp).getTile(game.getGameMap());
+			Tile toLeftDown = current.go(MapDirections.LeftDown).getTile(game.getGameMap());
+			Tile toRightDown = current.go(MapDirections.RightDown).getTile(game.getGameMap());
+			
+			if(!toUp.tryInvadeCheck(myPotato.getUnit())) {
+				directionMenu.findActor("arrow-up").setVisible(false);
+			}
+			if(!toDown.tryInvadeCheck(myPotato.getUnit())) {
+				directionMenu.findActor("arrow-down").setVisible(false);
+			}
+			if(!toLeftUp.tryInvadeCheck(myPotato.getUnit())) {
+				directionMenu.findActor("arrow-leftUp").setVisible(false);
+			}
+			if(!toRightUp.tryInvadeCheck(myPotato.getUnit())) {
+				directionMenu.findActor("arrow-rightUp").setVisible(false);
+			}
+			if(!toLeftDown.tryInvadeCheck(myPotato.getUnit())) {
+				directionMenu.findActor("arrow-leftDown").setVisible(false);
+			}
+			if(!toRightDown.tryInvadeCheck(myPotato.getUnit())) {
+				directionMenu.findActor("arrow-rightDown").setVisible(false);
+			}
+			
+			
 			
 			// According to resources...
 			// Something like village.canHire?

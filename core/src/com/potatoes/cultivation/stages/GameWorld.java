@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.stages;
 
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.TemporalAction;
@@ -135,7 +136,20 @@ public class GameWorld extends Stage{
 			potato.moveToTile(tiles[toX][toY], 1);
 		}
 		else {
-			potato.moveToTile(tiles[toX][toY], 3);
+			potato.moveToTile(tiles[toX][toY], 2);
+		}
+	}
+	
+	public void movePotatoV2(int fromX, int fromY, int toX, int toY, Action move) {
+		TileActor tileActor = tiles[fromX][fromY];
+		PotatoActor potato = tileActor.findActor("PotatoActor");
+		MapCoordinates mapCoordFrom = new MapCoordinates(fromX, fromY);
+		MapCoordinates mapCoordTo = new MapCoordinates(toX, toY);
+		if(mapCoordFrom.go(MapDirections.Up).equals(mapCoordTo) || mapCoordFrom.go(MapDirections.Down).equals(mapCoordTo)) {
+			potato.moveToTileV2(tiles[toX][toY], 1, move);
+		}
+		else {
+			potato.moveToTileV2(tiles[toX][toY], 2, move);
 		}
 	}
 }

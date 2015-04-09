@@ -189,6 +189,25 @@ public class Tile implements Serializable{
 		return moved;
 	}
 	
+	/**
+	 * Same thing as tryInvade, but without the side effect
+	 */
+	public boolean tryInvadeCheck(Unit u) {
+		boolean moved = false;
+		Tile tileOfUnit = u.getTile();
+		Set<Tile> neighbouringTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(tileOfUnit);
+		if (neighbouringTiles.contains(this)) { //We only enter this if Unit u is one tile away from this tile
+			if ((UnitType.Knight.equals(u.getType()) || UnitType.Cannon.equals(u.getType())) && (structure == StructureType.Tombstone || myType == LandType.Tree)) {
+				return false;
+			}
+			// If it's not a sea, and (unowned or invadable or ours)
+			else if (myType!= LandType.Sea && (owner == null || owner.equals(tileOfUnit.getPlayer()) || this.canInvade(u))) {
+				moved = true;
+			}
+		}
+		return moved;
+	}
+	
 	public Region getRegion(){
 		return Cultivation.GAMEMANAGER.getGameMap().getRegion(this);
     }

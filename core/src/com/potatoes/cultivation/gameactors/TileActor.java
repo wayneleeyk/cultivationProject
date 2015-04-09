@@ -60,11 +60,14 @@ public class TileActor extends Group implements Serializable{
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		refreshTile();
-		// Draw the structure
-		
 		// Draw the base
 		batch.draw(myAssets.stringToAtlasRegion.get("hex_" + myLandtype.toString().toLowerCase() + (color != null? ("_" + color) : "")),
 				getX(), getY());
+		
+		// Draw the structure
+		if(myStructure.equals(StructureType.Road)) {
+			batch.draw(myAssets.stringToAtlasRegion.get("road"), getX(), getY());	
+		}
 		super.draw(batch, parentAlpha);
 	}
 	/*

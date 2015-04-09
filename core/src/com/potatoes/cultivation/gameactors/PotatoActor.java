@@ -145,6 +145,45 @@ public class PotatoActor extends Actor {
 			this.addAction(moveSequence);
 		}
 		
+		public void moveToTileV2(final TileActor t, float duration, Action endAction) {
+			MoveToAction to = new MoveToAction();
+			
+			ScaleToAction flip = new ScaleToAction();
+			if(t.getX() > this.getParent().getX()) {
+				flip.setScale(-1, 1);
+			}
+			else {
+				flip.setScale(1, 1);
+			}
+			
+			Vector2 oldPos = this.getParent().localToStageCoordinates(new Vector2(80, 30));
+			Vector2 newPos = t.localToStageCoordinates(new Vector2(80, 30));
+			
+			Stage s = this.getParent().getStage();
+			this.remove();
+			s.addActor(this);
+			this.toFront();
+			this.setPosition(oldPos.x, oldPos.y);
+			
+			to.setDuration(duration);
+			to.setPosition(newPos.x, newPos.y);
+			to.setInterpolation(Interpolation.pow2Out);
+			
+			Action endMoveAction = new Action(){
+				@Override
+				public boolean act(float delta) {
+					PotatoActor me = PotatoActor.this;
+					me.remove();
+					t.addActor(me);
+					me.setPosition(80, 30);
+					return true;
+				}
+			};
+			
+			SequenceAction moveSequence = new SequenceAction(flip, to, endMoveAction, endAction);
+			this.addAction(moveSequence);
+		}
+		
 		public Unit getUnit(){
 			return this.gameUnit;
 		}

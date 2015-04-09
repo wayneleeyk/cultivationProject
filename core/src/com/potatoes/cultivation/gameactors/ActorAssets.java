@@ -97,6 +97,9 @@ public class ActorAssets  {
 		stringToAtlasRegion.put("village_town", village_town);
 		stringToAtlasRegion.put("village_fort", village_fort);
 		stringToAtlasRegion.put("village_castle", village_castle);
+		
+		AtlasRegion road = mySprites.findRegion("road");
+		stringToAtlasRegion.put("road", road);
 	}
 	
 	public static Animation newAnimation(TextureRegion sprite, int row, int col, float frameDuration) {

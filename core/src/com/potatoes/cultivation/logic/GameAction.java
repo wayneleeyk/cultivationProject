@@ -2,6 +2,8 @@ package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
 
+import com.badlogic.gdx.scenes.scene2d.Action;
+
 public interface GameAction extends Serializable {
 	public void execute(CultivationGame game);
 	
@@ -51,11 +53,26 @@ public interface GameAction extends Serializable {
 			target = destTile;
 		}
 		@Override
-		public void execute(CultivationGame game) {
-			Unit unit = game.getGameMap().getMap()[unitTile.x][unitTile.y].occupant;
-			if(game.moveUnit(unit, game.getGameMap().getMap()[target.x][target.y])){
-				game.getWorld().movePotato(unitTile.x, unitTile.y, target.x, target.y);
+		public void execute(final CultivationGame game) {
+			final Unit unit = game.getGameMap().getMap()[unitTile.x][unitTile.y].occupant;
+			final Tile targetTile = game.getGameMap().getMap()[target.x][target.y];
+			
+			// MoveV2, if this causes any unknown problem use V1
+			if(targetTile.tryInvadeCheck(unit)) {
+				Action moveUnit = new Action() {
+					@Override
+					public boolean act(float delta) {
+						game.moveUnit(unit, targetTile);
+						return true;
+					}
+				};
+				game.getWorld().movePotatoV2(unitTile.x, unitTile.y, target.x, target.y, moveUnit);
 			}
+			
+			// MoveV1
+//			if(game.moveUnit(unit, game.getGameMap().getMap()[target.x][target.y])){
+//				game.getWorld().movePotato(unitTile.x, unitTile.y, target.x, target.y);
+//			}
 		}
 	}
 	
