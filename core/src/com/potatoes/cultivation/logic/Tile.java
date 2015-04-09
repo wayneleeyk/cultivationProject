@@ -28,7 +28,7 @@ public class Tile implements Serializable{
 		this.occupant = u;
 	}
 	public void addStructure(StructureType structure){
-		System.out.println("adding " + structure + " to tile "+ x + "," + y);
+		getVillage().removeWood(structure.getCost());
 		this.structure = structure;
 	}
 	

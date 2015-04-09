@@ -25,6 +25,7 @@ import com.potatoes.cultivation.logic.GameAction.MoveUnitAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.GameMap.MapDirections;
+import com.potatoes.cultivation.logic.StructureType;
 import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
@@ -264,7 +265,7 @@ public class HUD2 extends Stage {
 		}		
 		public void disableVillageButtonsAccordingly() {
 			VillageType myType = myVillageActor.getVillage().getType();
-			if (myType==VillageType.Hovel) {
+			if (myType==VillageType.Hovel || myVillageActor.getVillage().getWood()<StructureType.Watchtower.getCost()) {
 				buildWatchtower.setDisabled(true);
 			} else {
 				buildWatchtower.setDisabled(false);
