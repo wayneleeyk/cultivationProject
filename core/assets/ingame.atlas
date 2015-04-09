@@ -207,6 +207,13 @@ tile_tree_yellow
   orig: 308, 99
   offset: 0, 0
   index: -1
+tower
+  rotate: false
+  xy: 932, 863
+  size: 70, 120
+  orig: 70, 120
+  offset: 0, 0
+  index: -1
 village-castle
   rotate: false
   xy: 622, 593

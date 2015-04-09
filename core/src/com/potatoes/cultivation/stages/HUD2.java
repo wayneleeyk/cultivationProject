@@ -84,7 +84,6 @@ public class HUD2 extends Stage {
 		if(game.isMyTurn(currentPlayer) && targetVillageActor != null && targetVillageActor.getVillage().getOwner().equals(currentPlayer)) {
 			if(!villageMenu.isVisible()) villageMenu.setVisible(true);
 			villageMenu.setVillageActor(targetVillageActor);
-			System.out.println("Village clicked is type: " + targetVillageActor.getVillage().getType() );
 		}
 		else {
 			villageMenu.setVisible(false);
@@ -98,7 +97,6 @@ public class HUD2 extends Stage {
 			if(!potatoMenu.isVisible()) potatoMenu.setVisible(true);
 			potatoMenu.setPotatoActor(targetPotatoActor);
 			potatoMenu.disableButtonsAccordingly();
-			System.out.println("Potato is type: " + targetPotatoActor.getUnit().getType());
 		}
 		else {
 			potatoMenu.setVisible(false);
