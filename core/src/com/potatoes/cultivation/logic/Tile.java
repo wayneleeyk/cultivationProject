@@ -121,6 +121,7 @@ public class Tile implements Serializable{
 				// If there's someone
 				if (occupant!=null) {
 					// If one of our unit is there, we don't crush it
+					// We can also push combining unit logic here, before returning false
 					if(owner.equals(tileOfUnit.getPlayer())) return false;
 					// Else we crush it
 					System.out.println("There is an occupant at destination");

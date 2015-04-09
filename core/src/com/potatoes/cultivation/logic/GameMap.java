@@ -255,6 +255,9 @@ public class GameMap implements Serializable {
 					Tile tile = u.getTile();
 					tile.addStructure(StructureType.Road);
 				}
+				else {
+					u.updateAction(ActionType.ReadyForOrders);
+				}
 			}
 		}
 	}
@@ -428,6 +431,8 @@ public class GameMap implements Serializable {
 				Tile aTile = regionalTiles.iterator().next();
 				Village v = new Village(tile.getPlayer(), r, aTile);
 				r.setVillage(v);
+				// Change the village tile to a grass one
+				aTile.updateLandType(LandType.Grass);
 				this.regions.get(tile.getPlayer()).add(r);
 				//Remove these regional tiles from tiles list
 				for (Tile rTile : regionalTiles) {
@@ -453,6 +458,19 @@ public class GameMap implements Serializable {
 			it.remove();
 		}
 		return item;
+	}
+
+	public void updateUnitActions(Player p) {
+		for(Region r : getRegions(p)) {
+			for(Unit u : r.getUnits()) {
+				if(!u.currentAction.equals(ActionType.StartCultivating)) {
+					u.currentAction = ActionType.ReadyForOrders;
+				}
+				else {
+					u.currentAction = ActionType.FinishCultivating;
+				}
+			}
+		}
 	}
 
 }

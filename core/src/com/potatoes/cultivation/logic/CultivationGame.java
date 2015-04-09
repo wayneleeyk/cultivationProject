@@ -17,7 +17,7 @@ public class CultivationGame implements Serializable {
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
-		map = new GameMap(30, 10, participants);
+		map = new GameMap(20, 20, participants);
 		System.out.println("Made new game map");
 		this.roundsPlayed = 0;
 		
@@ -56,9 +56,9 @@ public class CultivationGame implements Serializable {
 	// Mang0-Tang0
 	public void beginTurn(Player p) {
 		map.clearTombstones(p);
+		// Produce Meadow, Roads and ALSO updates unit ActionType (even those that are chopping trees)
 		map.produceMeadowsRoads(p);
 		updateGoldEconomy(p);
-
 	}
 
 	// return true if the village was successfully upgraded
