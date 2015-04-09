@@ -86,6 +86,7 @@ public class HUD2 extends Stage {
 			if(!villageMenu.isVisible()) villageMenu.setVisible(true);
 			villageMenu.setVillageActor(targetVillageActor);
 			villageMenu.disableVillageButtonsAccordingly();
+			System.out.println("Clicked Village type " + targetVillageActor.getVillage().getType());
 		}
 		else {
 			villageMenu.setVisible(false);
@@ -264,13 +265,20 @@ public class HUD2 extends Stage {
 			this.setPosition(menuCoord.x - 100, menuCoord.y);	
 		}		
 		public void disableVillageButtonsAccordingly() {
+			Village myVillage = myVillageActor.getVillage();
 			VillageType myType = myVillageActor.getVillage().getType();
-			if (myType==VillageType.Hovel || myVillageActor.getVillage().getWood()<StructureType.Watchtower.getCost()) {
+			if (myType==VillageType.Hovel || myVillage.getWood()<StructureType.Watchtower.getCost()) {
 				buildWatchtower.setDisabled(true);
 			} else {
 				buildWatchtower.setDisabled(false);
 			}
 			if (myType==VillageType.Castle) {
+				upgradeVillage.setDisabled(true);
+			} else if (myType==VillageType.Hovel && myVillage.getWood()<VillageType.Town.getCost()) {
+				upgradeVillage.setDisabled(true);
+			} else if (myType==VillageType.Town && myVillage.getWood()<VillageType.Fort.getCost()) {
+				upgradeVillage.setDisabled(true);
+			} else if (myType==VillageType.Fort && myVillage.getWood()<VillageType.Castle.getCost()) {
 				upgradeVillage.setDisabled(true);
 			} else {
 				upgradeVillage.setDisabled(false);

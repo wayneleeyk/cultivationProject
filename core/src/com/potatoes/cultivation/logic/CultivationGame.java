@@ -137,7 +137,7 @@ public class CultivationGame implements Serializable {
 			Set<Tile> myTiles = myRegion.getTiles();
 			
 			//If village v is a castle, pay for upkeep
-			if (v.getType().equals(VillageType.Castle)) {
+			if (v.getType().equals(VillageType.Castle) && v.getStatus()!=VillageStatus.StartUpgrading && v.getStatus()!=VillageStatus.StillUpgrading) {
 				boolean success = v.removeGold(80);//80 gold? what a rip off!
 				if (!success) {
 					//If can't afford to pay for castle,
