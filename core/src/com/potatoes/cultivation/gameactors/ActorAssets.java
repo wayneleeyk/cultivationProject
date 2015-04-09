@@ -106,6 +106,9 @@ public class ActorAssets  {
 		
 		AtlasRegion tower = mySprites.findRegion("tower");
 		stringToAtlasRegion.put("tower", tower);
+		
+		AtlasRegion tombstone = mySprites.findRegion("tombstone");
+		stringToAtlasRegion.put("tombstone", tombstone);
 	}
 	
 	public static Animation newAnimation(TextureRegion sprite, int row, int col, float frameDuration) {

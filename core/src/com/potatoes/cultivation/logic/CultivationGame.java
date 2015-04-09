@@ -148,30 +148,45 @@ public class CultivationGame implements Serializable {
 				}
 			}
 			//For each tile, generate gold depending on its landtype
+			//and pay unit if a unit is on tile
 			for (Tile t : myTiles) {
 				LandType myLandType = t.getLandType();
 				int value = myLandType.getGoldValue(myLandType);
 				v.addGold(value);
+				if (t.getUnit()!=null) {
+					UnitType uType = t.getUnit().getType();
+					int salary = uType.getSalary();
+					boolean success = v.removeGold(salary);
+					//If fail to pay villager, it dies and gets buried
+					if (success == false) {
+						System.out.println("CAN'T PAY UNIT. MAKE A TOMBSTONE!!");
+//						Cultivation.GAMEMANAGER.getGame().getWorld().removePotatoAt(t.x, t.y);
+//						t.setUnit(null);
+						t.getRegion().killUnit(t.getUnit());
+						t.addStructure(StructureType.Tombstone);
+					}
+				}
 			}
 			
 			//Pay villagers their wage
-			Set<Unit> myUnits = myRegion.getUnits();
-			Iterator<Unit> myUit = myUnits.iterator();
-			while(myUit.hasNext()) {
-				Unit u = myUit.next();
-				UnitType uType = u.getType();
-				int salary = uType.getSalary();
-				boolean success = v.removeGold(salary);
-				//If fail to pay villager, it dies and gets buried
-				if (success == false) {
-					Tile myTile = u.getTile();
-					myUit.remove();
-					
-					Cultivation.GAMEMANAGER.getGame().getWorld().removePotatoAt(myTile.x, myTile.y);
-					myTile.setUnit(null);
-					myTile.addStructure(StructureType.Tombstone);
-				}
-			}
+//			Set<Unit> myUnits = myRegion.getUnits();
+//			Iterator<Unit> myUit = myUnits.iterator();
+//			while(myUit.hasNext()) {
+//				Unit u = myUit.next();
+//				UnitType uType = u.getType();
+//				int salary = uType.getSalary();
+//				System.out.println("list of units" + myUnits);
+//				boolean success = v.removeGold(salary);
+//				//If fail to pay villager, it dies and gets buried
+//				if (success == false) {
+//					System.out.println("CAN'T PAY UNIT. MAKE A TOMBSTONE!!");
+//					Tile myTile = u.getTile();
+//					myUit.remove();
+//					Cultivation.GAMEMANAGER.getGame().getWorld().removePotatoAt(myTile.x, myTile.y);
+//					myTile.setUnit(null);
+//					myTile.addStructure(StructureType.Tombstone);
+//				}
+//			}
 //			for (Unit u : myUnits) {
 //				UnitType uType = u.getType();
 //				int salary = uType.getSalary();

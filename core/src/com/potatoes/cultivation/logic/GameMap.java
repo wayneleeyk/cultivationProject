@@ -310,7 +310,7 @@ public class GameMap implements Serializable {
 		for (Tile t : tombstoneTiles) {
 			//Destroy tombstone and update land type to grass
 			t.destroyStructure();
-			t.updateLandType(LandType.Grass);
+			t.updateLandType(LandType.Tree);
 		}
 	}
 

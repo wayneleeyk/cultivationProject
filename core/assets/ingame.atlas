@@ -207,6 +207,13 @@ tile_tree_yellow
   orig: 308, 99
   offset: 0, 0
   index: -1
+tombstone
+  rotate: false
+  xy: 932, 781
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
 tower
   rotate: false
   xy: 932, 863

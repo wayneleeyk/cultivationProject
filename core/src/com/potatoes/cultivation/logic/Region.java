@@ -54,8 +54,10 @@ public class Region implements Serializable{
 	
 	public void killUnit(Unit u){
 		Cultivation.GAMEMANAGER.getGame().getWorld().removePotatoAt(u.myTile.x, u.myTile.y);
-		myUnits.remove(u);
 		u.myTile.setUnit(null);
+		if (!myUnits.remove(u)) {
+			System.out.println("failed to remove unit................ not supposed to happen!");
+		}
 	}
 	
 	public int size(){
