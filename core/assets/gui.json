@@ -16,7 +16,8 @@
         light-red: {r:1, g:0, b:0, a:1},
     },
     com.badlogic.gdx.graphics.g2d.BitmapFont: {
-        pixFont-small: { file: gui/pixFont.fnt }
+        pixFont-small: { file: gui/pixFont.fnt },
+        pixFont-mini: { file: gui/pixFont-mini.fnt }
     }, 
     com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
         onepix-orange: { name: onepix, color: orange },
@@ -41,7 +42,8 @@
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
     	default: { font: pixFont-small, fontColor: light-black },
     	white: { font: pixFont-small, fontColor: white },
-    	stats: { font: pixFont-small, fontColor: white, background: onepix-light-brown }
+    	stats: { font: pixFont-small, fontColor: white, background: onepix-light-brown },
+    	default-mini: { font: pixFont-mini, fontColor: light-black }
 	}
 	com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		arrow-up: { up: arrow-up },

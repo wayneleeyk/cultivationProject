@@ -29,7 +29,7 @@ public class InGame2 extends ScreenAdapter {
 	public InGame2(final Cultivation pGame, CultivationGame pGameRound) {
 		aGame = pGame;
 		aRound = pGameRound;
-		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class));
+		ActorAssets assets = new ActorAssets(pGame.manager.get("ingame.atlas", TextureAtlas.class), pGame.skin);
 		
 		ClickManager cm = new ClickManager();		
 		hud = new HUD2(pGame, cm);
