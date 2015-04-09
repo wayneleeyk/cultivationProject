@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.stages.GameWorld;
 
 public class CultivationGame implements Serializable {
@@ -60,6 +61,7 @@ public class CultivationGame implements Serializable {
 		map.clearTombstones(p);
 		// Produce Meadow, Roads and ALSO updates unit ActionType (even those that are chopping trees)
 		map.produceMeadowsRoads(p);
+		map.updateVillageStatus(p);
 		updateGoldEconomy(p);
 	}
 
@@ -81,9 +83,9 @@ public class CultivationGame implements Serializable {
 		int woodCount = v.getWood();
 		int cost = type.getCost();
 		if (woodCount >= cost) {
-			v.setType(type);
 			v.removeWood(cost);
 			villageUpgraded = true;
+			v.updateStatus(VillageStatus.StartUpgrading);
 		}
 		return villageUpgraded;
 	}

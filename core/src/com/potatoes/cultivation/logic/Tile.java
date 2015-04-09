@@ -148,11 +148,11 @@ public class Tile implements Serializable{
 					System.out.println("There is a tree at destination");
 					myType = LandType.Grass;
 					u.myVillage.addWood(1);
-					u.updateAction(ActionType.ChoppingTree);
+					u.updateAction(ActionType.ChoppedTree);
 				}
 				if (structure == StructureType.Tombstone) {
 					System.out.println("There is a tombstone at destination");
-					u.updateAction(ActionType.ClearingTombStone);
+					u.updateAction(ActionType.ClearedTombStone);
 					structure = StructureType.None;
 				}
 				if (structure!=StructureType.Road && (u.getType()==UnitType.Knight || u.getType()==UnitType.Soldier || u.getType()==UnitType.Cannon) && myType==LandType.Meadow) {
