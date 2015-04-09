@@ -84,7 +84,7 @@ public class Region implements Serializable{
 		Cultivation.GAMEMANAGER.getGameMap().deleteRegion(r);
 	}
 	
-	public boolean sameAs(Region other){
+	public boolean hasSameTilesAs(Region other){
 		return this.myTiles.containsAll(other.myTiles) && other.myTiles.containsAll(this.myTiles);
 	}
 	

@@ -1,5 +1,8 @@
 package com.potatoes.cultivation.stages;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,6 +29,7 @@ public class GameWorld extends Stage{
 	ActorAssets assets;
 
 	ProtocolHandler<MapCoordinates> villageLocator;
+	public Queue<MapCoordinates> villageConstructionSites = new ConcurrentLinkedQueue<>();
 	
 	public GameWorld(CultivationGame aRound, ActorAssets actorAssets, ClickManager aCM) {
 		gameRound = aRound;
@@ -125,6 +129,7 @@ public class GameWorld extends Stage{
 	}
 	
 	public void createVillageAt(int x, int y){
+		System.out.println("Setting up village image at "+x+" "+y);
 		TileActor tile = tiles[x][y];
 		Tile t = tile.getTile();
 		VillageActor villageActor = new VillageActor(t.getVillage(), assets, cm);
@@ -185,5 +190,13 @@ public class GameWorld extends Stage{
 			village.remove();
 			System.out.println("Removing village actor at "+x+" "+y+" done:"+tileActor.findActor("VillageActor")==null);
 		}
+	}
+
+	public void createVillageAt(MapCoordinates result) {
+		this.villageConstructionSites.add(result);
+	}
+	
+	public MapCoordinates getNextVillageConstructionSite(){
+		return this.villageConstructionSites.poll();
 	}
 }

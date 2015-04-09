@@ -138,9 +138,9 @@ public class Server implements Runnable{
 	}
 	
 	void propagate(Player sender, CreateVillageProtocol village){
-		System.out.println("Propagating village location");
 		village.clearSender();
 		for (Player p : opponentsOf(sender)) {
+			System.out.println("Propagating village location from "+sender+ " to "+ p);
 			User user = usernameToUser.get(p.getUsername());
 			queue.add(new ServerTask(user.oos ,village));
 		}
