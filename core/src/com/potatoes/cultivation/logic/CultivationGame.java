@@ -60,14 +60,6 @@ public class CultivationGame implements Serializable {
 		map.clearTombstones(p);
 		// Produce Meadow, Roads and ALSO updates unit ActionType (even those that are chopping trees)
 		map.produceMeadowsRoads(p);
-		Tile[][] tiles = map.getMap();
-		for (Tile[] column : tiles) {
-			for (Tile tile : column) {
-				if(tile.occupant!=null){
-					tile.occupant.updateAction(ActionType.ReadyForOrders);
-				}
-			}
-		}
 		updateGoldEconomy(p);
 	}
 
