@@ -103,11 +103,13 @@ public class HUD2 extends Stage {
 			potatoMenu.setVisible(false);
 		}
 		//Check if player wants to build watchtower
-		if (cm.secondaryClickEnabled() && cm.getVillageActor()!=null) {
-			if (cm.getTileActor()!=null) {
-				Tile t = cm.getTileActor().getTile();
-				System.out.println("Adding tower to tile.." + cm.getTileActor().getX()+","+cm.getTileActor().getX());
-				GameAction.BuildWatchtowerAction gameAction = new GameAction.BuildWatchtowerAction(t);
+		if (cm.secondaryClickEnabled() && targetVillageActor !=null) {
+			TileActor targetTile = cm.getTileActor();
+			if (targetTile != null 
+					&& targetTile.getTile().getVillage() != null 
+					&& targetTile.getTile().getVillage().equals(targetVillageActor.getVillage())) {
+				System.out.println("Adding tower to tile.." + targetTile.getX()+","+ targetTile.getY());
+				GameAction.BuildWatchtowerAction gameAction = new GameAction.BuildWatchtowerAction(targetTile.getTile());
 				gameApp.client.sendActions(gameAction);
 				cm.reset();
 			}

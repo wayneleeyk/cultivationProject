@@ -204,6 +204,7 @@ public class Tile implements Serializable{
 			}
 			// If it's not a sea, and (unowned or invadable or ours)
 			else if (myType!= LandType.Sea && (owner == null || owner.equals(tileOfUnit.getPlayer()) || this.canInvade(u))) {
+				if (occupant!=null && owner.equals(tileOfUnit.getPlayer())) return false;
 				moved = true;
 			}
 		}

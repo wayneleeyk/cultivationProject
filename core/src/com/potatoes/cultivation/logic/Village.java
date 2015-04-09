@@ -169,6 +169,7 @@ public class Village implements Comparable<Village>, Serializable {
 		if (myType == VillageType.Hovel) type = VillageType.Town;
 		if (myType == VillageType.Town) type = VillageType.Fort;
 		if (myType == VillageType.Fort) type = VillageType.Castle;
+		if (myType == VillageType.Castle) return;
 		setType(type);
 	}
 	
