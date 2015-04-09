@@ -16,7 +16,6 @@ import java.util.Stack;
 import com.badlogic.gdx.utils.Predicate;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.Village.VillageStatus;
-import com.potatoes.cultivation.networking.ProtocolHandler;
 import com.potatoes.cultivation.stages.GameWorld;
 
 public class GameMap implements Serializable {
@@ -165,7 +164,7 @@ public class GameMap implements Serializable {
 
 	public static class MapCoordinates implements Serializable{
 		private static final long serialVersionUID = -5390246105930686786L;
-		private int i;
+		int i;
 		int j;
 
 		public MapCoordinates(int i, int j) {
@@ -174,12 +173,12 @@ public class GameMap implements Serializable {
 		}
 
 		public MapCoordinates go(MapDirections direction) {
-			return new MapCoordinates(this.i() + direction.iShift, this.j
+			return new MapCoordinates(this.i + direction.iShift, this.j
 					+ direction.jShift);
 		}
 
 		public Tile getTile(GameMap gameMap){
-			if(i() >= 0 && i() < gameMap.map.length && j >= 0 && j<gameMap.map[0].length) return gameMap.map[i()][j];
+			if(i() >= 0 && i() < gameMap.map.length && j >= 0 && j<gameMap.map[0].length) return gameMap.map[i][j];
 			return null;
 		}
 
@@ -187,7 +186,7 @@ public class GameMap implements Serializable {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = prime * result + i();
+			result = prime * result + i;
 			result = prime * result + j;
 			return result;
 		}
@@ -201,7 +200,7 @@ public class GameMap implements Serializable {
 			if (getClass() != obj.getClass())
 				return false;
 			MapCoordinates other = (MapCoordinates) obj;
-			if (i() != other.i())
+			if (i != other.i())
 				return false;
 			if (j != other.j)
 				return false;
@@ -210,7 +209,7 @@ public class GameMap implements Serializable {
 
 		@Override
 		public String toString() {
-			return "MapCoordinate("+this.i()+","+this.j+")";
+			return "MapCoordinate("+this.i+","+this.j+")";
 		}
 
 		public int i() {
@@ -253,8 +252,10 @@ public class GameMap implements Serializable {
 		Set<Tile> tiles = getNeighbouringTiles(t);
 		Set<Region> brokenRegions = new HashSet<>();
 		System.out.println("Region before breaking up has size "+ r.size());
+		
 		for (Tile tile : tiles) {
 			if(tile.owner != null && tile.owner.equals(r.getOwner())){
+				System.out.println("Victim is "+r.getOwner()+ " tile owner is "+tile.owner);
 				List<Tile> regionTiles = bfsTileOfRegion(tile);
 				System.out.println("subregion has size "+regionTiles.size());
 				Region region = new Region(null);
@@ -282,6 +283,14 @@ public class GameMap implements Serializable {
 						System.out.println("Made village "+village);
 					}
 					region.setVillage(village);
+					// transfer units from old region to new separated region
+					for (Tile regionalTile : region.getTiles()) {
+						
+						if(regionalTile.occupant!=null){
+							System.out.println("Transfering "+regionalTile.occupant+ " at "+regionalTile+" to new region "+region);
+							regionalTile.occupant.myVillage = village;
+						}
+					}
 					brokenRegions.add(region);
 					Cultivation.GAMEMANAGER.getGame().getWorld().createVillageAt(village.getTile().x, village.getTile().y);
 				}
@@ -309,6 +318,7 @@ public class GameMap implements Serializable {
 		Set<Village> villages = getVillages(p);
 		for (Village v : villages) {
 			Set<Unit> units = v.getRegion().getUnits();
+			System.out.println("Updating turn for units of village "+ v+ " "+units);
 			for (Unit u : units) {
 				if (u.getCurrentAction()==ActionType.StartCultivating) {
 					u.updateAction(ActionType.FinishCultivating);
@@ -347,20 +357,23 @@ public class GameMap implements Serializable {
 
 	public void takeOverTile(Tile target) {
 		Region victimRegion = target.getRegion();
-		Player enemy = target.getPlayer();
-		System.out.println("Taking over enemy region "+ victimRegion+" of "+enemy);
+		System.out.println("Victim "+victimRegion.getOwner()+" region has "+victimRegion.getTiles());
+		Player victim = target.getPlayer();
+		System.out.println("Taking over enemy region "+ victimRegion+" of "+victim);
 		Unit invadingUnit = target.getUnit();
 		Village invaderVillage = invadingUnit.getVillage();
 		Player invadingOwner = invaderVillage.getOwner();
 		Region invaderRegion = invaderVillage.getRegion();
 		target.owner = target.occupant.myVillage.getOwner();
+
 		target.updateOwner(invadingOwner);
 		victimRegion.removeTile(target);
 		invaderRegion.addTile(target);
-		Set<Village> villages = getVillages(enemy);
+		Set<Village> villages = getVillages(victim);
+
 		// check if the tile is a village tile
 		for (Village village : villages) {
-			if(target.equals(village.getTile())){
+			if(target.equals(village.getTile())){	// the tile under the invaded village
 				invaderVillage.addGold(village.getGold());
 				invaderVillage.addWood(village.getWood());
 				// generate a new village
@@ -368,7 +381,7 @@ public class GameMap implements Serializable {
 				Region region = village.getRegion();
 				List<Tile> regionTiles = new LinkedList<>(region.getTiles());
 				if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
-					village = new Village(target.owner, region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+					village = new Village(victim, region, regionTiles.get(new Random().nextInt(regionTiles.size())));
 					Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
 					region.setVillage(village);
 				}
@@ -378,14 +391,17 @@ public class GameMap implements Serializable {
 						System.out.println("Polling for coordinates");
 						coordinates = Cultivation.GAMEMANAGER.getGame().getWorld().getNextVillageConstructionSite(region);
 					}
-					village = new Village(target.owner, region, this.map[coordinates.i()][coordinates.j]);
+					village = new Village(victim, region, this.map[coordinates.i()][coordinates.j]);
 					region.setVillage(village);
 				}
+
 				break;
 			}
 		}
+		Cultivation.GAMEMANAGER.getGame().getWorld().villageConstructionSites.clear();
 
 		// break apart the region if at a branch point
+		System.out.println("Victim "+victimRegion.getOwner()+" region has "+victimRegion.getTiles()+ " target tile is "+ target);
 		Set<Region> regions = breakUpRegion(victimRegion,target);
 		if(regions.size() > 1) System.out.println("Regions are broken up into "+regions.size());
 		for (Region region : regions) {
