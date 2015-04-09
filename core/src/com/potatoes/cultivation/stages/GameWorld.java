@@ -17,12 +17,15 @@ import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.GameMap.MapDirections;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
+import com.potatoes.cultivation.networking.ProtocolHandler;
 
 public class GameWorld extends Stage{
 	public TileActor[][] tiles;
 	CultivationGame gameRound;
 	ClickManager cm;
 	ActorAssets assets;
+
+	ProtocolHandler<MapCoordinates> villageLocator;
 	
 	public GameWorld(CultivationGame aRound, ActorAssets actorAssets, ClickManager aCM) {
 		gameRound = aRound;
@@ -76,6 +79,14 @@ public class GameWorld extends Stage{
 	
 	public void setAssetManager(ActorAssets a) {
 		this.assets = a;
+	}
+	
+	public void setVillageLocator(ProtocolHandler<MapCoordinates> handler){
+		this.villageLocator = handler;
+	}
+	
+	public ProtocolHandler<MapCoordinates> getVillageLocator(){
+		return this.villageLocator;
 	}
 	
 	private void addDragControls() {

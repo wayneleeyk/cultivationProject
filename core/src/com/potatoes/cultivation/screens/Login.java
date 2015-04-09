@@ -53,6 +53,7 @@ public class Login extends ScreenAdapter {
 			@Override
 			public void handle(Protocol p) {
 				if(p instanceof LoginProtocol) {
+					System.out.println("Handling login");
 					game.setPlayer(((LoginProtocol) p).player());
 				}
 			}

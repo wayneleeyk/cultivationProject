@@ -137,6 +137,15 @@ public class Server implements Runnable{
 		}
 	}
 	
+	void propagate(Player sender, CreateVillageProtocol village){
+		System.out.println("Propagating village location");
+		village.clearSender();
+		for (Player p : opponentsOf(sender)) {
+			User user = usernameToUser.get(p.getUsername());
+			queue.add(new ServerTask(user.oos ,village));
+		}
+	}
+	
 	void propagate(Player sender, ActionBlockProtocol actionBlock){
 		System.out.println("Propagating actions");
 		actionBlock.clearSender();
@@ -177,6 +186,7 @@ public class Server implements Runnable{
 		System.out.println("Login with username:"+username+" password:"+password);
 		this.readAccounts(accounts);
 		if( !password.equals("") && this.getOrDefault(username).equals(password)){
+			System.out.println(username +" has logged on");
 			return new Player(username);
 		}
 		return Player.nullPlayer;

@@ -15,6 +15,7 @@ import java.util.Stack;
 
 import com.badlogic.gdx.utils.Predicate;
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.networking.ProtocolHandler;
 
 public class GameMap implements Serializable {
 	private static final long serialVersionUID = 1777608645753451446L;
@@ -160,7 +161,8 @@ public class GameMap implements Serializable {
 		return neighbours;
 	}
 
-	public static class MapCoordinates {
+	public static class MapCoordinates implements Serializable{
+		private static final long serialVersionUID = -5390246105930686786L;
 		int i, j;
 
 		public MapCoordinates(int i, int j) {
@@ -240,8 +242,20 @@ public class GameMap implements Serializable {
 				List<Tile> regionTiles = bfsTileOfRegion(tile);
 				System.out.println("subregion has size "+regionTiles.size());
 				Region region = new Region(null);
-				Village village = new Village(r.getOwner(), region, regionTiles.get(new Random().nextInt(regionTiles.size())));
-				System.out.println("Region "+region+" has village at "+village.getTile());
+				Village village = null;
+				if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
+					village = new Village(r.getOwner(), region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+					Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
+				}
+				else{
+					MapCoordinates coordinates = null;
+					ProtocolHandler<MapCoordinates> villageLocator = Cultivation.GAMEMANAGER.getGame().getWorld().getVillageLocator();
+					while(coordinates == null){
+						coordinates = villageLocator.getResult();
+					}
+					villageLocator.reset();
+					village = new Village(r.getOwner(), region, this.map[coordinates.i][coordinates.j]);
+				}
 				region.setVillage(village);
 				region.addTiles(regionTiles);
 				boolean repeat = false;

@@ -10,7 +10,9 @@ import com.potatoes.cultivation.gameactors.ActorAssets;
 import com.potatoes.cultivation.helpers.ClickManager;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
+import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.networking.ActionBlockProtocol;
+import com.potatoes.cultivation.networking.CreateVillageProtocol;
 import com.potatoes.cultivation.networking.Protocol;
 import com.potatoes.cultivation.networking.ProtocolHandler;
 import com.potatoes.cultivation.stages.GameWorld;
@@ -22,6 +24,7 @@ public class InGame2 extends ScreenAdapter {
 	GameWorld world;
 	HUD2 hud;
 	ProtocolHandler<GameAction[]> updates;
+	ProtocolHandler<MapCoordinates> villageSpawnHandler;
 	
 	public InGame2(final Cultivation pGame, CultivationGame pGameRound) {
 		aGame = pGame;
@@ -67,6 +70,16 @@ public class InGame2 extends ScreenAdapter {
 			
 		};
 		aGame.client.insertHandler(updates);
+		villageSpawnHandler = new ProtocolHandler<MapCoordinates>() {
+			@Override
+			public void handle(Protocol p) {
+				if(p instanceof CreateVillageProtocol) {
+					result = ((CreateVillageProtocol) p).getVillageLocation();
+				}
+			}
+		};
+		aGame.client.insertHandler(villageSpawnHandler);
+		world.setVillageLocator(villageSpawnHandler);
 	}
 	
 	private void gameUpdate() {

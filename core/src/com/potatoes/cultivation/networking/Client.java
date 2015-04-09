@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.logic.CultivationGame;
 import com.potatoes.cultivation.logic.GameAction;
-//import com.potatoes.cultivation.logic.Command;
+import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.Player;
 
 public class Client{
@@ -30,6 +30,8 @@ public class Client{
 	Cultivation game;
 	ObjectOutputStream out;
 	ObjectInputStream in;
+	
+	public Player player = null;
 	
 	public Client(final Cultivation game, String host, int port) {
 		this.host = host;
@@ -238,6 +240,15 @@ public class Client{
 		try {
 			out.reset();
 			out.writeObject(new ActionBlockProtocol(game.player, actions));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void sendVillageLocation(MapCoordinates mapCoordinates) {
+		try {
+			out.reset();
+			out.writeObject(new CreateVillageProtocol(game.player, mapCoordinates));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

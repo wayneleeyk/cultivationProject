@@ -66,7 +66,12 @@ public class Cultivation extends Game {
 	}
 	
 	public void setPlayer(Player p) {
-		player = p;
+		this.player = p;
+		CLIENT.player = p;
+	}
+	
+	public Player getPlayer(){
+		return CLIENT.player;
 	}
 	
 	public void updateRoomPlayerList(Set<Player> list) {

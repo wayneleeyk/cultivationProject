@@ -39,7 +39,9 @@ import com.potatoes.cultivation.logic.Unit;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
 import com.potatoes.cultivation.logic.VillageType;
+import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.networking.ActionBlockProtocol;
+import com.potatoes.cultivation.networking.CreateVillageProtocol;
 import com.potatoes.cultivation.networking.Protocol;
 import com.potatoes.cultivation.networking.ProtocolHandler;
 import com.potatoes.cultivation.stages.HUD;
@@ -67,6 +69,7 @@ public class InGame extends ScreenAdapter {
 	List<PotatoImage> unitImages;
 
 	ProtocolHandler<GameAction[]> updates;
+	ProtocolHandler<MapCoordinates> villageSpawnHandler;
 	
 	public InGame(final Cultivation pGame, CultivationGame aGameRound) {
 		this.game = pGame;
@@ -312,7 +315,6 @@ public class InGame extends ScreenAdapter {
 			
 		};
 		game.client.insertHandler(updates);
-		
 		
 		/////////////////////////////////////////////
 	}
