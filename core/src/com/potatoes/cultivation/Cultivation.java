@@ -46,7 +46,7 @@ public class Cultivation extends Game {
 		loadFiles();
 		manager.finishLoading();
 		skin = manager.get("gui.json", Skin.class);
-		this.setScreen(new Login(this));
+		this.setScreen(new Splash(this));
 //		this.setScreen(new GameRoom(this, 0));
 //		this.setScreen(new TestScreen(this));
 	}

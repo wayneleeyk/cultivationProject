@@ -337,22 +337,22 @@ public class HUD2 extends Stage {
 		leftSide.setHeight(height-50);
 		leftSide.setWidth(40);
 		leftSide.setY(50);
-		leftSide.setDebug(true);
+//		leftSide.setDebug(true);
 		
 		rightSide.setHeight(height-60);
 		rightSide.setWidth(40);
 		rightSide.setX(width-40);
-		rightSide.setDebug(true);
+//		rightSide.setDebug(true);
 		
 		topSide.setWidth(width-180);
 		topSide.setHeight(60);
 		topSide.setY(height-60);
-		topSide.setDebug(true);
+//		topSide.setDebug(true);
 		
 		bottomSide.setWidth(width-160);
 		bottomSide.setX(160);
 		bottomSide.setHeight(40);
-		bottomSide.setDebug(true);
+//		bottomSide.setDebug(true);
 		
 		this.addActor(leftSide);
 		this.addActor(rightSide);
