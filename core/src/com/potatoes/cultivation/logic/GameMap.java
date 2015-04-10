@@ -253,6 +253,8 @@ public class GameMap implements Serializable {
 		Set<Region> brokenRegions = new HashSet<>();
 		System.out.println("Region before breaking up has size "+ r.size());
 		
+		Village original = r.getVillage();
+		
 		for (Tile tile : tiles) {
 			if(tile.owner != null && tile.owner.equals(r.getOwner())){
 				System.out.println("Victim is "+r.getOwner()+ " tile owner is "+tile.owner);
@@ -265,27 +267,32 @@ public class GameMap implements Serializable {
 					if(established.hasSameTilesAs(region)) repeat = true;
 				}
 				if(!repeat) {
-					
-					Village village;
-					if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
-						village = new Village(r.getOwner(), region, regionTiles.get(new Random().nextInt(regionTiles.size())));
-						Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
-						System.out.println("Sent village for subregion at "+village.getTile().x+" "+village.getTile().y);
+					Village village = null;
+					if(regionTiles.contains(original.getTile())){
+						village = original;
+						System.out.println("Reusing original village");
 					}
 					else{
-						GameWorld world = Cultivation.GAMEMANAGER.getGame().getWorld();
-						MapCoordinates constructionSite = world.getNextVillageConstructionSite(region);
-						while(constructionSite==null) {
-							constructionSite = world.getNextVillageConstructionSite(region);
+						// make new village
+						if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
+							village = new Village(r.getOwner(), region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+							Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
+							System.out.println("Sent village for subregion at "+village.getTile().x+" "+village.getTile().y);
 						}
-						System.out.println("Received village for subregion at "+constructionSite);
-						village = new Village(r.getOwner(), region, this.map[constructionSite.i()][constructionSite.j]);
-						System.out.println("Made village "+village);
+						else{
+							GameWorld world = Cultivation.GAMEMANAGER.getGame().getWorld();
+							MapCoordinates constructionSite = world.getNextVillageConstructionSite(region);
+							while(constructionSite==null) {
+								constructionSite = world.getNextVillageConstructionSite(region);
+							}
+							System.out.println("Received village for subregion at "+constructionSite);
+							village = new Village(r.getOwner(), region, this.map[constructionSite.i()][constructionSite.j]);
+							System.out.println("Made village "+village);
+						}
 					}
 					region.setVillage(village);
 					// transfer units from old region to new separated region
 					for (Tile regionalTile : region.getTiles()) {
-						
 						if(regionalTile.occupant!=null){
 							System.out.println("Transfering "+regionalTile.occupant+ " at "+regionalTile+" to new region "+region);
 							regionalTile.occupant.myVillage = village;
@@ -373,15 +380,6 @@ public class GameMap implements Serializable {
 		invaderRegion.addTile(target);
 		Set<Village> villages = getVillages(victim);
 		
-		//Check if invaded region can still support itself, if not kill it and return
-		System.out.println("Target region now has size " + victimRegion.size());
-		if (victimRegion.size()<3) {
-			System.out.println("REGION <3 , destroying....");
-			victimRegion.destroy();
-			System.out.println("Done destroying.");
-			return;
-		}
-
 		// check if the tile is a village tile
 		for (Village village : villages) {
 			if(target.equals(village.getTile()) && village.getType()!=VillageType.Castle){	// the tile under the invaded village
@@ -391,8 +389,24 @@ public class GameMap implements Serializable {
 				System.out.println("Generating new village after hostile takeover of "+village);
 				Region region = village.getRegion();
 				List<Tile> regionTiles = new LinkedList<>(region.getTiles());
+				
+				// isolate valid village locations
+				Iterator<Tile> lit = regionTiles.iterator();
+				while(lit.hasNext()){
+					Tile tile = lit.next();
+					if(tile.occupant!=null || tile.getLandType()==LandType.Tree) lit.remove();
+				}
 				if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
-					village = new Village(victim, region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+					if(regionTiles.size()>0){
+						village = new Village(victim, region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+					}
+					else{
+						regionTiles = new LinkedList<>(region.getTiles());
+						Tile destination = regionTiles.get(new Random().nextInt(regionTiles.size()));
+						if(destination.occupant!=null) destination = null;
+						if(destination.getLandType()==LandType.Tree) destination.updateLandType(LandType.Grass);
+						village = new Village(victim, region, destination);
+					}
 					Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
 					region.setVillage(village);
 				}
@@ -402,10 +416,18 @@ public class GameMap implements Serializable {
 						System.out.println("Polling for coordinates");
 						coordinates = Cultivation.GAMEMANAGER.getGame().getWorld().getNextVillageConstructionSite(region);
 					}
-					village = new Village(victim, region, this.map[coordinates.i()][coordinates.j]);
+					if(regionTiles.size()>0){
+						village = new Village(victim, region, this.map[coordinates.i][coordinates.j]);
+					}
+					else{
+						Tile destination = this.map[coordinates.i][coordinates.j];
+						if(destination.occupant!=null) destination = null;
+						if(destination.getLandType()==LandType.Tree) destination.updateLandType(LandType.Grass);
+						village = new Village(victim, region, destination);
+					}
 					region.setVillage(village);
 				}
-
+				Cultivation.GAMEMANAGER.getGame().getWorld().createVillageAt(village.getTile().x, village.getTile().y);
 				break;
 			}
 		}
@@ -424,6 +446,14 @@ public class GameMap implements Serializable {
 					region.destroy();
 				}
 			}
+		}
+		//Check if invaded region can still support itself, if not kill it and return
+		System.out.println("Target region now has size " + victimRegion.size());
+		if (victimRegion.size()<3) {
+			System.out.println("REGION <3 , destroying....");
+			victimRegion.destroy();
+			System.out.println("Done destroying.");
+			return;
 		}
 	}
 
@@ -457,6 +487,7 @@ public class GameMap implements Serializable {
 			current = toVisit.poll();
 		}
 		System.out.println("Can lead to breakage from prime "+prime+" "+visited+ " " + neighbours);
+		System.out.println("Can lead to breakage "+ (visited.size() != neighbours.size()));
 		return visited.size() != neighbours.size();
 	}
 

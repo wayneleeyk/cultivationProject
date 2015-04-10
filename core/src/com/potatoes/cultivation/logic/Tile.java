@@ -60,21 +60,21 @@ public class Tile implements Serializable{
 		return occupant;
 	}
 
-	public boolean canInvade(Unit u){
+	public boolean canInvade(Unit invader){
 		boolean invadable = true;
 		if (getRegion()!=null && getVillage()!=null) {
-			if (getVillage().getType()==VillageType.Fort && u.getType()!=UnitType.Knight) {
+			if (getVillage().getType()==VillageType.Fort && invader.getType()!=UnitType.Knight) {
 				invadable = false;
-			} else if (u.getType()==UnitType.Peasant) {
+			} else if (invader.getType()==UnitType.Peasant) {
 				invadable = false;
-			} else if (structure==StructureType.Watchtower && u.getType()!=UnitType.Knight && u.getType()!=UnitType.Soldier) {
+			} else if (structure==StructureType.Watchtower && invader.getType()!=UnitType.Knight && invader.getType()!=UnitType.Soldier) {
 				invadable = false;
 			}
 		}		
 		if (invadable && occupant !=null) {
 			//Check if unit on this tile can be invaded by the invader unit u
 			System.out.println("Check if unit on this tile can be invaded");
-			invadable = this.occupant.getType().canInvadeBy(u.getType());
+			invadable = this.occupant.getType().canInvadeBy(invader.getType());
 		} else if (invadable && occupant==null) {
 			//Check neighbouring tiles to see if an enemy exists
 			System.out.println("Checking if neighbouring tiles has higher level enemy");
@@ -82,16 +82,20 @@ public class Tile implements Serializable{
 			Iterator<Tile> it = neighbourTiles.iterator();
 			while(it.hasNext()){
 				Tile next = it.next();
-				if(next.owner!=null && next.owner.equals(u.myVillage.getOwner())) it.remove();
+				if(next.owner!=null && next.owner.equals(invader.myVillage.getOwner())) it.remove();
 			}
 			for (Tile tile : neighbourTiles) {
 				if (tile.getUnit()!=null) {
-					System.out.println("Tile "+tile+" has a unit! " + tile.occupant + " " + u);
-					invadable = invadable && u.getType().canGoNear(tile.getUnit().getType());
-					//Check if neighbouring tile has a tower, if so, any invader Unit that is infantry cannot invade
-					if (invadable && tile.getStructure() == StructureType.Watchtower && u.getType() == UnitType.Infantry) {
-						invadable = false;
-					}
+					System.out.println("Tile "+tile+" has a unit! " + tile.occupant + " " + invader);
+					invadable = invadable && invader.getType().canGoNear(tile.getUnit().getType());
+				}
+				//Check if neighbouring tile has a tower, if so, any invader Unit that is infantry cannot invade
+				if (invadable && tile.getStructure() == StructureType.Watchtower && invader.getType() == UnitType.Infantry) {
+					invadable = false;
+				}
+				//Check if neighbouring tile has a castle
+				if(invadable && tile.getVillage()!=null && tile.getVillage().getTile().equals(tile) && tile.getVillage().getType()==VillageType.Castle ){
+					invadable = false;
 				}
 			}
 		}
@@ -229,7 +233,6 @@ public class Tile implements Serializable{
 				if (this.containsVillage() && u.getTile().owner.equals(this.owner)) {
 					return false;
 				}
-				if (getVillage()!=null && getVillage().getType()==VillageType.Castle) return false;
 				moved = true;
 			}
 		}

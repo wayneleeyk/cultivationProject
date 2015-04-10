@@ -25,7 +25,7 @@ public enum UnitType {
 	
 	public boolean canGoNear(UnitType type){
 		if(type.equals(UnitType.Cannon)) return true;
-		return type.ordinal() - this.ordinal() > 0;
+		return type.ordinal() - this.ordinal() < 0;
 	}
 	
 	public int getSalary(){

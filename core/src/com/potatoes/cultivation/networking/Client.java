@@ -248,7 +248,7 @@ public class Client{
 	public void sendVillageLocation(MapCoordinates mapCoordinates) {
 		try {
 			out.reset();
-			System.out.println("Sending village location from "+game.player);
+			System.out.println("Sending village location from "+game.player+ " location:"+mapCoordinates);
 			out.writeObject(new CreateVillageProtocol(game.player, mapCoordinates));
 		} catch (IOException e) {
 			e.printStackTrace();

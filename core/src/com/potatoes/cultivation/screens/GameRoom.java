@@ -140,8 +140,8 @@ public class GameRoom extends ScreenAdapter {
 					savedGamesGroup.left().top();
 					for (CultivationGame cgame : result) {
 						final CultivationGame toLoad = cgame;
-						System.out.println("Adding load option "+"Rounds:"+cgame.getRoundsPlayed()+"  Turn:"+cgame.turnOf());
-						TextButton button = new TextButton("Rounds:"+cgame.getRoundsPlayed()+"\nTurn:"+cgame.turnOf(),skin, "default-mini");
+						System.out.println("Adding load option "+"Rounds:"+(cgame.getRoundsPlayed()/cgame.getPlayers().size())+"  Turn:"+cgame.turnOf());
+						TextButton button = new TextButton("Rounds:"+(cgame.getRoundsPlayed()/cgame.getPlayers().size())+"\nTurn:"+cgame.turnOf(),skin, "default-mini");
 						savedGamesGroup.add(button).left().row();
 						button.addListener(new ChangeListener(){
 							@Override
@@ -153,6 +153,8 @@ public class GameRoom extends ScreenAdapter {
 							}
 						});
 					}
+					savedGamesGroup.validate();
+					stage.setScrollFocus(scrollPane);
 //					savedGamesGroup.setDebug(true);
 				}
 			}
