@@ -6,6 +6,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import com.potatoes.cultivation.logic.Player;
+
 final class ClientAcceptor implements Runnable {
 	private final Server server;
 
@@ -34,6 +36,13 @@ final class ClientAcceptor implements Runnable {
 						user = ((RegisterProtocol) protocol).player().getUsername();
 					}
 					final String username = user;
+					
+					if(Player.nullPlayer.getUsername().equals(user)) {
+						System.out.println("bad login");
+						out.writeObject(protocol);
+						continue;
+					}
+					
 					server.usernameToUser.put(username, new User(incoming, out));
 					
 					out.writeObject(protocol);

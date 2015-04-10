@@ -22,8 +22,8 @@ final class SocketListener implements Runnable {
 				Protocol protocol = (Protocol) this.client.in.readObject();
 				this.client.incomingQueue.offer(protocol);
 			} catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
-				return;
+//				e.printStackTrace();
+//				return;
 			}
 		}
 	}
