@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.potatoes.cultivation.Cultivation;
-import com.potatoes.cultivation.gameactors.TileActor;
 
 public class Region implements Serializable{
 	private static final long serialVersionUID = -6761074377290852816L;

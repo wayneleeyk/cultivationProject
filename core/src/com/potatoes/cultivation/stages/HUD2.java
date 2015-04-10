@@ -125,6 +125,7 @@ public class HUD2 extends Stage {
 					&& !target.getUnit().getVillage().getOwner().equals(currentPlayer)){
 				if(target.getUnit().myTile.inShootingDistance(game.getGameMap(),cm.getPotatoActor().getUnit().myTile)){
 					System.out.println("Shoot tile "+target);
+					target.getUnit().myVillage.removeWood(1);
 					GameAction.FireCannonAction gameAction = new GameAction.FireCannonAction(target.getUnit().myTile);
 					gameApp.client.sendActions(gameAction);
 					cm.reset();
@@ -272,8 +273,8 @@ public class HUD2 extends Stage {
 			hireVillager.addListener(new ChangeListener() {
 				@Override
 				public void changed(ChangeEvent event, Actor actor) {
-					System.out.println("hireVillager clicked");
 					Tile t = Cultivation.GAMEMANAGER.getGame().getVillagerSpawnPoint(myVillageActor.getVillage());
+					System.out.println("hireVillager clicked. Spawn at: "+t);
 					if(t!=null){
 						GameAction.HireVillagerAction hireAction = new GameAction.HireVillagerAction(t);
 //						hireAction.execute(game.GAMEMANAGER.getGame());
@@ -300,6 +301,7 @@ public class HUD2 extends Stage {
 		public void setVillageActor(VillageActor v) {
 			myVillageActor = v;
 			Vector2 villageStageCoord = v.localToStageCoordinates(new Vector2(v.getX(), v.getY()));
+			System.out.println("Set village actor "+v + " "+ v.getStage()+ " parent:"+v.getParent());
 			Vector2 villageScreen = v.getStage().stageToScreenCoordinates(villageStageCoord);
 			Vector2 menuCoord = this.getStage().screenToStageCoordinates(villageScreen);
 			this.setPosition(menuCoord.x - 100, menuCoord.y);	
