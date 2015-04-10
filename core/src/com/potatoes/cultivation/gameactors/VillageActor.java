@@ -35,13 +35,13 @@ public class VillageActor extends Actor {
 		// Making the label for village status
 		villageStatus = new Label("" ,a.mySkin, "default-mini");
 		villageStatus.setFontScale(0.55f);
-		villageStatus.setPosition(150, 10);
+		villageStatus.setPosition(100, 10);
 	}
 	
 	public void refreshVillage() {
 		if(this.myVillage.getRegion() == null) this.remove();
 		myType = myVillage.getType();
-		villageStatus.setText(myVillage.getStatus().toString());
+		villageStatus.setText(myVillage.getStatus().toString() +" (HP:"+ myVillage.HP()+"/"+myType.maxHP()+")");
 		AtlasRegion region = myAssets.stringToAtlasRegion.get("village_" + myType.toString().toLowerCase());
 		setWidth(region.getRegionWidth());
 		setHeight(region.getRegionHeight());

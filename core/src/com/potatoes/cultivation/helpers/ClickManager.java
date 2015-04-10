@@ -90,6 +90,7 @@ public class ClickManager {
 	 */
 	public VillageActor getVillageActor() {
 		if(first instanceof VillageActor) return (VillageActor) first;
+		if(second instanceof VillageActor) return (VillageActor) second;
 		return null;
 	}
 	

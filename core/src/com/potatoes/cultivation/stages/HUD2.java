@@ -127,20 +127,33 @@ public class HUD2 extends Stage {
 		}
 		//Check if a cannoneer wants to shoot
 		if (cm.secondaryClickEnabled() && cm.getPotatoActor()!=null) {
+			PotatoActor cannon = cm.getPotatoActor();
 			PotatoActor target = cm.getSecondPotatoActor();
-			System.out.println("Shooting target :"+target);
+			VillageActor villageTarget = cm.getVillageActor();
 			if (target != null 
 					&& target.getUnit() != null 
 					&& !target.getUnit().getVillage().getOwner().equals(currentPlayer)){
 				if(target.getUnit().myTile.inShootingDistance(game.getGameMap(),cm.getPotatoActor().getUnit().myTile)){
-					System.out.println("Shoot tile "+target);
-					target.getUnit().myVillage.removeWood(1);
+					System.out.println("Shoot unit "+target);
+					cannon.getUnit().myVillage.removeWood(1);
 					GameAction.FireCannonAction gameAction = new GameAction.FireCannonAction(target.getUnit().myTile);
 					gameApp.client.sendActions(gameAction);
 					cm.reset();
 				}
 				else System.out.println("Out of range!");
-				cm.reset();
+			}
+			else if(villageTarget!=null &&
+					villageTarget.getVillage() != null &&
+					! villageTarget.getVillage().getOwner().equals(currentPlayer)){
+				System.out.println("Wanting to kapow village");
+				if(villageTarget.getVillage().getTile().inShootingDistance(game.getGameMap(),cm.getPotatoActor().getUnit().myTile)){
+					System.out.println("Shoot village "+villageTarget);
+					cannon.getUnit().myVillage.removeWood(1);
+					GameAction.FireCannonAction gameAction = new GameAction.FireCannonAction(villageTarget.getVillage().getTile());
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
+				else System.out.println("Out of range!");
 			}
 		}
 		//If it's your turn, display the "End Turn" button

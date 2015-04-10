@@ -5,10 +5,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.stages.GameWorld;
 
@@ -274,6 +275,43 @@ public class CultivationGame implements Serializable {
 		if(tile.getUnit()!=null){
 			tile.getRegion().killUnit(tile.getUnit());
 			tile.addStructure(StructureType.Tombstone);
+		}
+		if(tile.containsVillage()){
+			// check if it is destroyed
+			Village village = tile.getVillage();
+			System.out.println("Tile contains a village(HP:"+(village.HP()-1)+"). Tough luck");
+			if(village.shoot()){
+				System.out.println("Village went KABOOMed");
+				Cultivation.GAMEMANAGER.getGame().getWorld().removeVillageAt(village.getTile().x, village.getTile().y);
+				Region region = tile.getRegion();
+				// remove invalid village locations
+				List<Tile> regionTiles = new LinkedList<>(region.getTiles());
+				Iterator<Tile> tit = regionTiles.iterator();
+				while(tit.hasNext()){
+					Tile t = tit.next();
+					if(t.occupant!=null) tit.remove();
+					if(t.getLandType() == LandType.Tree) tit.remove();
+				}
+				// spawn new village
+				if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
+					village = new Village(tile.getPlayer(), region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+					Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
+				}
+				else{
+					GameWorld world = Cultivation.GAMEMANAGER.getGame().getWorld();
+					MapCoordinates constructionSite = world.getNextVillageConstructionSite(region);
+					Tile[][] map = Cultivation.GAMEMANAGER.getGameMap().getMap();
+					while(constructionSite==null) {
+						constructionSite = world.getNextVillageConstructionSite(region);
+					}
+					System.out.println("Spawning new village at "+constructionSite);
+					village = new Village(tile.getPlayer(), region, map[constructionSite.i][constructionSite.j]);
+				}
+				region.setVillage(village);
+				Cultivation.GAMEMANAGER.getGame().getWorld().villageConstructionSites.clear();
+				Cultivation.GAMEMANAGER.getGame().getWorld().createVillageAt(village.getTile().x, village.getTile().y);
+			}
+				
 		}
 	}
 	public boolean isMyTurn(Player me) {
