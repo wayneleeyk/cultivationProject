@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -251,6 +252,30 @@ public class Client{
 			System.out.println("Sending village location from "+game.player+ " location:"+mapCoordinates);
 			out.writeObject(new CreateVillageProtocol(game.player, mapCoordinates));
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void renewSocket() {
+		try {
+			out.close();
+			in.close();
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			socket = new Socket(host, port);
+			out = new ObjectOutputStream(this.socket.getOutputStream());
+			out.flush();
+			in = new ObjectInputStream(this.socket.getInputStream());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

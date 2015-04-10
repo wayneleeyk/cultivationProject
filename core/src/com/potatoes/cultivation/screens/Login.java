@@ -120,6 +120,7 @@ public class Login extends ScreenAdapter {
 				else if(game.player != null) {
 					if(!game.player.notNull()) {
 						game.setPlayer(null);
+						game.client.renewSocket();
 						msg.setText("Invalid player");
 						cancel.setVisible(true);
 					}
