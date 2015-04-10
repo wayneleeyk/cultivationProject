@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.stages;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -13,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent;
 import com.potatoes.cultivation.Cultivation;
 import com.potatoes.cultivation.gameactors.PotatoActor;
 import com.potatoes.cultivation.gameactors.TileActor;
@@ -26,13 +26,13 @@ import com.potatoes.cultivation.logic.GameAction.MoveUnitAction;
 import com.potatoes.cultivation.logic.GameMap;
 import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.GameMap.MapDirections;
-import com.potatoes.cultivation.logic.StructureType;
-import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.Player;
+import com.potatoes.cultivation.logic.StructureType;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
+import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.logic.VillageType;
 
 public class HUD2 extends Stage {
@@ -318,6 +318,18 @@ public class HUD2 extends Stage {
 		this.addActor(rightSide);
 		this.addActor(topSide);
 		this.addActor(bottomSide);
+		
+		this.addListener(new InputListener() {
+			@Override
+			public boolean keyDown(InputEvent event, int keycode) {
+				if(keycode == Input.Keys.SPACE) {
+					world.getCamera().position.setZero();
+					return true;
+				}
+				return false;
+			}
+			
+		});
 	}
 	
 	class VillageMenuGroup extends Group {
