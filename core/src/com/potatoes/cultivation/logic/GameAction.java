@@ -4,16 +4,20 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.potatoes.cultivation.Cultivation;
 
 public interface GameAction extends Serializable {
 	public void execute(CultivationGame game);
 	
 	class EndTurnAction implements GameAction {
 		private static final long serialVersionUID = -5840823525714838533L;
-		
+		int roundCount;
+		public EndTurnAction() {
+			this.roundCount = Cultivation.GAMEMANAGER.getGame().getRoundsPlayed();
+		}
 		@Override
 		public void execute(CultivationGame game) {
-			game.increaseRoundCount();
+			game.setRoundCount(this.roundCount);
 			game.beginTurn(game.turnOf());
 			game.checkWinCondition();
 		}

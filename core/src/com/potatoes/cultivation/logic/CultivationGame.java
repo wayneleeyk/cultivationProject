@@ -134,6 +134,10 @@ public class CultivationGame implements Serializable {
 	public void increaseRoundCount() {
 		roundsPlayed++;
 	}
+	
+	public void setRoundCount(int c){
+		roundsPlayed = c;
+	}
 
 	public void updateGoldEconomy(Player p) {
 		Set<Village> myVillages = map.getVillages(p);

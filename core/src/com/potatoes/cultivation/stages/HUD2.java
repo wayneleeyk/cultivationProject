@@ -257,6 +257,7 @@ public class HUD2 extends Stage {
 		endTurn.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
+				game.increaseRoundCount();
 				GameAction.EndTurnAction endTurnAction = new GameAction.EndTurnAction();
 				if(currentPlayer.equals(game.getPlayers().get(game.getPlayers().size() - 1))) {
 					GameAction.GrowTreeAction growTreeAction = new GameAction.GrowTreeAction(game.getGameMap().getTreesToGrow());
