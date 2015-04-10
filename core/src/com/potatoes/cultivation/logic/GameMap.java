@@ -15,6 +15,7 @@ import java.util.Stack;
 
 import com.badlogic.gdx.utils.Predicate;
 import com.potatoes.cultivation.Cultivation;
+import com.potatoes.cultivation.logic.GameAction.SpawnVillageAction;
 import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.stages.GameWorld;
 
@@ -397,48 +398,20 @@ public class GameMap implements Serializable {
 					if(tile.occupant!=null || tile.getLandType()==LandType.Tree) lit.remove();
 				}
 				if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
+					// sender
+					SpawnVillageAction action = null;
 					if(regionTiles.size()>0){
-						System.out.println("There is a tile to place new village. Adding village");
-						village = new Village(victim, region, regionTiles.get(new Random().nextInt(regionTiles.size())));
+						action = new SpawnVillageAction(victim,regionTiles,regionTiles.get(new Random().nextInt(regionTiles.size())));
 					}
 					else{
-						System.out.println("There is no place to place village. Make room");
-						//No empty tiles. Make room for the village.
 						regionTiles = new LinkedList<>(region.getTiles());
-						Tile destination = null;
-						while (destination==null) {
-							destination= regionTiles.get(new Random().nextInt(regionTiles.size()));
-							if(destination.occupant!=null) destination = null;
-							else if(destination.getLandType()==LandType.Tree) destination.updateLandType(LandType.Grass);
-						}
-						System.out.println("Creating a village " + village + " on tile " + destination);
-						village = new Village(victim, region, destination);
+						action = new SpawnVillageAction(victim,regionTiles,regionTiles.get(new Random().nextInt(regionTiles.size())));
 					}
-					Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
-					region.setVillage(village);
+					Cultivation.CLIENT.sendActions(action);
 				}
-				else{
-					MapCoordinates coordinates = Cultivation.GAMEMANAGER.getGame().getWorld().getNextVillageConstructionSite(region);
-					while(coordinates==null) {
-						System.out.println("Polling for coordinates");
-						coordinates = Cultivation.GAMEMANAGER.getGame().getWorld().getNextVillageConstructionSite(region);
-					}
-					if(regionTiles.size()>0){
-						village = new Village(victim, region, this.map[coordinates.i][coordinates.j]);
-					}
-					else{
-						Tile destination = this.map[coordinates.i][coordinates.j];
-						if(destination.occupant!=null) destination = null;
-						if(destination.getLandType()==LandType.Tree) destination.updateLandType(LandType.Grass);
-						village = new Village(victim, region, destination);
-					}
-					region.setVillage(village);
-				}
-				Cultivation.GAMEMANAGER.getGame().getWorld().createVillageAt(village.getTile().x, village.getTile().y);
 				break;
 			}
 		}
-		Cultivation.GAMEMANAGER.getGame().getWorld().villageConstructionSites.clear();
 
 		// break apart the region if at a branch point
 		System.out.println("Victim "+victimRegion.getOwner()+" region has "+victimRegion.getTiles()+ " target tile is "+ target);

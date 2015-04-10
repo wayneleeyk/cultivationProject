@@ -5,9 +5,6 @@ import java.util.Set;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader.SkinParameter;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -15,10 +12,7 @@ import com.potatoes.cultivation.logic.GameManager;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.networking.Client;
 import com.potatoes.cultivation.screens.GameRoom;
-import com.potatoes.cultivation.screens.InGame;
-import com.potatoes.cultivation.screens.Login;
 import com.potatoes.cultivation.screens.Splash;
-import com.potatoes.cultivation.screens.TestScreen;
 
 public class Cultivation extends Game {
 	public SpriteBatch batch;
@@ -27,7 +21,8 @@ public class Cultivation extends Game {
 	
 	// Connection related 
 //	public Client client = new Client(this, "142.157.168.235", 7470);
-	public Client client = new Client(this, "localhost", 7470);
+	public Client client = new Client(this, "142.157.151.192", 7470);
+//	public Client client = new Client(this, "localhost", 7470);
 	
 	// Game related things
 	public Player player = null;
