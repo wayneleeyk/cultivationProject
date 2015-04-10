@@ -291,6 +291,7 @@ public class CultivationGame implements Serializable {
 		if(t.getLandType()==LandType.Tree){
 			t.updateLandType(LandType.Grass);
 			t.getVillage().addWood(1);
+			unit.updateAction(ActionType.ChoppedTree);
 		}
 	}
 
