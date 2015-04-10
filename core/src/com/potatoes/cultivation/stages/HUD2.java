@@ -2,15 +2,18 @@ package com.potatoes.cultivation.stages;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -34,6 +37,7 @@ import com.potatoes.cultivation.logic.UnitType;
 import com.potatoes.cultivation.logic.Village;
 import com.potatoes.cultivation.logic.Village.VillageStatus;
 import com.potatoes.cultivation.logic.VillageType;
+import com.potatoes.cultivation.screens.GameRoom;
 
 public class HUD2 extends Stage {
 	Cultivation gameApp;
@@ -47,10 +51,12 @@ public class HUD2 extends Stage {
 	
 	private int width;
 	private int height;
+	private boolean gameFinish = false;
 	
 	TextButton endTurn;
 	VillageMenuGroup villageMenu;
 	PotatoMenuGroup potatoMenu;
+	Table winTable;
 	
 	TileActor previouslySelectedTile;
 	
@@ -65,8 +71,9 @@ public class HUD2 extends Stage {
 		
 		addGUIStuff();
 		addPanControls();
+		addWinDialog();
 	}
-	
+
 	public void setWorld(GameWorld w) {
 		world = w;
 	}
@@ -75,6 +82,20 @@ public class HUD2 extends Stage {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
+		// Check if the game is finished
+		if(!gameFinish) {
+			if(game.getWinner() != null) {
+				gameFinish = true;
+				Label msg = (Label)winTable.getCells().get(0).getActor();
+				msg.setText(game.getWinner().getUsername() + "\nhas won the game!");
+				MoveToAction moveToCenter = new MoveToAction();
+				moveToCenter.setPosition(width/2 - 150, height/2 - 100);
+				moveToCenter.setInterpolation(Interpolation.bounceOut);
+				moveToCenter.setDuration(2);
+				winTable.setVisible(true);
+				winTable.addAction(moveToCenter);
+			}
+		}
 		
 		//If the latest clicked village belongs to you, update reference to current village
 		Village lastClickedVillage = cm.lastClickedVillage();
@@ -270,6 +291,25 @@ public class HUD2 extends Stage {
 		this.addActor(potatoMenu);
 		villageMenu.toBack();
 		potatoMenu.toBack();
+	}
+	
+	private void addWinDialog() {
+		winTable = new Table(skin);
+		winTable.setBackground("table-brown");
+		winTable.add("").center().padBottom(20).row();
+		TextButton backToRoom = new TextButton("Back to Lobby", skin, "default");
+		backToRoom.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				gameApp.setScreen(new GameRoom(gameApp, 0));
+			}
+		});
+		winTable.add(backToRoom).center();
+		winTable.setWidth(300);
+		winTable.setHeight(200);
+		this.addActor(winTable);
+		winTable.setPosition(width/2 - 150, height);
+		winTable.setVisible(false);
 	}
 	
 	private void addPanControls() {

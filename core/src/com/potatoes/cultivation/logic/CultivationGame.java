@@ -21,6 +21,7 @@ public class CultivationGame implements Serializable {
 	private List<Player> players;
 	private GameMap map;
 	transient private GameWorld world;
+	private Player winner;
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
@@ -356,8 +357,12 @@ public class CultivationGame implements Serializable {
 				allTilesOwnedByPlayer.addAll(region.getTiles());
 			}
 			if(allTilesOwnedByPlayer.size() == allTilesOwnedByPlayers.size()){
-				System.out.println(player +" has WON!");
+				winner = player;
 			}
 		}
+	}
+	
+	public Player getWinner() {
+		return winner;
 	}
 }
