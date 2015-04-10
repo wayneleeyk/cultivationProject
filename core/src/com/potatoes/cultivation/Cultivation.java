@@ -21,8 +21,8 @@ public class Cultivation extends Game {
 	
 	// Connection related 
 //	public Client client = new Client(this, "142.157.168.235", 7470);
-	public Client client = new Client(this, "142.157.151.192", 7470);
-//	public Client client = new Client(this, "localhost", 7470);
+//	public Client client = new Client(this, "142.157.112.236", 7470);
+	public Client client = new Client(this, "localhost", 7470);
 	
 	// Game related things
 	public Player player = null;

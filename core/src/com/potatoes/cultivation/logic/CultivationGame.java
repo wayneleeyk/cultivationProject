@@ -375,15 +375,19 @@ public class CultivationGame implements Serializable {
 	}
 
 	public void spawnVillage(Player victim, List<Tile> regionTiles, Tile tile) {
+		System.out.println("Spawining village at "+this.getGameMap().getMap()[tile.x][tile.y]);
 		Tile destination = this.getGameMap().getMap()[tile.x][tile.y];
 		if(destination.occupant!=null) destination.getRegion().killUnit(destination.occupant);
 		if(destination.getLandType()==LandType.Tree) destination.updateLandType(LandType.Grass);
-		Region region = new Region(null);
-		for (Tile t : regionTiles) {
-			region.addTile( this.getGameMap().getMap()[t.x][t.y]);
-		}
-		Village village = new Village(victim, region, destination);
-		region.setVillage(village);
+//		Region region = new Region(null);
+//		for (Tile t : regionTiles) {
+//			System.out.println("Adding tile "+t.x+" "+t.y );
+//			region.addTile( this.getGameMap().getMap()[t.x][t.y]);
+//		}
+		Village village = new Village(victim, destination.getRegion(), destination);
+		destination.getRegion().setVillage(village);
+//		region.setVillage(village);
+//		this.getGameMap().addRegionForPlayer(victim, region);
 		Cultivation.GAMEMANAGER.getGame().getWorld().createVillageAt(village.getTile().x, village.getTile().y);
 	}
 }

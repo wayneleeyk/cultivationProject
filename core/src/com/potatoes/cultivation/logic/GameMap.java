@@ -538,6 +538,12 @@ public class GameMap implements Serializable {
 		return tiles;
 	}
 
+	public void addRegionForPlayer(Player p, Region region){
+		System.out.println("Regions count before"+ this.getRegionCount(p));
+		this.regions.get(p).add(region);
+		System.out.println("Regions count after"+ this.getRegionCount(p));
+	}
+	
 	public void assignRandomLand(List<Player> players) {
 		Set<Tile> tiles = getMapTiles();
 		int n = players.size() + 1;
