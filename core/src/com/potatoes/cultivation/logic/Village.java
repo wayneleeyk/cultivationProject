@@ -92,6 +92,7 @@ public class Village implements Comparable<Village>, Serializable {
 			Cultivation.GAMEMANAGER.getGame().getWorld().removeVillageAt(village.getTile().x, village.getTile().y);
 			this.gold += village.gold;
 			this.wood += village.wood;
+			village.myTile.updateLandType(LandType.Meadow);
 			return this;
 		} else {
 			(village.getRegion()).merge(this.myRegion);
@@ -99,6 +100,7 @@ public class Village implements Comparable<Village>, Serializable {
 			Cultivation.GAMEMANAGER.getGame().getWorld().removeVillageAt(this.getTile().x, this.getTile().y);
 			village.gold += this.gold;
 			village.wood += this.wood;
+			this.myTile.updateLandType(LandType.Meadow);
 			return village;
 		}
 	}
