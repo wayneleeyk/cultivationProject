@@ -141,11 +141,25 @@ public class Tile implements Serializable{
 				if (occupant!=null) {
 					// If one of our unit is there, we don't crush it
 					// We can also push combining unit logic here, before returning false
-					if(owner.equals(tileOfUnit.getPlayer())) return false;
+					if(owner.equals(tileOfUnit.getPlayer())) {
+						if(u.canMerge(occupant) || occupant.canMerge(u)) {
+							System.out.println("Merging units");
+							Region region = occupant.getVillage().getRegion();
+							int result = occupant.getType().ordinal() + u.getType().ordinal() + 1;
+							region.killUnit(occupant);
+							region.killUnit(u);
+							Unit hybridUnit = new Unit(u.myTile);
+							hybridUnit.updateType(UnitType.values()[result]);
+							u.myTile.occupant = hybridUnit;
+							region.getUnits().add(hybridUnit);
+							Cultivation.GAMEMANAGER.getGame().getWorld().createPotatoAt(u.myTile.x, u.myTile.y);
+							return true;
+						}
+						return false;
+					}
 					// Else we crush it
 					System.out.println("There is an occupant at destination");
 					// note:The level of the enemy has already been checked in can invade
-					Player victim = this.owner;
 					// kill the victim unit 
 					Region victimsRegion = this.getRegion();
 					victimsRegion.killUnit(this.occupant);
@@ -229,7 +243,9 @@ public class Tile implements Serializable{
 			}
 			// If it's not a sea, and (unowned or invadable or ours)
 			else if (myType!= LandType.Sea && (owner == null || owner.equals(tileOfUnit.getPlayer()) || this.canInvade(u))) {
-				if (occupant!=null && owner.equals(tileOfUnit.getPlayer())) return false;
+				if (occupant!=null && owner.equals(tileOfUnit.getPlayer())) {
+					return u.canMerge(occupant) || occupant.canMerge(u);
+				}
 				if (this.containsVillage() && u.getTile().owner.equals(this.owner)) {
 					return false;
 				}

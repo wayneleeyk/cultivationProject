@@ -53,6 +53,27 @@ public class Unit implements Serializable{
 		myTile = t;
 		t.occupant = this;
 	}
+	
+	public boolean mergeTo(Unit occupant) {
+		boolean success = false;
+		System.out.println("Merging "+this+" to "+occupant);
+		if(canMerge(occupant) || occupant.canMerge(this)) {
+			success = true;
+			UnitType occupantType = occupant.getType();
+			int result = occupantType.ordinal() + myType.ordinal() + 1;
+			UnitType resultType = UnitType.values()[result];
+			myType = resultType;
+			System.out.println(this+" has evolved to "+myType.name()+"!");
+		}
+		return success;
+	}
+	
+	public boolean canMerge(Unit occupant) {
+		return (this.getType()==UnitType.Peasant && occupant.getType() == UnitType.Peasant && this.getVillage().support(UnitType.Infantry)  )||
+				(this.getType()==UnitType.Peasant && occupant.getType() == UnitType.Infantry && this.getVillage().support(UnitType.Soldier) )||
+				(this.getType()==UnitType.Infantry && occupant.getType() == UnitType.Infantry && this.getVillage().support(UnitType.Knight) )||
+				(this.getType()==UnitType.Peasant && occupant.getType() == UnitType.Soldier && this.getVillage().support(UnitType.Knight) );
+	}
 
 //	@Override
 //	public int hashCode() {

@@ -158,7 +158,7 @@ public class Login extends ScreenAdapter {
 						};
 						
 						game.client.insertHandler(jh);
-						System.out.println("Before enter");
+						System.out.println("Before enter with "+game.player);
 						game.client.joinRoom(0, game.player);
 						System.out.println("Entering");
 						if(jh.getResult()) {

@@ -183,4 +183,12 @@ public class Village implements Comparable<Village>, Serializable {
 	public int HP() {
 		return this.HP;
 	}
+
+	public boolean support(UnitType type) {
+//		if(myType == VillageType.Castle) return true;
+//		if(myType == VillageType.Fort && !type.equals(UnitType.Cannon)) return true;
+//		if(myType == VillageType.Town && (!type.equals(UnitType.Cannon) && !type.equals(UnitType.Knight))) return true;
+//		if(myType == VillageType.Hovel && (type.equals(UnitType.Peasant) || type.equals(UnitType.Infantry))) return true;
+		return myType.ordinal() + 2 > type.ordinal();
+	}
 }
