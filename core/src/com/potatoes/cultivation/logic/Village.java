@@ -22,7 +22,7 @@ public class Village implements Comparable<Village>, Serializable {
 		this.myRegion = region;
 		this.myTile = tile;
 		this.myType = VillageType.Hovel;
-		this.gold = 99;
+		this.gold = 30;
 		this.wood = 99;
 		this.HP = myType.maxHP();
 		this.myStatus = VillageStatus.VillageReady;
