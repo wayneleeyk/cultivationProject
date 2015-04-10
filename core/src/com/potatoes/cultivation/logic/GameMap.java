@@ -374,7 +374,7 @@ public class GameMap implements Serializable {
 
 		// check if the tile is a village tile
 		for (Village village : villages) {
-			if(target.equals(village.getTile())){	// the tile under the invaded village
+			if(target.equals(village.getTile()) && village.getType()!=VillageType.Castle){	// the tile under the invaded village
 				invaderVillage.addGold(village.getGold());
 				invaderVillage.addWood(village.getWood());
 				// generate a new village
