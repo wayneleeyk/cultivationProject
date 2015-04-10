@@ -229,7 +229,7 @@ public class Tile implements Serializable{
 				if (this.containsVillage() && u.getTile().owner.equals(this.owner)) {
 					return false;
 				}
-				if (getVillage().getType()==VillageType.Castle) return false;
+				if (getVillage()!=null && getVillage().getType()==VillageType.Castle) return false;
 				moved = true;
 			}
 		}
