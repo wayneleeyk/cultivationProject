@@ -215,7 +215,7 @@ public class Client{
 	public void load(List<Player> players){
 		try{
 			out.reset();
-			out.writeObject(new LoadProtocol(players));
+			out.writeObject(new LoadProtocol(game.player, players));
 		} catch(IOException e){
 			e.printStackTrace();
 		}
