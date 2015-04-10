@@ -398,13 +398,20 @@ public class GameMap implements Serializable {
 				}
 				if(Cultivation.GAMEMANAGER.getGame().isMyTurn(Cultivation.CLIENT.player)){
 					if(regionTiles.size()>0){
+						System.out.println("There is a tile to place new village. Adding village");
 						village = new Village(victim, region, regionTiles.get(new Random().nextInt(regionTiles.size())));
 					}
 					else{
+						System.out.println("There is no place to place village. Make room");
+						//No empty tiles. Make room for the village.
 						regionTiles = new LinkedList<>(region.getTiles());
-						Tile destination = regionTiles.get(new Random().nextInt(regionTiles.size()));
-						if(destination.occupant!=null) destination = null;
-						if(destination.getLandType()==LandType.Tree) destination.updateLandType(LandType.Grass);
+						Tile destination = null;
+						while (destination==null) {
+							destination= regionTiles.get(new Random().nextInt(regionTiles.size()));
+							if(destination.occupant!=null) destination = null;
+							else if(destination.getLandType()==LandType.Tree) destination.updateLandType(LandType.Grass);
+						}
+						System.out.println("Creating a village " + village + " on tile " + destination);
 						village = new Village(victim, region, destination);
 					}
 					Cultivation.CLIENT.sendVillageLocation(new MapCoordinates(village.getTile().x, village.getTile().y));
