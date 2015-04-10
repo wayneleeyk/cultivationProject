@@ -144,15 +144,20 @@ public class Tile implements Serializable{
 					if(owner.equals(tileOfUnit.getPlayer())) {
 						if(u.canMerge(occupant) || occupant.canMerge(u)) {
 							System.out.println("Merging units");
-							Region region = occupant.getVillage().getRegion();
+							Region region = this.getRegion();
+							Tile t = occupant.myTile;
 							int result = occupant.getType().ordinal() + u.getType().ordinal() + 1;
 							region.killUnit(occupant);
-							region.killUnit(u);
-							Unit hybridUnit = new Unit(u.myTile);
-							hybridUnit.updateType(UnitType.values()[result]);
-							u.myTile.occupant = hybridUnit;
-							region.getUnits().add(hybridUnit);
-							Cultivation.GAMEMANAGER.getGame().getWorld().createPotatoAt(u.myTile.x, u.myTile.y);
+//							region.killUnit(u);
+//							Unit hybridUnit = new Unit(u.myTile);
+//							hybridUnit.updateType(UnitType.values()[result]);
+//							u.myTile.occupant = hybridUnit;
+//							region.getUnits().add(hybridUnit);
+//							Cultivation.GAMEMANAGER.getGame().getWorld().createPotatoAt(u.myTile.x, u.myTile.y);
+							Tile previousTile = u.myTile;
+							u.updateType(UnitType.values()[result]);
+							u.updateTileLocation(t);
+							Cultivation.GAMEMANAGER.getGame().getWorld().upgradePotatoAt(previousTile.x, previousTile.y, u.myType);
 							return true;
 						}
 						return false;
