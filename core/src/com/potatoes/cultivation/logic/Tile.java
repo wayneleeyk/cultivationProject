@@ -216,6 +216,7 @@ public class Tile implements Serializable{
 		Set<Tile> neighbouringTiles = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(tileOfUnit);
 		if (neighbouringTiles.contains(this)) { //We only enter this if Unit u is one tile away from this tile
 			if ((UnitType.Knight.equals(u.getType()) || UnitType.Cannon.equals(u.getType())) && (structure == StructureType.Tombstone || myType == LandType.Tree)) {
+				//If tile to invade has tree or tombstone and invader is a knight or cannon, can't invade
 				return false;
 			}
 			else if(UnitType.Cannon.equals(u.getType()) ){
@@ -228,6 +229,7 @@ public class Tile implements Serializable{
 				if (this.containsVillage() && u.getTile().owner.equals(this.owner)) {
 					return false;
 				}
+				if (getVillage().getType()==VillageType.Castle) return false;
 				moved = true;
 			}
 		}
