@@ -68,7 +68,7 @@ public class Village implements Comparable<Village>, Serializable {
 	}
 	//just added in an if statement incase we go negative.
 	public boolean removeGold(int goldToRemove){
-		if(this.gold - goldToRemove > 0){
+		if(this.gold - goldToRemove >= 0){
 			this.gold = this.gold - goldToRemove;
 			return true;		
 		}

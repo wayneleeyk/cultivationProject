@@ -30,6 +30,8 @@ public class GameWorld extends Stage{
 	ClickManager cm;
 	ActorAssets assets;
 	OrthographicCamera myCam;
+	private float maxX;
+	private float maxY;
 
 	ProtocolHandler<MapCoordinates> villageLocator;
 	public Queue<MapCoordinates> villageConstructionSites = new ConcurrentLinkedQueue<>();
@@ -78,10 +80,24 @@ public class GameWorld extends Stage{
 			}
 		}
 		
+		// Set maxX and maxY
+		maxX = tiles[mapWidth - 1][mapHeight - 1].getX();
+		maxY = tiles[mapWidth - 1][mapHeight - 1].getY();
+		
+		System.out.println("maxX is " + maxX);
+		System.out.println("maxY is " + maxY);
+		
 		// Add dragcontrols
 		addZoomControls();
 	}
 	
+	@Override
+	public void act(float delta) {
+		myCam.position.x = MathUtils.clamp(myCam.position.x, 0, maxX);
+		myCam.position.y = MathUtils.clamp(myCam.position.y, 0, maxY);
+		super.act(delta);
+	}
+
 	public void setCM(ClickManager cm) {
 		this.cm = cm;
 	}
