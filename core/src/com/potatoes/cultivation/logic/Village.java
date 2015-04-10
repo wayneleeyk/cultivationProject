@@ -32,7 +32,7 @@ public class Village implements Comparable<Village>, Serializable {
 	 * @return		The village is destroyed
 	 */
 	public boolean shoot(){
-		return --this.HP < 0;
+		return --this.HP <= 0;
 	}
 	
 	public VillageType getType(){
@@ -172,10 +172,15 @@ public class Village implements Comparable<Village>, Serializable {
 		if (myType == VillageType.Town) type = VillageType.Fort;
 		if (myType == VillageType.Fort) type = VillageType.Castle;
 		if (myType == VillageType.Castle) return;
+		this.HP = type.maxHP();
 		setType(type);
 	}
 	
 	public enum VillageStatus {
 		VillageReady, StartUpgrading, StillUpgrading
+	}
+
+	public int HP() {
+		return this.HP;
 	}
 }
