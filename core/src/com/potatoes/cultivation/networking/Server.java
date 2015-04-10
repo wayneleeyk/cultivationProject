@@ -66,6 +66,8 @@ public class Server implements Runnable{
 		// Thread to accept new connections
 		// Initial protocol must be a LoginProtocol 
 		new Thread(new ClientAcceptor(this)).start();
+		new Thread(new ClientAcceptor(this)).start();
+		new Thread(new ClientAcceptor(this)).start();
 		// Thread to process tasks
 		new Thread(new TaskProcessor(this)).start();
 		// Thread to monitor clients
