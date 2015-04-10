@@ -54,52 +54,52 @@ public class Unit implements Serializable{
 		t.occupant = this;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((currentAction == null) ? 0 : currentAction.hashCode());
-		result = prime * result + ((myTile == null) ? 0 : myTile.hashCode());
-		result = prime * result + ((myType == null) ? 0 : myType.hashCode());
-		result = prime * result
-				+ ((myVillage == null) ? 0 : myVillage.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Unit other = (Unit) obj;
-		if (currentAction != other.currentAction) {
-			return false;
-		}
-		if (myTile == null) {
-			if (other.myTile != null) {
-				return false;
-			}
-		} else if (!myTile.equals(other.myTile)) {
-			return false;
-		}
-		if (myType != other.myType) {
-			return false;
-		}
-		if (myVillage == null) {
-			if (other.myVillage != null) {
-				return false;
-			}
-		} else if (!myVillage.equals(other.myVillage)) {
-			return false;
-		}
-		return true;
-	}
+//	@Override
+//	public int hashCode() {
+//		final int prime = 31;
+//		int result = 1;
+//		result = prime * result
+//				+ ((currentAction == null) ? 0 : currentAction.hashCode());
+//		result = prime * result + ((myTile == null) ? 0 : myTile.hashCode());
+//		result = prime * result + ((myType == null) ? 0 : myType.hashCode());
+//		result = prime * result
+//				+ ((myVillage == null) ? 0 : myVillage.hashCode());
+//		return result;
+//	}
+//
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (this == obj) {
+//			return true;
+//		}
+//		if (obj == null) {
+//			return false;
+//		}
+//		if (getClass() != obj.getClass()) {
+//			return false;
+//		}
+//		Unit other = (Unit) obj;
+//		if (currentAction != other.currentAction) {
+//			return false;
+//		}
+//		if (myTile == null) {
+//			if (other.myTile != null) {
+//				return false;
+//			}
+//		} else if (!myTile.equals(other.myTile)) {
+//			return false;
+//		}
+//		if (myType != other.myType) {
+//			return false;
+//		}
+//		if (myVillage == null) {
+//			if (other.myVillage != null) {
+//				return false;
+//			}
+//		} else if (!myVillage.equals(other.myVillage)) {
+//			return false;
+//		}
+//		return true;
+//	}
 	
 }
