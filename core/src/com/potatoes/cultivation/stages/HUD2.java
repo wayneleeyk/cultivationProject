@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -40,6 +41,7 @@ public class HUD2 extends Stage {
 	ClickManager cm;
 	Player currentPlayer;
 	Skin skin;
+	GameWorld world;
 	
 	Village currentVillage;
 	
@@ -62,6 +64,11 @@ public class HUD2 extends Stage {
 		height = Gdx.graphics.getHeight();
 		
 		addGUIStuff();
+		addPanControls();
+	}
+	
+	public void setWorld(GameWorld w) {
+		world = w;
 	}
 	
 	
@@ -236,6 +243,54 @@ public class HUD2 extends Stage {
 		this.addActor(potatoMenu);
 		villageMenu.toBack();
 		potatoMenu.toBack();
+	}
+	
+	private void addPanControls() {
+		class PanActor extends Actor {
+			ClickListener myListener;
+			public PanActor() {
+				myListener = new ClickListener();
+				this.addListener(myListener);
+			}
+			@Override
+			public void act(float delta) {
+				if(myListener.isOver()) {
+					Vector2 dir = new Vector2(Gdx.input.getX() - width/2, (height - Gdx.input.getY()) - height/2);
+					world.getCamera().translate(dir.x * 0.03f, dir.y * 0.03f, 0);
+				}
+			}		
+		}
+		
+		
+		PanActor leftSide = new PanActor();
+		PanActor rightSide = new PanActor();
+		PanActor topSide = new PanActor();
+		PanActor bottomSide = new PanActor();
+		
+		leftSide.setHeight(height-50);
+		leftSide.setWidth(40);
+		leftSide.setY(50);
+		leftSide.setDebug(true);
+		
+		rightSide.setHeight(height-60);
+		rightSide.setWidth(40);
+		rightSide.setX(width-40);
+		rightSide.setDebug(true);
+		
+		topSide.setWidth(width-180);
+		topSide.setHeight(60);
+		topSide.setY(height-60);
+		topSide.setDebug(true);
+		
+		bottomSide.setWidth(width-160);
+		bottomSide.setX(160);
+		bottomSide.setHeight(40);
+		bottomSide.setDebug(true);
+		
+		this.addActor(leftSide);
+		this.addActor(rightSide);
+		this.addActor(topSide);
+		this.addActor(bottomSide);
 	}
 	
 	class VillageMenuGroup extends Group {
