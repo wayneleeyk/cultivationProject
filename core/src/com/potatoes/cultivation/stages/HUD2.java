@@ -187,7 +187,13 @@ public class HUD2 extends Stage {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 				GameAction.EndTurnAction endTurnAction = new GameAction.EndTurnAction();
-				gameApp.client.sendActions(endTurnAction);
+				if(currentPlayer.equals(game.getPlayers().get(game.getPlayers().size() - 1))) {
+					GameAction.GrowTreeAction growTreeAction = new GameAction.GrowTreeAction(game.getGameMap().getTreesToGrow());
+					gameApp.client.sendActions(endTurnAction, growTreeAction);
+				}
+				else {
+					gameApp.client.sendActions(endTurnAction);
+				}
 				System.out.println("current player: " + currentPlayer.getUsername());
 				System.out.println("turn of: " + game.turnOf());
 				cm.reset();
