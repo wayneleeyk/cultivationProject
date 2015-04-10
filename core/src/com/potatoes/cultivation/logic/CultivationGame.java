@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -212,7 +213,8 @@ public class CultivationGame implements Serializable {
 		Tile spawnOn = null;
 		//Check if village has enough gold to hire new villager
 		if (village.getGold() >= UnitType.Peasant.getCost()) {
-			Set<Tile> tiles = village.getRegion().getTiles();
+			Set<Tile> tiles = new HashSet<>(village.getRegion().getTiles());
+			tiles.remove(village.getTile());
 			Iterator<Tile> it = tiles.iterator();
 			while (it.hasNext() && foundVacantTile == false) {
 				Tile tile = (Tile) it.next();
@@ -260,6 +262,11 @@ public class CultivationGame implements Serializable {
 		//Subtract gold
 		t.getVillage().removeGold(10);	
 		t.getVillage().getRegion().getUnits().add(unit);
+		if(t.getLandType()==LandType.Tree){
+			t.updateLandType(LandType.Grass);
+			t.getVillage().addWood(1);
+			unit.updateAction(ActionType.ChoppedTree);
+		}
 	}
 
 	
