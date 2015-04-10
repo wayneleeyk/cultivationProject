@@ -275,6 +275,9 @@ public class CultivationGame implements Serializable {
 			tile.getRegion().killUnit(tile.getUnit());
 			tile.addStructure(StructureType.Tombstone);
 		}
+		if (tile.getStructure()==StructureType.Watchtower) {
+			tile.destroyStructure();
+		}
 	}
 	public boolean isMyTurn(Player me) {
 		return turnOf().equals(me);

@@ -121,11 +121,13 @@ public class HUD2 extends Stage {
 		//Check if a cannoneer wants to shoot
 		if (cm.secondaryClickEnabled() && cm.getPotatoActor()!=null) {
 			PotatoActor target = cm.getSecondPotatoActor();
+			TileActor targetTile = cm.getTileActor();
 			System.out.println("Shooting target :"+target);
-			if (target != null 
-					&& target.getUnit() != null 
-					&& !target.getUnit().getVillage().getOwner().equals(currentPlayer)){
-				if(target.getUnit().myTile.inShootingDistance(game.getGameMap(),cm.getPotatoActor().getUnit().myTile)){
+			if ((target != null 
+					&& target.getUnit() != null	
+					&& !target.getUnit().getVillage().getOwner().equals(currentPlayer))){
+				if(target.getUnit().myTile.inShootingDistance(game.getGameMap(),cm.getPotatoActor().getUnit().myTile)	
+						){
 					System.out.println("Shoot tile "+target);
 					target.getUnit().myVillage.removeWood(1);
 					GameAction.FireCannonAction gameAction = new GameAction.FireCannonAction(target.getUnit().myTile);
@@ -134,6 +136,16 @@ public class HUD2 extends Stage {
 				}
 				else System.out.println("Out of range!");
 				cm.reset();
+			} else if (targetTile!=null 
+					&& targetTile.getTile().getStructure()==StructureType.Watchtower 
+					&& targetTile.getTile().getPlayer()!=currentPlayer) {
+				if (targetTile.getTile().inShootingDistance(game.getGameMap(), cm.getPotatoActor().getUnit().myTile)) {
+					System.out.println("Shoot tile with tower");
+					targetTile.getTile().getVillage().removeWood(1);
+					GameAction.FireCannonAction gameAction = new GameAction.FireCannonAction(targetTile.getTile());
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
 			}
 		}
 		//If it's your turn, display the "End Turn" button

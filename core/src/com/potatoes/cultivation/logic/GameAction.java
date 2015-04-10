@@ -88,7 +88,6 @@ public interface GameAction extends Serializable {
 		}
 	}
 	
-
 	class UpgradeVillageAction implements GameAction {
 		private static final long serialVersionUID = -3332608300692384612L;
 		Village v;
