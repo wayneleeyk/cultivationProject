@@ -99,6 +99,10 @@ public class ClickManager {
 	 */
 	public PotatoActor getPotatoActor() {
 		if(first instanceof PotatoActor) return (PotatoActor) first;
+		return null;
+	}
+	
+	public PotatoActor getSecondPotatoActor(){
 		if(second instanceof PotatoActor) return (PotatoActor) second;
 		return null;
 	}

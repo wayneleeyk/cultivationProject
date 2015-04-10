@@ -118,7 +118,20 @@ public class HUD2 extends Stage {
 		}
 		//Check if a cannoneer wants to shoot
 		if (cm.secondaryClickEnabled() && cm.getPotatoActor()!=null) {
-			
+			PotatoActor target = cm.getSecondPotatoActor();
+			System.out.println("Shooting target :"+target);
+			if (target != null 
+					&& target.getUnit() != null 
+					&& !target.getUnit().getVillage().getOwner().equals(currentPlayer)){
+				if(target.getUnit().myTile.inShootingDistance(game.getGameMap(),cm.getPotatoActor().getUnit().myTile)){
+					System.out.println("Shoot tile "+target);
+					GameAction.FireCannonAction gameAction = new GameAction.FireCannonAction(target.getUnit().myTile);
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
+				else System.out.println("Out of range!");
+				cm.reset();
+			}
 		}
 		//If it's your turn, display the "End Turn" button
 		if (!game.isMyTurn(currentPlayer)) {
@@ -320,6 +333,7 @@ public class HUD2 extends Stage {
 		TextButton cultivateMeadow;
 		TextButton upgradePotato;
 		TextButton movePotato;
+		TextButton fire;
 		Group upgrades;
 		TextButton infantry;
 		TextButton soldier;
@@ -335,16 +349,19 @@ public class HUD2 extends Stage {
 			buildRoad = new TextButton("Build Road", skin, "default");
 			movePotato = new TextButton("Move", skin, "default");
 			cultivateMeadow = new TextButton("Cultivate Meadow", skin, "default");
+			fire = new TextButton("POW!", skin, "default");
 			
 			topLevel.addActor(upgradePotato);
 			topLevel.addActor(buildRoad);
 			topLevel.addActor(movePotato);
 			topLevel.addActor(cultivateMeadow);
+			topLevel.addActor(fire);
 			
 			float buttonHeight = upgradePotato.getHeight();
 			
 			// Stack the buttons on top of each other
 			
+			fire.setY(4*buttonHeight);
 			cultivateMeadow.setY(3*buttonHeight);
 			buildRoad.setY(2*buttonHeight);
 			upgradePotato.setY(buttonHeight);
@@ -385,6 +402,14 @@ public class HUD2 extends Stage {
 					GameAction.CultivateMeadowAction gameAction = new GameAction.CultivateMeadowAction(myPotato.getUnit().getTile());
 					gameApp.client.sendActions(gameAction);
 					cm.reset();
+				}
+			});
+			
+			fire.addListener(new ChangeListener() {
+				@Override
+				public void changed(ChangeEvent event, Actor actor) {
+					System.out.println("POW! clicked");
+					cm.useSecondaryClick(true);
 				}
 			});
 			
@@ -586,20 +611,26 @@ public class HUD2 extends Stage {
 			//Check based on current unit type
 			if(myType.equals(UnitType.Cannon)) {
 				upgradePotato.setDisabled(true);
+				fire.setVisible(true);
 			}
-			if(myType.equals(UnitType.Knight)) {
+			else if(myType.equals(UnitType.Knight)) {
 				infantry.setDisabled(true);
 				soldier.setDisabled(true);
 				knight.setDisabled(true);
+				fire.setVisible(false);
 			}
-			if(myType.equals(UnitType.Soldier)) {
+			else if(myType.equals(UnitType.Soldier)) {
 				infantry.setDisabled(true);
 				soldier.setDisabled(true);
+				fire.setVisible(false);
 			}
-			if(myType.equals(UnitType.Infantry)) {
+			else if(myType.equals(UnitType.Infantry)) {
 				infantry.setDisabled(true);
+				fire.setVisible(false);
 			}
-
+			else if(myType.equals(UnitType.Peasant)){
+				fire.setVisible(false);
+			}
 			
 			// Disable directional buttons according to possibility of moving
 			Tile p = myPotato.getUnit().getTile();

@@ -403,17 +403,51 @@ public class GameMap implements Serializable {
 
 		// break apart the region if at a branch point
 		System.out.println("Victim "+victimRegion.getOwner()+" region has "+victimRegion.getTiles()+ " target tile is "+ target);
-		Set<Region> regions = breakUpRegion(victimRegion,target);
-		if(regions.size() > 1) System.out.println("Regions are broken up into "+regions.size());
-		for (Region region : regions) {
-			System.out.println("Region "+region+" has size "+ region.size());
-			// destroy regions, along with their units, which have tiles less than 3
-			if(region.size() <3){
-				System.out.println("Region "+region+" has been destroyed");
-				region.destroy();
+		if(canLeadToBreakage(target, victim)){
+			Set<Region> regions = breakUpRegion(victimRegion,target);
+			if(regions.size() > 1) System.out.println("Regions are broken up into "+regions.size());
+			for (Region region : regions) {
+				System.out.println("Region "+region+" has size "+ region.size());
+				// destroy regions, along with their units, which have tiles less than 3
+				if(region.size() <3){
+					System.out.println("Region "+region+" has been destroyed");
+					region.destroy();
+				}
 			}
 		}
+	}
 
+	private boolean canLeadToBreakage(Tile target, Player owner) {
+		System.out.println("Can lead to breakage target "+ target + " owner:"+owner);
+		Set<Tile> neighbours = getNeighbouringTiles(target);
+		System.out.println("All neighbours "+neighbours);
+		Iterator<Tile> tit = neighbours.iterator();
+		// isolate tiles that belong to the owner
+		while(tit.hasNext()){
+			Tile tile = tit.next();
+			if (tile.getPlayer()==null ||(tile.getPlayer()!=null && !tile.getPlayer().equals(owner))) {
+				tit.remove();
+			}
+		}
+		System.out.println("Selected neighbours "+ neighbours);
+		Queue<Tile> toVisit = new LinkedList<>();
+		Set<Tile> visited = new HashSet<>();
+		
+		// get new iterator
+		tit = neighbours.iterator();
+		Tile current = neighbours.iterator().next();
+		Tile prime = current;
+		toVisit.add(current);
+		while(current != null){
+			visited.add(current);
+			Set<Tile> neighbourOfCurrent = getNeighbouringTiles(current);
+			neighbourOfCurrent.retainAll(neighbours);
+			neighbourOfCurrent.removeAll(visited);
+			toVisit.addAll(neighbourOfCurrent);
+			current = toVisit.poll();
+		}
+		System.out.println("Can lead to breakage from prime "+prime+" "+visited+ " " + neighbours);
+		return visited.size() != neighbours.size();
 	}
 
 	public List<Tile> bfsTile(Predicate<Tile> p, Tile t) {

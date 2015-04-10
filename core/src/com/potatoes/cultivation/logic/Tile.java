@@ -124,7 +124,7 @@ public class Tile implements Serializable{
 				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage());
 				
 				// If the target tile is neutral
-				if(owner == null) {
+				if(owner == null || owner.equals(Player.nullPlayer)) {
 					u.currentAction = ActionType.Moved;
 				}
 				
@@ -250,6 +250,16 @@ public class Tile implements Serializable{
 	public boolean containsVillage() {
 		Village myVillage = getVillage();
 		return myVillage!=null && myVillage.getTile()==(this);
+	}
+
+	public boolean inShootingDistance(GameMap map, Tile target) {
+		if(this.equals(target)) return false;
+		Set<Tile> stepOne = map.getNeighbouringTiles(this);
+		Set<Tile> stepTwo = new HashSet<>();
+		for (Tile tile : stepOne) {
+			stepTwo.addAll( map.getNeighbouringTiles(tile));
+		}
+		return stepTwo.contains(target);
 	}
 
 }
