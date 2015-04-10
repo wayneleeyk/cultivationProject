@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Action;
 
@@ -169,6 +170,21 @@ public interface GameAction extends Serializable {
 			Tile realTile = game.getGameMap().getMap()[t.x][t.y];
 			realTile.addStructure(StructureType.Watchtower);
 		}
+	}
+	
+	class GrowTreeAction implements GameAction {
+		private static final long serialVersionUID = -5607805583574057082L;
+		List<Tile> toGrow;
+		
+		public GrowTreeAction(List<Tile> treesToGrow) {
+			toGrow = treesToGrow;
+		}
+		
+		@Override
+		public void execute(CultivationGame game) {
+			game.growTrees(toGrow);
+		}
+		
 	}
 	
 }

@@ -569,7 +569,8 @@ public class GameMap implements Serializable {
 		}
 	}
 
-	public void growTrees() {
+	public List<Tile> getTreesToGrow() {
+		List<Tile> tilesToGrowTree = new LinkedList<Tile>();
 		Random r = new Random(1);
 		Set<Tile> tilesWithTree = new HashSet<Tile>();
 		for(int i = 0; i < map.length; i++) {
@@ -587,11 +588,12 @@ public class GameMap implements Serializable {
 						&& (!aNeighbour.containsVillage() 
 								&& aNeighbour.occupant == null 
 								&& aNeighbour.getStructure().equals(StructureType.None))) {
-					aNeighbour.updateLandType((r.nextFloat() > 0.5)? LandType.Tree : neighbourLandType);
+					if(r.nextBoolean()) tilesToGrowTree.add(aNeighbour);
 					break;
 				}
 			}
 		}
+		return tilesToGrowTree;
 	}
 
 }

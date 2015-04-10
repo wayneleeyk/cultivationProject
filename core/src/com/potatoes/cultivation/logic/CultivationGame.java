@@ -58,7 +58,6 @@ public class CultivationGame implements Serializable {
 
 	public void beginTurn(Player p) {
 		System.out.println("Beginning turn");
-		if(roundsPlayed != 0 && roundsPlayed % players.size() == 0) map.growTrees();
 		map.clearTombstones(p);
 		// Produce Meadow, Roads and ALSO updates unit ActionType (even those that are chopping trees)
 		map.produceMeadowsRoads(p);
@@ -310,5 +309,11 @@ public class CultivationGame implements Serializable {
 			success = true;
 		}
 		return success;
+	}
+	
+	public void growTrees(List<Tile> tilesToGrow) {
+		for(Tile t : tilesToGrow) {
+			getGameMap().getMap()[t.x][t.y].updateLandType(LandType.Tree);
+		}
 	}
 }
