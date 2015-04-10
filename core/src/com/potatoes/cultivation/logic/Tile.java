@@ -154,10 +154,9 @@ public class Tile implements Serializable{
 //							u.myTile.occupant = hybridUnit;
 //							region.getUnits().add(hybridUnit);
 //							Cultivation.GAMEMANAGER.getGame().getWorld().createPotatoAt(u.myTile.x, u.myTile.y);
-							Tile previousTile = u.myTile;
 							u.updateType(UnitType.values()[result]);
 							u.updateTileLocation(t);
-							Cultivation.GAMEMANAGER.getGame().getWorld().upgradePotatoAt(previousTile.x, previousTile.y, u.myType);
+							Cultivation.GAMEMANAGER.getGame().getWorld().upgradePotatoAt(u.myTile.x, u.myTile.y, u.myType);
 							return true;
 						}
 						return false;
