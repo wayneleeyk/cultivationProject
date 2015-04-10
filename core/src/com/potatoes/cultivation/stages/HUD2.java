@@ -27,6 +27,7 @@ import com.potatoes.cultivation.logic.GameMap.MapCoordinates;
 import com.potatoes.cultivation.logic.GameMap.MapDirections;
 import com.potatoes.cultivation.logic.StructureType;
 import com.potatoes.cultivation.logic.Village.VillageStatus;
+import com.potatoes.cultivation.logic.LandType;
 import com.potatoes.cultivation.logic.Player;
 import com.potatoes.cultivation.logic.Tile;
 import com.potatoes.cultivation.logic.UnitType;
@@ -109,7 +110,8 @@ public class HUD2 extends Stage {
 			TileActor targetTile = cm.getTileActor();
 			if (targetTile != null 
 					&& targetTile.getTile().getVillage() != null 
-					&& targetTile.getTile().getVillage().equals(targetVillageActor.getVillage())) {
+					&& targetTile.getTile().getVillage().equals(targetVillageActor.getVillage())
+					&& !targetTile.getTile().getLandType().equals(LandType.Tree)) {
 				System.out.println("Adding tower to tile.." + targetTile.getX()+","+ targetTile.getY());
 				GameAction.BuildWatchtowerAction gameAction = new GameAction.BuildWatchtowerAction(targetTile.getTile());
 				gameApp.client.sendActions(gameAction);
