@@ -96,6 +96,7 @@ public class Region implements Serializable{
 			if(this.village!=null && tile == this.village.getTile()) {
 				this.village = null;
 				Cultivation.GAMEMANAGER.getGame().getWorld().removeVillageAt(tile.x,tile.y);
+				tile.updateLandType(LandType.Tree);
 			}
 			tile.owner=null;
 		}
