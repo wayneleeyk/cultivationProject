@@ -58,6 +58,7 @@
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
     	default: { down: buttonDown-dark-yellow, up: buttonUp-potato, over: buttonOver, font: pixFont-small, fontColor: white, downFontColor: light-gray, disabled: buttonDown-dark-yellow, disabledFontColor: light-gray },
+    	default-mini: { down: buttonDown-dark-yellow, up: buttonUp-potato, over: buttonOver, font: pixFont-mini, fontColor: white, downFontColor: light-gray, disabled: buttonDown-dark-yellow, disabledFontColor: light-gray },
 		red: { down: buttonDown-dark-red, up: buttonUp-red, over: buttonOver-red, font: pixFont-small, fontColor: white, downFontColor: light-gray, disabled: buttonDown-dark-red, disabledFontColor: light-gray },
 	},
 	com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {

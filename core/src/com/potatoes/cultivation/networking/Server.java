@@ -101,23 +101,25 @@ public class Server implements Runnable{
 		System.out.println(""+this.savedGames);
 	}
 	
-	public void load(List<Player> players) {
+	public void load(Player sender, List<Player> players, LoadProtocol loadProtocol) {
 		System.out.println("Loading game for players "+ players);
 		if(players.size() <= 0) return ;
+		if(loadProtocol.gameData().size() > 0) return;
 		Player one = players.get(0);
 		List<CultivationGame> savedGames = this.savedGames.get(one.getUsername());
-		GameDataProtocol gameData = null;
+		List<GameDataProtocol> listOfGameData = new LinkedList<>();
 		for (CultivationGame game : (savedGames==null)?new LinkedList<CultivationGame>():savedGames) {
 			System.out.println("This saved game has players "+game.getPlayers());
 			if(game.getPlayers().containsAll(players)){
 				System.out.println("Found game, loading data");
-				gameData = new GameDataProtocol(null, game);
+				listOfGameData.add(new GameDataProtocol(null, game));
 			}
 		}
-		if (gameData!=null){
-			for (Player player : players) {
+		loadProtocol.setData(listOfGameData);
+		if (listOfGameData.size()>0){
+			for (Player player : opponentsOf(sender)) {
 				User user = usernameToUser.get(player.getUsername());
-				queue.add(new ServerTask(user.oos, gameData));
+				queue.add(new ServerTask(user.oos, loadProtocol));
 			}
 		}
 	}
