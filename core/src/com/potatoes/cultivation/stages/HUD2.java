@@ -463,14 +463,12 @@ public class HUD2 extends Stage {
 			}
 			//If can't afford to hire villager, disable button
 			if (myVillage.getGold()<UnitType.Peasant.getCost()) {
-				System.out.println("REACHES CONDITION 1");
 				hireVillager.setDisabled(true);
 			}
 			//If no empty tiles for villagers to spawn to, disable hire button 
 			int numberOfTiles = myVillage.getRegion().getTiles().size() - 1;
 			int numberOfUnitsInRegion = myVillage.getRegion().getUnits().size();
 			if (numberOfTiles == numberOfUnitsInRegion) {
-				System.out.println("REACHES CONDITION 2");
 				hireVillager.setDisabled(true);
 			}
 			else{
