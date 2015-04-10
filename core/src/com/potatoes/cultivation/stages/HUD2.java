@@ -325,6 +325,10 @@ public class HUD2 extends Stage {
 			} else {
 				upgradeVillage.setDisabled(false);
 			}
+			//If can't afford to hire villager, disable button
+			if (myVillage.getGold()<UnitType.Peasant.getCost()) {
+				hireVillager.setDisabled(true);
+			}
 		}
 	}
 	
