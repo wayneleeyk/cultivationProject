@@ -594,10 +594,10 @@ public class GameMap implements Serializable {
 	public void updateVillageStatus(Player p) {
 		for(Village v : getVillages(p)) {
 			if(v.getStatus().equals(VillageStatus.StartUpgrading)) {
-				v.upgradeVillageType();
 				v.updateStatus(VillageStatus.StillUpgrading);
 			}
 			else {
+				v.upgradeVillageType();
 				v.updateStatus(VillageStatus.VillageReady);
 			}
 		}
