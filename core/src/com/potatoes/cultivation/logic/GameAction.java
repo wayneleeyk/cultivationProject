@@ -187,4 +187,20 @@ public interface GameAction extends Serializable {
 		
 	}
 	
+	class StoneVillagers implements GameAction {
+		private static final long serialVersionUID = 5055189169666110678L;
+		List<Tile> tiles;
+		
+		public StoneVillagers(List<Tile> t) {
+			tiles = t;
+		}
+		
+		@Override
+		public void execute(CultivationGame game) {
+			game.starveVillagers(tiles);
+			
+		}
+		
+	}
+	
 }

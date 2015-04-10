@@ -1,6 +1,7 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,7 +26,7 @@ public class CultivationGame implements Serializable {
 
 	public CultivationGame(List<Player> participants) {
 		players = participants;
-		map = new GameMap(10, 10, participants);
+		map = new GameMap(18, 18, participants);
 		System.out.println("Made new game map");
 		this.roundsPlayed = 0;
 		beginTurn(players.get(0));
@@ -34,16 +35,16 @@ public class CultivationGame implements Serializable {
 	public void setWorld(GameWorld pWorld) {
 		world = pWorld;
 	}
-	
+
 	public GameWorld getWorld() {
 		return world;
 	}
-	
+
 	public List<Player> getPlayers() {
 		List<Player> players = new LinkedList<Player>(this.players);
 		return players;
 	}
-	
+
 	/*
 	 * Get a potato color from a player
 	 */
@@ -141,7 +142,7 @@ public class CultivationGame implements Serializable {
 		for (Village v : myVillages) {
 			Region myRegion = v.getRegion();
 			Set<Tile> myTiles = myRegion.getTiles();
-			
+
 			//If village v is a castle, pay for upkeep
 			if (v.getType().equals(VillageType.Castle) && v.getStatus()!=VillageStatus.StartUpgrading && v.getStatus()!=VillageStatus.StillUpgrading) {
 				boolean success = v.removeGold(80);//80 gold? what a rip off!
@@ -151,31 +152,38 @@ public class CultivationGame implements Serializable {
 					v.setType(VillageType.Fort);
 				}
 			}
-			//For each tile, generate gold depending on its landtype
-			//and pay unit if a unit is on tile
-			for (Tile t : myTiles) {
-				LandType myLandType = t.getLandType();
-				int value = myLandType.getGoldValue(myLandType);
-				v.addGold(value);
-			}
-			//Pay villagers their wage
-			for (Tile t : myTiles) {
-				if (t.getUnit()!=null) {
-					UnitType uType = t.getUnit().getType();
-					int salary = uType.getSalary();
-					boolean success = v.removeGold(salary);
-					//If fail to pay villager, it dies and gets buried
-					if (success == false) {
-						System.out.println("CAN'T PAY UNIT. MAKE A TOMBSTONE!!");
-						t.getRegion().killUnit(t.getUnit());
-						t.addStructure(StructureType.Tombstone);
+			if (Cultivation.CLIENT.player.equals(p)) {
+				//For each tile, generate gold depending on its landtype
+				//and pay unit if a unit is on tile
+				for (Tile t : myTiles) {
+					LandType myLandType = t.getLandType();
+					int value = myLandType.getGoldValue(myLandType);
+					v.addGold(value);
+				}
+				List<Tile> tilesToStarve = new ArrayList<Tile>();
+				//Pay villagers their wage
+				for (Tile t : myTiles) {
+					if (t.getUnit()!=null) {
+						UnitType uType = t.getUnit().getType();
+						int salary = uType.getSalary();
+						boolean success = v.removeGold(salary);
+						//If fail to pay villager, it dies and gets buried
+						if (success == false) {
+							tilesToStarve.add(t);
+						}
 					}
 				}
+				GameAction.StoneVillagers starveAction = new GameAction.StoneVillagers(tilesToStarve);
+				Cultivation.CLIENT.sendActions(starveAction);
 			}
-			
-			
+		}
+	}
 
-
+	public void starveVillagers(List<Tile> tiles) {
+		for (Tile t: tiles) {
+			Tile realTile = map.getMap()[t.x][t.y];
+			realTile.getRegion().killUnit(realTile.getUnit());
+			realTile.addStructure(StructureType.Tombstone);
 		}
 	}
 
@@ -225,16 +233,16 @@ public class CultivationGame implements Serializable {
 				if (tile.getUnit() == null) {
 					//Place villager on this tile
 					foundVacantTile = true;
-//					tile.setUnit(new Unit(tile));
+					//					tile.setUnit(new Unit(tile));
 					//Subtract gold
-//					village.removeGold(10);
+					//					village.removeGold(10);
 					spawnOn = tile;
 				}
 			}
 		}
 		return spawnOn;
 	}
-	
+
 	public Tile getCannonSpawnPoint(Village village){
 		if(village.getType().compareTo(VillageType.Fort) <0) {
 			return null;
@@ -250,7 +258,7 @@ public class CultivationGame implements Serializable {
 		}
 		return spawnPoint;
 	}
-	
+
 	public void hireCannon(Tile t){
 		Unit cannon = new Unit(t);
 		cannon.myType = UnitType.Cannon;
@@ -258,7 +266,7 @@ public class CultivationGame implements Serializable {
 		System.out.println("t " +t+" "+t.getVillage());
 		t.getVillage().removeGold(UnitType.Cannon.getCost());
 	}
-	
+
 	//
 	public void hireVillager(Tile t) {
 		Unit unit = new Unit(t);
@@ -273,7 +281,7 @@ public class CultivationGame implements Serializable {
 		}
 	}
 
-	
+
 	public void fireAt(Tile tile) {
 		if(tile.getUnit()!=null){
 			tile.getRegion().killUnit(tile.getUnit());
@@ -318,7 +326,7 @@ public class CultivationGame implements Serializable {
 				Cultivation.GAMEMANAGER.getGame().getWorld().villageConstructionSites.clear();
 				Cultivation.GAMEMANAGER.getGame().getWorld().createVillageAt(village.getTile().x, village.getTile().y);
 			}
-				
+
 		}
 	}
 	public boolean isMyTurn(Player me) {
@@ -336,7 +344,7 @@ public class CultivationGame implements Serializable {
 		}
 		return success;
 	}
-	
+
 	public void growTrees(List<Tile> tilesToGrow) {
 		for(Tile t : tilesToGrow) {
 			getGameMap().getMap()[t.x][t.y].updateLandType(LandType.Tree);
@@ -361,7 +369,7 @@ public class CultivationGame implements Serializable {
 			}
 		}
 	}
-	
+
 	public Player getWinner() {
 		return winner;
 	}
