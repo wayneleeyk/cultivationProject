@@ -28,7 +28,9 @@ public class Region implements Serializable{
 	}
 	
 	public void removeTile(Tile t){
-		myTiles.remove(t);
+		if (!myTiles.remove(t)) {
+			System.out.println("Region.removeTile failed to remove tile "+ t);
+		}
 	}
 	
 	public Set<Tile> getTiles(){

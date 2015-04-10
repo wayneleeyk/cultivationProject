@@ -367,10 +367,20 @@ public class GameMap implements Serializable {
 		Region invaderRegion = invaderVillage.getRegion();
 		target.owner = target.occupant.myVillage.getOwner();
 
+		System.out.println("In takeovertile, updating ownership of target tile " + target);
 		target.updateOwner(invadingOwner);
 		victimRegion.removeTile(target);
 		invaderRegion.addTile(target);
 		Set<Village> villages = getVillages(victim);
+		
+		//Check if invaded region can still support itself, if not kill it and return
+		System.out.println("Target region now has size " + victimRegion.size());
+		if (victimRegion.size()<3) {
+			System.out.println("REGION <3 , destroying....");
+			victimRegion.destroy();
+			System.out.println("Done destroying.");
+			return;
+		}
 
 		// check if the tile is a village tile
 		for (Village village : villages) {
