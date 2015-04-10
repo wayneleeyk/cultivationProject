@@ -15,6 +15,7 @@ public interface GameAction extends Serializable {
 		public void execute(CultivationGame game) {
 			game.increaseRoundCount();
 			game.beginTurn(game.turnOf());
+			game.checkWinCondition();
 		}
 	}
 	

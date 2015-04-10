@@ -1,10 +1,12 @@
 package com.potatoes.cultivation.logic;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -337,6 +339,25 @@ public class CultivationGame implements Serializable {
 	public void growTrees(List<Tile> tilesToGrow) {
 		for(Tile t : tilesToGrow) {
 			getGameMap().getMap()[t.x][t.y].updateLandType(LandType.Tree);
+		}
+	}
+
+	public void checkWinCondition() {
+		Map<Player, Set<Region>> regions = Cultivation.GAMEMANAGER.getGameMap().getAllRegions();
+		Set<Tile> allTilesOwnedByPlayers = new HashSet<>();
+		for (Set<Region> regionSet : regions.values()) {
+			for (Region region : regionSet) {
+				allTilesOwnedByPlayers.addAll(region.getTiles());
+			}
+		}
+		for (Player player : regions.keySet()) {
+			HashSet<Tile> allTilesOwnedByPlayer = new HashSet<>();
+			for (Region region : regions.get(player)) {
+				allTilesOwnedByPlayer.addAll(region.getTiles());
+			}
+			if(allTilesOwnedByPlayer.size() == allTilesOwnedByPlayers.size()){
+				System.out.println(player +" has WON!");
+			}
 		}
 	}
 }
