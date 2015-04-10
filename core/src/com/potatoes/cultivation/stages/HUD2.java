@@ -633,6 +633,20 @@ public class HUD2 extends Stage {
 			else if(myType.equals(UnitType.Peasant)){
 				fire.setVisible(false);
 			}
+			//Check based on if you can afford to upgrade
+			int myGold = myPotato.getUnit().getVillage().getGold();
+			if (myGold<UnitType.Infantry.getCostFrom(myType) || UnitType.Infantry.getCostFrom(myType)<0) {
+				infantry.setDisabled(true);
+			}
+			if (myGold<UnitType.Soldier.getCostFrom(myType) || UnitType.Soldier.getCostFrom(myType)<0) {
+				soldier.setDisabled(true);
+			}
+			if (myGold<UnitType.Knight.getCostFrom(myType)||UnitType.Knight.getCostFrom(myType)<0) {
+				knight.setDisabled(true);
+			}
+			if (myGold<UnitType.Cannon.getCostFrom(myType)||UnitType.Cannon.getCostFrom(myType)<0) {
+				cannoneer.setDisabled(true);
+			}
 			
 			// Disable directional buttons according to possibility of moving
 			Tile p = myPotato.getUnit().getTile();
