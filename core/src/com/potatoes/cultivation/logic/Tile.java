@@ -87,7 +87,7 @@ public class Tile implements Serializable{
 			for (Tile tile : neighbourTiles) {
 				if (tile.getUnit()!=null) {
 					System.out.println("Tile "+tile+" has a unit! " + tile.occupant + " " + u);
-					invadable = invadable && tile.getUnit().getType().canInvadeBy(u.getType());
+					invadable = invadable && u.getType().canGoNear(tile.getUnit().getType());
 					//Check if neighbouring tile has a tower, if so, any invader Unit that is infantry cannot invade
 					if (invadable && tile.getStructure() == StructureType.Watchtower && u.getType() == UnitType.Infantry) {
 						invadable = false;

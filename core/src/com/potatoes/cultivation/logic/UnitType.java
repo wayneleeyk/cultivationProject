@@ -19,9 +19,14 @@ public enum UnitType {
 	}	
 	
 	public boolean canInvadeBy(UnitType type){
-		if(this.equals(UnitType.Cannon)) return true;
+		if(type.equals(UnitType.Knight)) return true;
 		return type.ordinal() - this.ordinal() > 0;
 	}	
+	
+	public boolean canGoNear(UnitType type){
+		if(type.equals(UnitType.Cannon)) return true;
+		return type.ordinal() - this.ordinal() > 0;
+	}
 	
 	public int getSalary(){
 		if(this.equals(UnitType.Cannon)) return 5;
