@@ -276,6 +276,10 @@ public class CultivationGame implements Serializable {
 			tile.getRegion().killUnit(tile.getUnit());
 			tile.addStructure(StructureType.Tombstone);
 		}
+
+		if (tile.getStructure()==StructureType.Watchtower) {
+			tile.destroyStructure();
+		}
 		if(tile.containsVillage()){
 			// check if it is destroyed
 			Village village = tile.getVillage();

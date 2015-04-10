@@ -174,7 +174,9 @@ public class Tile implements Serializable{
 					System.out.println("Knight/Soldier/Cannon has destroyed a meadow");
 					myType = LandType.Grass;
 				}
-			
+				if (structure==StructureType.Watchtower && (u.getType()==UnitType.Soldier || u.getType()==UnitType.Knight)) {
+					structure = StructureType.None;
+				}
 				System.out.println("Owner is now "+this.owner+ " village:"+this.getVillage());
 
 				Set<Tile> tilesNeighbouringDestination = Cultivation.GAMEMANAGER.getGameMap().getNeighbouringTiles(this);
@@ -217,6 +219,7 @@ public class Tile implements Serializable{
 				return false;
 			}
 			else if(UnitType.Cannon.equals(u.getType()) ){
+				if (this.getPlayer()==null) return myType!=LandType.Sea; //If neutral land, return true if it's not a sea tile
 				return occupant==null && this.getPlayer().equals(u.getVillage().getOwner());
 			}
 			// If it's not a sea, and (unowned or invadable or ours)

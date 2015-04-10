@@ -129,18 +129,32 @@ public class HUD2 extends Stage {
 		if (cm.secondaryClickEnabled() && cm.getPotatoActor()!=null) {
 			PotatoActor cannon = cm.getPotatoActor();
 			PotatoActor target = cm.getSecondPotatoActor();
+			TileActor targetTile = cm.getTileActor();
 			VillageActor villageTarget = cm.getVillageActor();
-			if (target != null 
-					&& target.getUnit() != null 
-					&& !target.getUnit().getVillage().getOwner().equals(currentPlayer)){
-				if(target.getUnit().myTile.inShootingDistance(game.getGameMap(),cm.getPotatoActor().getUnit().myTile)){
-					System.out.println("Shoot unit "+target);
-					cannon.getUnit().myVillage.removeWood(1);
+			System.out.println("Shooting target :"+target);
+			if ((target != null 
+					&& target.getUnit() != null	
+					&& !target.getUnit().getVillage().getOwner().equals(currentPlayer))){
+				if(target.getUnit().myTile.inShootingDistance(game.getGameMap(),cm.getPotatoActor().getUnit().myTile)	
+						){
+					System.out.println("Shoot tile "+target);
+					target.getUnit().myVillage.removeWood(1);
 					GameAction.FireCannonAction gameAction = new GameAction.FireCannonAction(target.getUnit().myTile);
 					gameApp.client.sendActions(gameAction);
 					cm.reset();
 				}
 				else System.out.println("Out of range!");
+				cm.reset();
+			} else if (targetTile!=null 
+					&& targetTile.getTile().getStructure()==StructureType.Watchtower 
+					&& targetTile.getTile().getPlayer()!=currentPlayer) {
+				if (targetTile.getTile().inShootingDistance(game.getGameMap(), cm.getPotatoActor().getUnit().myTile)) {
+					System.out.println("Shoot tile with tower");
+					targetTile.getTile().getVillage().removeWood(1);
+					GameAction.FireCannonAction gameAction = new GameAction.FireCannonAction(targetTile.getTile());
+					gameApp.client.sendActions(gameAction);
+					cm.reset();
+				}
 			}
 			else if(villageTarget!=null &&
 					villageTarget.getVillage() != null &&
